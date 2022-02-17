@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>ISI Shopping Mall</title>
+        <title>Online Shopping Mall</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -108,7 +108,7 @@
 </g>
 </svg>
 
-<p style = "margin-left:100px ;font-size:30px; color:green; text-align:center">ISI Online Shopping Mall</p>
+<p style = "margin-left:100px ;font-size:30px; color:green; text-align:center">Online Shopping Mall</p>
 
 
 
