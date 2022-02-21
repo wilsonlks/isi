@@ -1,3 +1,7 @@
+<?php
+    set_include_path(__DIR__ . '');
+    echo get_include_path();
+?>
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -44,6 +48,8 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
+
+
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">

@@ -28,3 +28,4 @@ Route::get('/productList', function () {
 Route::get('/dbConnect', function () {
     return view('dbConnect');
 });
+

@@ -54,9 +54,9 @@
                 {
                     $('.filter_data').html('<div id="loading" style="" ></div>');
                     var action = 'fetch_data';
-
                     var category_filter = get_filter('category_checkbox');
                     $.ajax({
+
                         url:"fetch_data.php",
                         method:"POST",
                         data:{action:action, category_filter:category_filter},
@@ -66,22 +66,6 @@
                     });
                     console.log("fetched");
                 }
-            console.log(filter.length);
-
-            function set_filterrrrrrr(checkbox) {
-                if (checkbox.checked=true){
-                    filter.push(checkbox.value);
-                    console.log("added "+checkbox.value);
-                    filter.forEach(element => {
-                        console.log(element);
-                    });
-                }
-
-            };
-
-            function get_filterrrrrr(){
-                return filter;
-            }
 
             function get_filter(class_name)
             {
@@ -92,32 +76,15 @@
                 return filter;
             }
             function Click(checkbox){
-                        if (checkbox.checked == true){
-                            filter_data();
-                            console.log("click");
-                        }
-                    };
 
+                filter_data();
+                console.log("click");
 
+            };
 
     </script>
-        <?php
-        // $query = "SELECT * FROM `product` WHERE `category` in (".$categoryID_filter.")";
-
-
-        // ?>
-
-
 
 <?php
-
-
-
-
-
-
-//include (dirname(__FILE__)."\auth\dbConnect.php");
-
 
     // $productList = mysqli_query($dbConnection, "SELECT * FROM `product");
 

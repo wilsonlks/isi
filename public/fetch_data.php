@@ -7,7 +7,7 @@
     $query = "SELECT * FROM product";
     if(isset($_POST["action"])){
         if(isset($_POST["category_filter"])){
-            $_category_filter = implode("','", $_POST["category_filter"]);
+            $_category_filter = implode(",", $_POST["category_filter"]);
             $s_category_filter = strval($_category_filter);
             $query .= "
             WHERE category IN (".$s_category_filter.");
@@ -21,9 +21,20 @@
     $statement->execute();
     $resultSet = $statement->get_result();
 
-    echo $query;
+    echo $query."<br>";
 
-    $output = '333';
+    echo $_POST["category_filter"]."<br>";
+
+    foreach($_POST["category_filter"] as $a){
+        echo $a."<br>";
+        echo "done"."<br>";
+    }
+
+    echo "<br>"."<br>"."<br>";
+
+
+
+    $output = '';
 
     while ($result= mysqli_fetch_assoc($resultSet)){
         $output .=
