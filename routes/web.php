@@ -24,3 +24,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/productList', function () {
     return view('auth.productList');
 });
+
+Route::get('/dbConnect', function () {
+    return view('dbConnect');
+});

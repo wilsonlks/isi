@@ -1,4 +1,7 @@
 {
     "/js/app.js": "/js/app.js",
+    "js/jquery-1.10.2.min.js": "js/jquery-1.10.2.min.js",
+    "js/jquery-ui.js": "js/jquery-ui.js",
+    "js/bootstrap.min.js": "js/bootstrap.min.js",
     "/css/app.css": "/css/app.css"
 }
