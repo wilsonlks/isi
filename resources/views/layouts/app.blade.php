@@ -1,7 +1,4 @@
-<?php
-    set_include_path(__DIR__ . '');
-    echo get_include_path();
-?>
+
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
