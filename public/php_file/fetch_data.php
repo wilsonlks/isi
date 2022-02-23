@@ -7,7 +7,7 @@
 
 
     $filter = "";
-
+    $page_number = 1;
     //get data from productList.blade.php
     if(isset($_POST["action"])){
 
@@ -24,19 +24,48 @@
         if(isset($_POST["sorting"])){
             $s_sorting_value = strval($_POST["sorting"]);
         }
+
+        if (isset($_POST["page"])) {
+
+            $page_number  = intval($_POST["page"]);
+
+        }
+
+        else {
+
+          $page_number=1;
+
+        }
+
     }
 
     //may do sorting requirement?? DONE
     $sorting = " ORDER BY product.".$s_sorting_value;
+
+    echo "page = ".$page_number;
+
+
+    //NP = Number_of_Products
+    $NP_limit = 2; //limit products for each page
+
+    // update the active page number
+
+
+    // get the initial page number
+
+    $initial_page = ($page_number-1) * $NP_limit;
+
+    // get data of selected rows per page
+    $limitQ = " LIMIT ".$initial_page.", ".$NP_limit;
 
     //set query
     $query = "SELECT * FROM
     (`product` INNER JOIN `productimage`
     ON product.productID=productimage.productID)
     LEFT JOIN `category`
-    ON `product`.`category`=`category`.`categoryID` ".$filter.$sorting.";";
+    ON `product`.`category`=`category`.`categoryID` ".$filter.$sorting.$limitQ.";";
 
-
+    echo $query;
 
     //get data
     $statement = $dbConnection->prepare($query);
@@ -71,30 +100,6 @@
     //testing
 
     //NP = Number_of_Products
-    $NP_limit = 2; //limit productsfor each page
-
-    // update the active page number
-
-    if (isset($_GET["page"])) {
-
-        $page_number  = $_GET["page"];
-
-    }
-
-    else {
-
-      $page_number=1;
-
-    }
-
-    // get the initial page number
-
-    $initial_page = ($page_number-1) * $limit;
-
-    // get data of selected rows per page
-    $limitQ = "LIMIT ".$initial_page.", ".$limit;
-
-    //NP = Number_of_Products
 
     $NP_query = "SELECT COUNT(*) FROM
     (`product` INNER JOIN `productimage`
@@ -109,29 +114,27 @@
     $total_pages = ceil($NP_total / $NP_limit);
 
 
-    // echo '<input type="button" onclick="set_page()" class="page" value="2"></button><br>';
-
 
     $pageURL = "";
 
 
     if($page_number>=2){
 
-        echo "<a href='productList?page=".($page_number-1)."'>  Prev </a>";
+        echo '<button onclick="set_page('.($page_number-1).')" class="page" value="'.($page_number-1).'">Prev</button>';
 
-    }
+    };
 
     for ($i=1; $i<=$total_pages; $i++) {
 
         if ($i == $page_number) {
 
-            $pageURL .= "<a class = 'active' href='productList?page=".$i."'>".$i." </a>";
+            $pageURL .= '<button onclick="set_page('.$i.')" class="page" value="'.$i.'" style="color: red">'.$i.'</button>';
 
         }
 
         else  {
 
-            $pageURL .= "<a href='productList?page=".$i."'>".$i." </a>";
+            $pageURL .= '<button onclick="set_page('.$i.')" class="page" value="'.$i.'">'.$i.'</button>';
 
         }
     };
@@ -140,39 +143,12 @@
 
     if($page_number<$total_pages){
 
-        echo "<a href='productList?page=".($page_number+1)."'>  Next </a>";
+        echo '<button onclick="set_page('.($page_number+1).')" class="page" value="'.($page_number+1).'">Next</button>';
 
-    }
+    };
+    echo $total_pages.'<br>';
 
-    echo '
-
-
-        <div class="inline">
-            <input id="page" type="number" min="1" max="'.$total_pages.'"
-                placeholder="'.$page_number.'/'.$total_pages.'" required>
-            <button onClick="go2Page();">Go</button>
-        </div>
-
-
-
-        <script>
-        function go2Page()
-
-        {
-
-            var page = document.getElementById("page").value;
-
-            page = ((page>'.$total_pages.')?'.$total_pages.':((page<1)?1:page));
-
-            window.location.href = "productList?page=+page";
-
-        }
-        </script>
-
-
-
-        ';
-
+    echo $NP_total;
 
 
 

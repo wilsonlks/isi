@@ -34,9 +34,10 @@
         <?php } ?>
     </div>
 
-    <p id="current_Page" style="display:block" value="111111">2345</p>
+    <button id="current_Page" style="display:none" value="1"></button>
 
-    <input type="button" onclick="set_page()" class="page" value="2"></button><br>
+    <input type="button" onclick="set_page(2)" class="page" value="2"></button><br>
+    <input type="button" onclick="set_page(3)" class="page" value="3"></button><br>
 
     <!-- ujax will get response from fetch_data.php and set html code to here -->
     <p id="filter_string"></p>
@@ -51,7 +52,6 @@
         });
 
         ;
-            var pageNo = '1';
             // send checkbox value by using ajax
             function send_data(){
 
@@ -59,11 +59,11 @@
                 var action = 'fetch_data';
                 var category_filter = get_filter('category_checkbox');
                 var sorting = get_sorting('sorting_radio');
-                // var page = get_page();
+                var page = get_page();
                 $.ajax({
                     url:"./php_file/fetch_data.php",
                     method:"POST",
-                    data:{action:action, category_filter:category_filter, sorting:sorting},
+                    data:{action:action, category_filter:category_filter, sorting:sorting, page:page},
                     success:function(data){
                         $('#filter_string').html(data);
                     }
@@ -78,17 +78,16 @@
             }
             function get_page(){
                 current_page = $('#current_Page').val();
-
+                console.log('current_page='+ current_page);
                 return current_page;
             }
 
 
 
-            function set_page(){
-                console.log($('#current_Page'));
-                console.log(document.getElementById(''))
-                console.log(document.getElementById('current_Page').innerText);
+            function set_page(id){
+                document.getElementById('current_Page').value = id;
                 console.log("run set page");
+                send_data();
             }
 
             function get_filter(class_name)
