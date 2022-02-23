@@ -36,13 +36,8 @@
 
     <button id="current_Page" style="display:none" value="1"></button>
 
-    <input type="button" onclick="set_page(2)" class="page" value="2"></button><br>
-    <input type="button" onclick="set_page(3)" class="page" value="3"></button><br>
-
     <!-- ujax will get response from fetch_data.php and set html code to here -->
     <p id="filter_string"></p>
-
-
 
     <script>
 

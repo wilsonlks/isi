@@ -42,7 +42,7 @@
     //may do sorting requirement?? DONE
     $sorting = " ORDER BY product.".$s_sorting_value;
 
-    echo "page = ".$page_number;
+    //echo "page = ".$page_number;
 
 
     //NP = Number_of_Products
@@ -65,17 +65,15 @@
     LEFT JOIN `category`
     ON `product`.`category`=`category`.`categoryID` ".$filter.$sorting.$limitQ.";";
 
-    echo $query;
-
     //get data
     $statement = $dbConnection->prepare($query);
     $statement->execute();
     $resultSet = $statement->get_result();
 
     //print Query
-    echo $query."<br>";
+    //echo $query."<br>";
 
-    // print data
+    //print data
     $output = '';
     $data_count = 0;
     while ($row= mysqli_fetch_array($resultSet)){
@@ -95,12 +93,8 @@
 
 
 
-
-
-    //testing
-
     //NP = Number_of_Products
-
+    //get total product of list
     $NP_query = "SELECT COUNT(*) FROM
     (`product` INNER JOIN `productimage`
     ON product.productID=productimage.productID)
@@ -114,7 +108,7 @@
     $total_pages = ceil($NP_total / $NP_limit);
 
 
-
+    //print button of pagination
     $pageURL = "";
 
 
@@ -146,14 +140,9 @@
         echo '<button onclick="set_page('.($page_number+1).')" class="page" value="'.($page_number+1).'">Next</button>';
 
     };
-    echo $total_pages.'<br>';
+    // echo $total_pages.'<br>';
 
-    echo $NP_total;
-
-
-
-
-
+    // echo $NP_total;
 ?>
 
 
