@@ -87,7 +87,7 @@
             </div><br>';
     };
     if($data_count == 0){
-        $output .= "No product";
+        $output .= '<div> No product </div><br>';
     }
     echo $output;
 
