@@ -34,8 +34,13 @@
         <?php } ?>
     </div>
 
+    <p id="current_Page" style="display:block" value="111111">2345</p>
+
+    <input type="button" onclick="set_page()" class="page" value="2"></button><br>
+
     <!-- ujax will get response from fetch_data.php and set html code to here -->
     <p id="filter_string"></p>
+
 
 
     <script>
@@ -45,29 +50,45 @@
             send_data();
         });
 
+        ;
+            var pageNo = '1';
             // send checkbox value by using ajax
             function send_data(){
 
-                    $('.filter_data').html('<div id="loading" style="" ></div>');
-                    var action = 'fetch_data';
-                    var category_filter = get_filter('category_checkbox');
-                    var sorting = get_sorting('sorting_radio');
-                    $.ajax({
-
-                        url:"./php_file/fetch_data.php",
-                        method:"POST",
-                        data:{action:action, category_filter:category_filter, sorting:sorting},
-                        success:function(data){
-                            $('#filter_string').html(data);
-                        }
-                    });
-                    console.log("fetched");
+                $('.filter_data').html('<div id="loading" style="" ></div>');
+                var action = 'fetch_data';
+                var category_filter = get_filter('category_checkbox');
+                var sorting = get_sorting('sorting_radio');
+                // var page = get_page();
+                $.ajax({
+                    url:"./php_file/fetch_data.php",
+                    method:"POST",
+                    data:{action:action, category_filter:category_filter, sorting:sorting},
+                    success:function(data){
+                        $('#filter_string').html(data);
+                    }
+                });
+                console.log("fetched");
             }
 
             function get_sorting(class_name){
                 var sorting_value = $('.'+class_name+':checked').val();
 
                 return sorting_value;
+            }
+            function get_page(){
+                current_page = $('#current_Page').val();
+
+                return current_page;
+            }
+
+
+
+            function set_page(){
+                console.log($('#current_Page'));
+                console.log(document.getElementById(''))
+                console.log(document.getElementById('current_Page').innerText);
+                console.log("run set page");
             }
 
             function get_filter(class_name)
