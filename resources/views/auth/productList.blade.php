@@ -34,9 +34,10 @@
         <?php } ?>
     </div>
 
+    <button id="current_Page" style="display:none" value="1"></button>
+
     <!-- ujax will get response from fetch_data.php and set html code to here -->
     <p id="filter_string"></p>
-
 
     <script>
 
@@ -45,29 +46,43 @@
             send_data();
         });
 
+        ;
             // send checkbox value by using ajax
             function send_data(){
 
-                    $('.filter_data').html('<div id="loading" style="" ></div>');
-                    var action = 'fetch_data';
-                    var category_filter = get_filter('category_checkbox');
-                    var sorting = get_sorting('sorting_radio');
-                    $.ajax({
-
-                        url:"./php_file/fetch_data.php",
-                        method:"POST",
-                        data:{action:action, category_filter:category_filter, sorting:sorting},
-                        success:function(data){
-                            $('#filter_string').html(data);
-                        }
-                    });
-                    console.log("fetched");
+                $('.filter_data').html('<div id="loading" style="" ></div>');
+                var action = 'fetch_data';
+                var category_filter = get_filter('category_checkbox');
+                var sorting = get_sorting('sorting_radio');
+                var page = get_page();
+                $.ajax({
+                    url:"./php_file/fetch_data.php",
+                    method:"POST",
+                    data:{action:action, category_filter:category_filter, sorting:sorting, page:page},
+                    success:function(data){
+                        $('#filter_string').html(data);
+                    }
+                });
+                console.log("fetched");
             }
 
             function get_sorting(class_name){
                 var sorting_value = $('.'+class_name+':checked').val();
 
                 return sorting_value;
+            }
+            function get_page(){
+                current_page = $('#current_Page').val();
+                console.log('current_page='+ current_page);
+                return current_page;
+            }
+
+
+
+            function set_page(id){
+                document.getElementById('current_Page').value = id;
+                console.log("run set page");
+                send_data();
             }
 
             function get_filter(class_name)
