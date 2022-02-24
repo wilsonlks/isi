@@ -82,7 +82,7 @@
             '<div><p class="product">
             <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200"></div>
             <div class="name_productList">Name: '.$row['productName'].'</div>
-            <div class="category_productList">Category: '.$row['category'].'</div>
+            <div class="category_productList">Category: '.$row['categoryName'].'</div>
             <div class="price_productList">Price: $'.$row['price'].'</div>
             </div><br>';
     };
