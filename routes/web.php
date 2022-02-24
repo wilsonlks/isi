@@ -21,11 +21,15 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/productList', function () {
+Route::get('/products', function () {
     return view('auth.productList');
 });
 
 Route::get('/dbConnect', function () {
     return view('dbConnect');
+});
+
+Route::get('/products/{productID}', function () {
+    return view('auth.productDetailPage');
 });
 
