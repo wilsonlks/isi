@@ -33,24 +33,21 @@
 
         <?php
             //print data
-            $output = '<table class="product"><tr class="image_productDetailPage">';
-            while ($detail= mysqli_fetch_array($PSetResult1)){
-                $output .=
-                    '<td><img src="'.$detail['image_url'].'" width="auto" height="200"></td>';
-            };
+            ?> <table class="product" style="margin: 30px 110px"><tr class="image_productDetailPage"> <?php
+            while ($detail= mysqli_fetch_array($PSetResult1)){ ?>
+                <td style="padding: 5px 15px"><img src="<?php echo $detail['image_url'] ?>" width="auto" height="200"></td>
+            <?php };
             $detail= mysqli_fetch_array($PSetResult2);
-            $output .= 
-                '</tr>
-                <tr class="name_productDetailPage"><td>Name:</td><td>'.$detail['productName'].'</td></tr>
-                <tr class="category_productDetailPage"><td>Category:</td><td>'.$detail['category'].'</td></tr>
-                <tr class="price_productDetailPage"><td>Price:</td><td>$'.$detail['price'].'</td></tr>
-                <tr class="description_productDetailPage" rowspan="10"><td>Descriptions:</td>';
-            while ($detail= mysqli_fetch_array($PSetResult3)){
-                $output .=
-                    '<td>'.$detail['detail_description'].'</td>';
-            };
-            $output .= '</tr></table>';
-            echo $output;
+            ?> </tr>
+                <tr class="name_productDetailPage"><td style="padding: 5px 15px">Name:</td><td style="padding: 5px 15px"><?php echo $detail['productName'] ?></td></tr>
+                <tr class="category_productDetailPage"><td style="padding: 5px 15px">Category:</td><td style="padding: 5px 15px"><?php echo $detail['category'] ?></td></tr>
+                <tr class="price_productDetailPage"><td style="padding: 5px 15px">Price:</td><td style="padding: 5px 15px">$ <?php echo $detail['price'] ?></td></tr>
+                <tr class="description_productDetailPage" rowspan="10"><td style="padding: 5px 15px">Descriptions:</td> <?php
+            while ($detail= mysqli_fetch_array($PSetResult3)){ ?>
+                <td style="padding: 5px 15px"><?php echo $detail['detail_description'] ?></td>
+            <?php };
+            ?> </tr></table> <?php
+            //echo $output;
         ?>
         
     </div>
