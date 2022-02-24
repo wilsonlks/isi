@@ -3,7 +3,7 @@
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
-include('dbConnect.php');
+/*include('dbConnect.php');
 
 define('LARAVEL_START', microtime(true));
 
