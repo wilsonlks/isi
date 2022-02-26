@@ -1,4 +1,5 @@
 <?php
+include("./php_file/config.php");
 include("./php_file/dbConnect.php");
 
 $productSaved = FALSE;
@@ -7,22 +8,36 @@ if (isset($_POST['submit'])) {
     /*
      * Read posted values.
      */
-    $stringtable = isset($_POST['_string']) ? $_POST['_string'] : '';
-    $inttable = isset($_POST['_int']) ? $_POST['_int'] : 0;
+    $productName = isset($_POST['name']) ? $_POST['name'] : '';
+    $category = isset($_POST['category']) ? $_POST['category'] : '';
+    $price = isset($_POST['price']) ? $_POST['price'] : 0;
+    $stock = isset($_POST['stock']) ? $_POST['stock'] : 0;
+    $description1 = isset($_POST['description1']) ? $_POST['description1'] : '';
+    $description2 = isset($_POST['description2']) ? $_POST['description2'] : '';
 
 
     /*
      * Validate posted values.
      */
-    if (empty($stringtable)) {
-        $errors[] = 'Please provide a product _string.';
+    if (empty($productName)) {
+        $error_detail[] = 'Please provide the product name.';
     }
 
-    if ($inttable == 0) {
-        $errors[] = 'Please provide the _int.';
+    if (empty($category)) {
+        $error_detail[] = 'Please select the category.';
     }
 
+    if ($price == 0) {
+        $error_detail[] = 'Please provide the price.';
+    }
 
+    if ($stock == 0) {
+        $error_detail[] = 'Please provide the stock quantity.';
+    }
+
+    if (empty(($description1)&&($description2))) {
+        $error_detail[] = 'Please provide the descriptions.';
+    }
 
     /*
      * Create "uploads" directory if it doesn't exist.
@@ -46,27 +61,27 @@ if (isset($_POST['submit'])) {
         if (isset($_FILES['file']['error'])) {
             foreach ($_FILES['file']['error'] as $uploadedFileKey => $uploadedFileError) {
                 if ($uploadedFileError === UPLOAD_ERR_NO_FILE) {
-                    $errors[] = 'You did not provide any files.';
+                    $error_detail[] = 'You did not provide any files.';
                 } elseif ($uploadedFileError === UPLOAD_ERR_OK) {
-                    $uploadedFile_string = base_string($_FILES['file']['_string'][$uploadedFileKey]);
+                    $uploadedFileName = basename($_FILES['file']['name'][$uploadedFileKey]);
 
                     if ($_FILES['file']['size'][$uploadedFileKey] <= UPLOAD_MAX_FILE_SIZE) {
                         $uploadedFileType = $_FILES['file']['type'][$uploadedFileKey];
-                        $uploadedFileTemp_string = $_FILES['file']['tmp__string'][$uploadedFileKey];
+                        $uploadedFileTempName = $_FILES['file']['tmp_name'][$uploadedFileKey];
 
-                        $uploadedFilePath = rtrim(UPLOAD_DIR, '/') . '/' . $uploadedFile_string;
+                        $uploadedFilePath = rtrim(UPLOAD_DIR, '/') . '/' . $uploadedFileName;
 
                         if (in_array($uploadedFileType, $allowedMimeTypes)) {
-                            if (!move_uploaded_file($uploadedFileTemp_string, $uploadedFilePath)) {
-                                $errors[] = 'The file "' . $uploadedFile_string . '" could not be uploaded.';
+                            if (!move_uploaded_file($uploadedFileTempName, $uploadedFilePath)) {
+                                $error_detail[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
                             } else {
-                                $file_stringsToSave[] = $uploadedFilePath;
+                                $filenamesToSave[] = $uploadedFilePath;
                             }
                         } else {
-                            $errors[] = 'The extension of the file "' . $uploadedFile_string . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
+                            $error_detail[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
                         }
                     } else {
-                        $errors[] = 'The size of the file "' . $uploadedFile_string . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
+                        $error_detail[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
                     }
                 }
             }
@@ -74,9 +89,15 @@ if (isset($_POST['submit'])) {
     }
 
     /*
+     * Combine descriptions into an array.
+     */
+    // $descriptions[] = array($description1, $description2);
+    
+
+    /*
      * Save product and images.
      */
-    if (!isset($errors)) {
+    if (!isset($error_detail)) {
         /*
          * The SQL statement to be prepared. Notice the so-called markers,
          * e.g. the "?" signs. They will be replaced later with the
@@ -84,20 +105,22 @@ if (isset($_POST['submit'])) {
          *
          * @link http://php.net/manual/en/mysqli.prepare.php
          */
-        $sql = 'INSERT INTO products (
-                    _string,
-                    _int,
-                    description
-                ) VALUES (
-                    ?, ?
-                )';
+        
+        $add_product_query = "INSERT INTO product (
+                                productName,
+                                category,
+                                price,
+                                stock
+                            ) VALUES (
+                                ?, ?, ?, ?
+                            )";
 
         /*
          * Prepare the SQL statement for execution - ONLY ONCE.
          *
          * @link http://php.net/manual/en/mysqli.prepare.php
          */
-        $statement = $dbConnection->prepare($sql);
+        $statement = $dbConnection->prepare($add_product_query);
 
         /*
          * Bind variables for the parameter markers (?) in the
@@ -108,7 +131,7 @@ if (isset($_POST['submit'])) {
          *
          * @link http://php.net/manual/en/mysqli-stmt.bind-param.php
          */
-        $statement->bind_param('si', $stringtable, $inttable);
+        $statement->bind_param('sisi', $productName, $category, $price, $stock);
 
         /*
          * Execute the prepared SQL statement.
@@ -134,29 +157,67 @@ if (isset($_POST['submit'])) {
         /*
          * Save a record for each uploaded file.
          */
-        foreach ($file_stringsToSave as $file_string) {
-            $sql = 'INSERT INTO products_images (
-                        product_id,
-                        file_string
-                    ) VALUES (
-                        ?, ?
-                    )';
 
-            $statement = $dbConnection->prepare($sql);
+        $image_number = 1;
 
-            $statement->bind_param('is', $lastInsertId, $file_string);
+        foreach ($filenamesToSave as $filename) {
+            
+            $add_image_query = "INSERT INTO productimage (
+                                productID,
+                                image_url,
+                                image_number
+                                ) VALUES (
+                                ?, ?, ?
+                                )";
+
+            $statement = $dbConnection->prepare($add_image_query);
+
+            $statement->bind_param('isi', $lastInsertId, $filename, $image_number);
 
             $statement->execute();
 
             $statement->close();
+
+            //$image_number++;
         }
+
+        /*
+         * Save the descriptions.
+         */
+
+        $property_number = 1;
+        $add_description_query = "INSERT INTO productproperty (
+                                    productID,
+                                    detail_description,
+                                    property_number
+                                ) VALUES (
+                                    ?, ?, ?
+                                )";
+        $statement = $dbConnection->prepare($add_description_query);
+        $statement->bind_param('isi', $lastInsertId, $description1, $property_number);
+        $statement->execute();
+        $statement->close();
+
+        $property_number = 2;
+        $add_description_query = "INSERT INTO productproperty (
+                                    productID,
+                                    detail_description,
+                                    property_number
+                                ) VALUES (
+                                    ?, ?, ?
+                                )";
+        $statement = $dbConnection->prepare($add_description_query);
+        $statement->bind_param('isi', $lastInsertId, $description2, $property_number);
+        $statement->execute();
+        $statement->close();
+
 
         /*
          * Close the previously opened database connection.
          *
          * @link http://php.net/manual/en/mysqli.close.php
          */
-        $dbConnection->close();
+        // $dbConnection->close();
 
         $productSaved = TRUE;
 
@@ -164,11 +225,9 @@ if (isset($_POST['submit'])) {
          * Reset the posted values, so that the default ones are now showed in the form.
          * See the "value" attribute of each html input.
          */
-        $stringtable = $inttable = NULL;
+        $productName = $category = $price = $stock = $descriptions = $description1 = $description2 = $image_number = $property_number = NULL;
     }
 }
-
-echo "done";
 
 
 ?>
@@ -197,7 +256,8 @@ echo "done";
             }
 
             .form-container input[type="text"],
-            .form-container input[type="number"] {
+            .form-container input[type="number"],
+            .form-container select {
                 display: block;
                 margin-bottom: 15px;
                 width: 150px;
@@ -235,8 +295,9 @@ echo "done";
 
             <div class="messages">
                 <?php
-                if (isset($errors)) {
-                    // echo implode('<br/>', $errors);
+                if (isset($error_detail)) {
+                    // echo $error_detail;
+                    echo implode('<br/>', $error_detail);
                 } elseif ($productSaved) {
                     echo 'The product details were successfully saved.';
                 }
@@ -245,16 +306,37 @@ echo "done";
 
             <form action="addProduct" method="post" enctype="multipart/form-data">
                 @csrf
-                <label for="_string">_string</label>
-                <input type="text" id="_string" _string="_string" value="<?php echo isset($stringtable) ? $stringtable : ''; ?>">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="<?php echo isset($productName) ? $productName : ''; ?>">
 
-                <label for="_int">_int</label>
-                <input type="number" id="_int" _string="_int" min="0" value="<?php echo isset($inttable) ? $inttable : '0'; ?>">
+                <label for="category">Category: </label>
+                <select id="category" name="category" value="<?php echo isset($category) ? $category : ''; ?>">
+                    <?php $category_qurey = "SELECT * FROM category";
+                            $category_get = $dbConnection->prepare($category_qurey);
+                            $category_get->execute();
+                            $category_result = $category_get->get_result();
+                            while ($category_table = mysqli_fetch_array($category_result)) {
+                                echo "<option value='{$category_table['categoryID']}'>{$category_table['categoryName']}</option>";
+                            }
+                    ?>
+                </select>
 
-                <label for="file">Images</label>
-                <input type="file" id="file" _string="file[]" multiple>
+                <label for="price">Price: </label>
+                <input type="number" id="price" name="price" min="0" value="<?php echo isset($price) ? $price : '0'; ?>">
 
-                <button type="submit" id="submit" _string="submit" class="button">
+                <label for="stock">Stock: </label>
+                <input type="number" id="stock" name="stock" min="0" value="<?php echo isset($stock) ? $stock : '0'; ?>">
+
+                <label for="description1">Description 1: </label>
+                <input type="text" id="description1" name="description1" value="<?php echo isset($description1) ? $description1 : ''; ?>">
+
+                <label for="description2">Description 2: </label>
+                <input type="text" id="description2" name="description2" value="<?php echo isset($description2) ? $description2 : ''; ?>">
+
+                <label for="file">Image: </label>
+                <input type="file" id="file" name="file[]" multiple>
+
+                <button type="submit" id="submit" name="submit" class="button">
                     Submit
                 </button>
             </form>
@@ -262,9 +344,9 @@ echo "done";
             <?php
             if ($productSaved) {
                 ?>
-                <!-- <a href="getProduct.php?id=<?php echo $lastInsertId; ?>" class="link-to-product-details">
-                    Click me to see the saved product details in <b>getProduct.php</b> (product id: <b><?php echo $lastInsertId; ?></b>)
-                </a> -->
+                <a href="products/<?php echo $lastInsertId; ?>" class="link-to-product-details">
+                    Click me to see the saved product details in <b>productDetailPage.php</b> (product id: <b><?php echo $lastInsertId; ?></b>)
+                </a>
                 <?php
             }
             ?>
