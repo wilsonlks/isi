@@ -33,3 +33,10 @@ Route::get('/products/{productID}', function () {
     return view('auth.productDetailPage');
 });
 
+Route::get('/addProduct', function () {
+    return view('auth.addProduct');
+});
+
+Route::post('/addProduct', function () {
+    return view('auth.addProduct');
+});
