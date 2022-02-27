@@ -91,7 +91,8 @@ if (isset($_POST['submit'])) {
     /*
      * Combine descriptions into an array.
      */
-    // $descriptions[] = array($description1, $description2);
+    $descriptions[] = $description1;
+    $descriptions[] = $description2;
     
 
     /*
@@ -186,31 +187,20 @@ if (isset($_POST['submit'])) {
          */
 
         $property_number = 1;
-        $add_description_query = "INSERT INTO productproperty (
-                                    productID,
-                                    detail_description,
-                                    property_number
-                                ) VALUES (
-                                    ?, ?, ?
-                                )";
-        $statement = $dbConnection->prepare($add_description_query);
-        $statement->bind_param('isi', $lastInsertId, $description1, $property_number);
-        $statement->execute();
-        $statement->close();
-
-        $property_number = 2;
-        $add_description_query = "INSERT INTO productproperty (
-                                    productID,
-                                    detail_description,
-                                    property_number
-                                ) VALUES (
-                                    ?, ?, ?
-                                )";
-        $statement = $dbConnection->prepare($add_description_query);
-        $statement->bind_param('isi', $lastInsertId, $description2, $property_number);
-        $statement->execute();
-        $statement->close();
-
+        foreach ($descriptions as $description) {
+            $add_description_query = "INSERT INTO productproperty (
+                                        productID,
+                                        detail_description,
+                                        property_number
+                                    ) VALUES (
+                                        ?, ?, ?
+                                    )";
+            $statement = $dbConnection->prepare($add_description_query);
+            $statement->bind_param('isi', $lastInsertId, $description, $property_number);
+            $statement->execute();
+            $statement->close();
+            $property_number++;
+        }
 
         /*
          * Close the previously opened database connection.
