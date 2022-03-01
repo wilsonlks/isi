@@ -8,7 +8,7 @@
 
 <head>
     <style type="text/css">
-        .productList {
+        /* .productList {
             margin: 20px;
             padding: 40px;
             background: #e0ffe1;
@@ -20,11 +20,13 @@
         }
         .product {
             background: yellow;
-        }
+        }*/
         .image_productList{
-            margin: 20px;
+            /* margin: 20px;
             padding: 20px;
-            background: red;
+            background: red; */
+            /* height: 300px; */
+
         }
 
     </style>
@@ -47,6 +49,9 @@
                 <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productName" checked> Product Name </label>
                 <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="price"> Price </label>
             </form>
+
+            <button onclick = "changeSorting('1')" class="AscDesc" id="asc" value="Asc" style="display:block">ASC</button>
+            <button onclick = "changeSorting('-1')" class="AscDesc" id="desc" value="Desc" style="display:none">DESC</button>
         </div>
 
         <!-- checkbox for filter -->
@@ -79,10 +84,11 @@
                 var category_filter = get_filter('category_checkbox');
                 var sorting = get_sorting('sorting_radio');
                 var page = get_page();
+                var AscDesc = get_AscDesc();
                 $.ajax({
                     url:"./php_file/fetch_data.php",
                     method:"POST",
-                    data:{action:action, category_filter:category_filter, sorting:sorting, page:page},
+                    data:{action:action, category_filter:category_filter, sorting:sorting, page:page, AscDesc:AscDesc},
                     success:function(data){
                         $('#filter_string').html(data);
                     }
@@ -101,7 +107,31 @@
                 return current_page;
             }
 
+            function get_AscDesc(){
+                if (document.getElementById('asc').style.display == "block"){
+                    console.log("change 1");
+                    return '1';
+                }
 
+                if (document.getElementById('desc').style.display == "block"){
+                    console.log("change -1");
+                    return '-1';
+                }
+            }
+
+            function changeSorting(val){
+                if (val == '1'){
+                    document.getElementById('asc').style.display = "none";
+                    document.getElementById('desc').style.display = "block";
+                }
+
+                if (val == '-1'){
+                    document.getElementById('asc').style.display = "block";
+                    document.getElementById('desc').style.display = "none";
+                }
+
+                Click();
+            }
 
             function set_page(id){
                 document.getElementById('current_Page').value = id;

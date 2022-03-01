@@ -25,6 +25,18 @@
             $s_sorting_value = strval($_POST["sorting"]);
         }
 
+        if (isset($_POST["AscDesc"])) {
+
+            $AscDesc  = intval($_POST["AscDesc"]);
+            if ($AscDesc == 1){
+                $AscDesc = "ASC";
+            }elseif ($AscDesc == -1) {
+                $AscDesc = "DESC";
+
+            }
+
+        }
+
         if (isset($_POST["page"])) {
 
             $page_number  = intval($_POST["page"]);
@@ -39,8 +51,10 @@
 
     }
 
+
+
     //may do sorting requirement?? DONE
-    $sorting = " ORDER BY product.".$s_sorting_value;
+    $sorting = " ORDER BY product.".$s_sorting_value." ".$AscDesc;
 
     //echo "page = ".$page_number;
 
@@ -82,7 +96,7 @@
             '<div class="productList"><p>
 
             <div class="product"><a href="products/'.$row['productID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
-            <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="50%"></div>
+            <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200px"></div>
             <div class="name_productList">Name: '.$row['productName'].'</div>
             <div class="category_productList">Category: '.$row['categoryName'].'</div>
             <div class="price_productList">Price: $'.$row['price'].'</div>
