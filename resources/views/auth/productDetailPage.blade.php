@@ -21,7 +21,7 @@
             ON product.productID=productproperty.productID)
             LEFT JOIN `category`
             ON `product`.`category`=`category`.`categoryID`
-            WHERE `product`.`productID`=$productID";                     //need to be modified, get productID from the clicked link
+            WHERE `product`.`productID`=$productID";
             $PSet = $dbConnection->prepare($productQ);
             $PSet->execute();
             $PSetResult1 = $PSet->get_result();
