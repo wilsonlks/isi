@@ -6,6 +6,30 @@
         include("./php_file/dbConnect.php");
     ?>
 
+<head>
+    <style type="text/css">
+        .productList {
+            margin: 20px;
+            padding: 40px;
+            background: #e0ffe1;
+            text-align: center;
+            height: 300px;
+            weight:
+
+
+        }
+        .product {
+            background: yellow;
+        }
+        .image_productList{
+            margin: 20px;
+            padding: 20px;
+            background: red;
+        }
+
+    </style>
+</head>
+
     <div class="filter">
 
         <!-- get category from DB -->

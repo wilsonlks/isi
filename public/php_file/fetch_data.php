@@ -79,12 +79,14 @@
     while ($row= mysqli_fetch_array($resultSet)){
         $data_count += 1;
         $output .=
-            '<div><p class="product"><a href="products/'.$row['productID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
-            <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200"></div>
+            '<div class="productList"><p>
+
+            <div class="product"><a href="products/'.$row['productID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
+            <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="50%"></div>
             <div class="name_productList">Name: '.$row['productName'].'</div>
             <div class="category_productList">Category: '.$row['categoryName'].'</div>
             <div class="price_productList">Price: $'.$row['price'].'</div>
-            </a></p></div><br>';
+            </a></div></p></div><br>';
     };
     if($data_count == 0){
         $output .= '<div> No product </div><br>';
