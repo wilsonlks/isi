@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,14 +30,17 @@ Route::get('/dbConnect', function () {
     return view('dbConnect');
 });
 
-Route::get('/products/{productID}', function () {
+Route::get('/products/new', [ProductController::class, 'create']);
+
+Route::post('/products/new', function () {
+    return view('auth.addProduct');
+});
+
+Route::get('/products/{product}', function () {
     return view('auth.productDetailPage');
 });
 
-Route::get('/addProduct', function () {
-    return view('auth.addProduct');
-});
+// Route::get('/addProduct', function () {
+//     return view('auth.addProduct');
+// });
 
-Route::post('/addProduct', function () {
-    return view('auth.addProduct');
-});
