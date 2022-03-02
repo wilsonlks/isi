@@ -15,8 +15,9 @@
         if(isset($_POST["category_filter"])){
             $_category_filter = implode(",", $_POST["category_filter"]);//get data
             $s_category_filter = strval($_category_filter); //like toString()
+
             $filter .= "
-            WHERE category IN (".$s_category_filter.")
+            product.category IN (".$s_category_filter.")
             ";
         }
 
@@ -37,6 +38,18 @@
 
         }
 
+        if(isset($_POST["searchText"])){
+            $searchText = strval($_POST["searchText"]);
+            if (strlen($searchText) > 0){
+                $searchQ = "product.productName LIKE '%".$searchText."%' ";
+            }else {
+                $searchQ = "";
+            }
+
+
+
+        }
+
         if (isset($_POST["page"])) {
 
             $page_number  = intval($_POST["page"]);
@@ -51,7 +64,12 @@
 
     }
 
-
+    if(strlen($searchQ)>0 OR strlen($s_category_filter)>0){
+        $where = " WHERE ";
+        if(strlen($searchQ)>0 AND strlen($s_category_filter)>0){
+            $and = " AND ";
+        }
+    }
 
     //may do sorting requirement?? DONE
     $sorting = " ORDER BY product.".$s_sorting_value." ".$AscDesc;
@@ -77,15 +95,18 @@
     (`product` INNER JOIN `productimage`
     ON product.productID=productimage.productID)
     LEFT JOIN `category`
-    ON `product`.`category`=`category`.`categoryID` ".$filter.$sorting.$limitQ.";";
+    ON `product`.`category`=`category`.`categoryID` ".$where.$searchQ.$and.$filter.$sorting.$limitQ.";";
+
+    //print Query
+    echo $query."<br>";
 
     //get data
     $statement = $dbConnection->prepare($query);
     $statement->execute();
     $resultSet = $statement->get_result();
 
-    //print Query
-    //echo $query."<br>";
+
+
 
     //print data
     $output = '';
@@ -119,8 +140,8 @@
     (`product` INNER JOIN `productimage`
     ON product.productID=productimage.productID)
     LEFT JOIN `category`
-    ON `product`.`category`=`category`.`categoryID` ".$filter.$sorting.";";
-
+    ON `product`.`category`=`category`.`categoryID` ".$where.$searchQ.$and.$filter.$sorting.";";
+    echo $NP_query;
     $NP_result = mysqli_query($dbConnection, $NP_query);
     $NP_row = mysqli_fetch_row($NP_result);
     $NP_total = $NP_row[0];
@@ -131,7 +152,7 @@
     //print button of pagination
     $pageURL = "";
 
-
+    echo "pagenumber".$page_number."   ini".$initial_page."    nptotal".$NP_total;
     if($page_number>=2){
 
         echo '<button onclick="set_page('.($page_number-1).')" class="page" value="'.($page_number-1).'">Prev</button>';

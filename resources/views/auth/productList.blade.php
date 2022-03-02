@@ -73,6 +73,10 @@
             <button onclick = "changeSorting('-1')" class="AscDesc" id="desc" value="Desc" style="display:none">DESC</button>
         </div>
 
+        <div class="list-group-item inputtext">
+            <div>Search: </div><br>
+            <input type="text" id="search_box" onchange="Click()">
+        </div>
         <!-- checkbox for filter -->
         <h4>filter</h4>
         <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
@@ -104,10 +108,11 @@
                 var sorting = get_sorting('sorting_radio');
                 var page = get_page();
                 var AscDesc = get_AscDesc();
+                var searchText = get_searchText();
                 $.ajax({
                     url:"./php_file/fetch_data.php",
                     method:"POST",
-                    data:{action:action, category_filter:category_filter, sorting:sorting, page:page, AscDesc:AscDesc},
+                    data:{action:action, category_filter:category_filter, sorting:sorting, page:page, AscDesc:AscDesc, searchText:searchText},
                     success:function(data){
                         $('#filter_string').html(data);
                     }
@@ -115,6 +120,9 @@
                 console.log("fetched");
             }
 
+            function get_searchText(){
+                return $('#search_box').val();
+            }
             function get_sorting(class_name){
                 var sorting_value = $('.'+class_name+':checked').val();
 
@@ -167,7 +175,7 @@
                 return filter;
             }
             function Click(){
-
+                set_page(1);
                 send_data();
                 console.log("click");
 
