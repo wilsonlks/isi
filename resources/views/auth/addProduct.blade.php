@@ -22,9 +22,21 @@
         /*
          * Validate posted values.
          */
+        
+        $productName_unique_query = "SELECT productName FROM product
+                                        WHERE productName = '$productName'";
+        $statement = $dbConnection->prepare($productName_unique_query);
+        $statement->execute();
+        $productName_unique_result = mysqli_fetch_array($statement->get_result());
+
+        if ($productName_unique_result) {
+            $error_name[] = 'This product name has already been taken. Please try another one.';
+            $error_detail[] = 'This product name has already been taken. Please try another one.';
+        }
+        
         if (empty($productName)) {
-            $error_name = 'Please provide the product name.';
-            $error_detail[] = $error_name;
+            $error_name[] = 'Please provide the product name.';
+            $error_detail[] = 'Please provide the product name.';
         }
 
         if (empty($category)||($category=="0")) {
@@ -232,20 +244,15 @@
             * Reset the posted values, so that the default ones are now showed in the form.
             * See the "value" attribute of each html input.
             */
-            $productName = $category = $price = $stock = $descriptions = $description1 = $description2 = $image_number = $property_number = NULL;
+            $_POST['sumbit'] = $productName = $category = $price = $stock = $descriptions = $description1 = $description2 = $image_number = $property_number = NULL;
+
+            header("location:http://localhost:8000/products/".$lastInsertId); exit;
         }
     }
 
 
     ?>
-    
-    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-            <meta _string="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
-            <meta charset="UTF-8" />
-            The above 3 meta tags must come first in the head
-
-            <script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"></script> -->
-            
+                
     <style type="text/css">
         .container .card-body {
             margin-bottom: 15px;
@@ -253,7 +260,6 @@
         .container .form-text, .container .card-body {
             margin-top: 25px;
         }
-
     </style>
 
     <div class="container">
@@ -273,7 +279,7 @@
                                     <?php
                                         if (isset($error_name)) {
                                                 ?> <span class="invalid-feedback" role="alert" style="display:block"><strong> <?php
-                                                    echo $error_name;
+                                                    echo implode('<br/>', $error_name);
                                                 ?> </strong></span> <?php
                                         }
                                     ?>                                   
@@ -390,6 +396,7 @@
                                         Click me to see the saved product details in <b>productDetailPage.php</b> (product id: <b><?php echo $lastInsertId; ?></b>)
                                     </a></div>
                                 <?php
+                                $productSaved = FALSE;
                             }
                         ?>
 
