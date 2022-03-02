@@ -21,12 +21,31 @@
         .product {
             background: yellow;
         }*/
-        .image_productList{
-            /* margin: 20px;
-            padding: 20px;
-            background: red; */
-            /* height: 300px; */
+        .productList{
+            padding: 40px;
+            flex-wrap: wrap;
 
+
+        }
+        .product {
+            text-align: center;
+
+            background: #e0ffe1;
+            margin: 25px 50px 75px 100px
+        }
+        .image_productList {
+            padding: 20px
+        }
+
+        .name_productList ,.category_productList ,.price_productList{
+            padding: 10px;
+        }
+
+        .name_productList ,.category_productList{
+            display: inline;
+        }
+        .name_productList {
+            font-weight: bold;
         }
 
     </style>
