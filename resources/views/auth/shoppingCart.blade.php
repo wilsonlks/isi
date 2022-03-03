@@ -63,10 +63,13 @@
     /* .alert {
         padding-right: 15px;
     } */
-    .name_cart {
+    .name_cart a {
         text-transform: uppercase;
         font-weight: bold;
         color: green;
+    }
+    .price_cart a, .quantity_cart a {
+        color: black;
     }
     .name_cart, .price_cart, .quantity_cart, .total_cart, .close {
         text-align: right;
@@ -81,6 +84,9 @@
         padding-top: 10px;
         font-weight: bold;
     }
+    a {
+        text-decoration: none;
+    }
 </style>
 
 <div class="container">
@@ -92,12 +98,26 @@
                 <?php
                     while ($detail= mysqli_fetch_array($cart_result)) { ?>
                         <div class="cart">
-                            <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details" style="text-decoration: none; color:black;">
-                                <div class="image_container"><img class="image_cart" src="<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px"></div>
-                                <h4 class="name_cart"><?php echo $detail['productName'] ?></h4>
-                                <h5 class="price_cart">$<?php echo $detail['price'] ?></h5>
-                                <h6 class="quantity_cart">&times;<?php echo $detail['quantity'] ?></h6>
-                            </a>
+                            <div class="image_container">
+                                <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
+                                    <img class="image_cart" src="<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
+                                </a>
+                            </div>
+                            <h4 class="name_cart">
+                                <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
+                                    <?php echo $detail['productName'] ?>
+                                </a>
+                            </h4>
+                            <h5 class="price_cart">
+                                <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
+                                    $<?php echo $detail['price'] ?>
+                                </a>
+                            </h5>
+                            <h6 class="quantity_cart">
+                                <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
+                                    &times;<?php echo $detail['quantity'] ?>
+                                </a>
+                            </h6>
                         </div>
                     <?php };
                 ?>
