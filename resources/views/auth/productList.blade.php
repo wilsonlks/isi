@@ -6,6 +6,51 @@
         include("./php_file/dbConnect.php");
     ?>
 
+<head>
+    <style type="text/css">
+        /* .productList {
+            margin: 20px;
+            padding: 40px;
+            background: #e0ffe1;
+            text-align: center;
+            height: 300px;
+            weight:
+
+
+        }
+        .product {
+            background: yellow;
+        }*/
+        .productList{
+            padding: 40px;
+            flex-wrap: wrap;
+
+
+        }
+        .product {
+            text-align: center;
+
+            background: #e0ffe1;
+            margin: 25px 50px 75px 100px
+        }
+        .image_productList {
+            padding: 20px
+        }
+
+        .name_productList ,.category_productList ,.price_productList{
+            padding: 10px;
+        }
+
+        .name_productList ,.category_productList{
+            display: inline;
+        }
+        .name_productList {
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
     <div class="filter">
 
         <!-- get category from DB -->
@@ -23,8 +68,15 @@
                 <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productName" checked> Product Name </label>
                 <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="price"> Price </label>
             </form>
+
+            <button onclick = "changeSorting('1')" class="AscDesc" id="asc" value="Asc" style="display:block">ASC</button>
+            <button onclick = "changeSorting('-1')" class="AscDesc" id="desc" value="Desc" style="display:none">DESC</button>
         </div>
 
+        <div class="list-group-item inputtext">
+            <div>Search: </div><br>
+            <input type="text" id="search_box" onchange="Click()">
+        </div>
         <!-- checkbox for filter -->
         <h4>filter</h4>
         <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
@@ -55,10 +107,12 @@
                 var category_filter = get_filter('category_checkbox');
                 var sorting = get_sorting('sorting_radio');
                 var page = get_page();
+                var AscDesc = get_AscDesc();
+                var searchText = get_searchText();
                 $.ajax({
                     url:"./php_file/fetch_data.php",
                     method:"POST",
-                    data:{action:action, category_filter:category_filter, sorting:sorting, page:page},
+                    data:{action:action, category_filter:category_filter, sorting:sorting, page:page, AscDesc:AscDesc, searchText:searchText},
                     success:function(data){
                         $('#filter_string').html(data);
                     }
@@ -66,6 +120,9 @@
                 console.log("fetched");
             }
 
+            function get_searchText(){
+                return $('#search_box').val();
+            }
             function get_sorting(class_name){
                 var sorting_value = $('.'+class_name+':checked').val();
 
@@ -77,7 +134,31 @@
                 return current_page;
             }
 
+            function get_AscDesc(){
+                if (document.getElementById('asc').style.display == "block"){
+                    console.log("change 1");
+                    return '1';
+                }
 
+                if (document.getElementById('desc').style.display == "block"){
+                    console.log("change -1");
+                    return '-1';
+                }
+            }
+
+            function changeSorting(val){
+                if (val == '1'){
+                    document.getElementById('asc').style.display = "none";
+                    document.getElementById('desc').style.display = "block";
+                }
+
+                if (val == '-1'){
+                    document.getElementById('asc').style.display = "block";
+                    document.getElementById('desc').style.display = "none";
+                }
+
+                Click();
+            }
 
             function set_page(id){
                 document.getElementById('current_Page').value = id;
@@ -94,7 +175,7 @@
                 return filter;
             }
             function Click(){
-
+                set_page(1);
                 send_data();
                 console.log("click");
 

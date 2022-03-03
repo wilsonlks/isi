@@ -15,14 +15,39 @@
         if(isset($_POST["category_filter"])){
             $_category_filter = implode(",", $_POST["category_filter"]);//get data
             $s_category_filter = strval($_category_filter); //like toString()
+
             $filter .= "
-            WHERE category IN (".$s_category_filter.")
+            product.category IN (".$s_category_filter.")
             ";
         }
 
         //get and set sorting value
         if(isset($_POST["sorting"])){
             $s_sorting_value = strval($_POST["sorting"]);
+        }
+
+        if (isset($_POST["AscDesc"])) {
+
+            $AscDesc  = intval($_POST["AscDesc"]);
+            if ($AscDesc == 1){
+                $AscDesc = "ASC";
+            }elseif ($AscDesc == -1) {
+                $AscDesc = "DESC";
+
+            }
+
+        }
+
+        if(isset($_POST["searchText"])){
+            $searchText = strval($_POST["searchText"]);
+            if (strlen($searchText) > 0){
+                $searchQ = "product.productName LIKE '%".$searchText."%' ";
+            }else {
+                $searchQ = "";
+            }
+
+
+
         }
 
         if (isset($_POST["page"])) {
@@ -39,8 +64,15 @@
 
     }
 
+    if(strlen($searchQ)>0 OR strlen($s_category_filter)>0){
+        $where = " WHERE ";
+        if(strlen($searchQ)>0 AND strlen($s_category_filter)>0){
+            $and = " AND ";
+        }
+    }
+
     //may do sorting requirement?? DONE
-    $sorting = " ORDER BY product.".$s_sorting_value;
+    $sorting = " ORDER BY product.".$s_sorting_value." ".$AscDesc;
 
     //echo "page = ".$page_number;
 
@@ -63,29 +95,38 @@
     (`product` INNER JOIN `productimage`
     ON product.productID=productimage.productID)
     LEFT JOIN `category`
-    ON `product`.`category`=`category`.`categoryID` ".$filter.$sorting.$limitQ.";";
+    ON `product`.`category`=`category`.`categoryID` ".$where.$searchQ.$and.$filter.$sorting.$limitQ.";";
+
+    //print Query
+    echo $query."<br>";
 
     //get data
     $statement = $dbConnection->prepare($query);
     $statement->execute();
     $resultSet = $statement->get_result();
 
-    //print Query
-    //echo $query."<br>";
+
+
 
     //print data
     $output = '';
     $data_count = 0;
+    echo '<div class="productList">';
+
     while ($row= mysqli_fetch_array($resultSet)){
         $data_count += 1;
         $output .=
-            '<div><p class="product">
-            <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200"></div>
-            <div class="name_productList">Name: '.$row['productName'].'</div>
-            <div class="category_productList">Category: '.$row['categoryName'].'</div>
-            <div class="price_productList">Price: $'.$row['price'].'</div>
-            </div><br>';
+            '
+
+            <div class="product"><a href="products/'.$row['productID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
+            <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200px"></div>
+            <div class="name_productList">'.$row['productName'].'</div> |
+            <div class="category_productList">'.$row['categoryName'].'</div>
+            <div class="price_productList">$'.$row['price'].'</div>
+            </a></div>';
     };
+
+    echo '';
     if($data_count == 0){
         $output .= '<div> No product </div><br>';
     }
@@ -99,8 +140,8 @@
     (`product` INNER JOIN `productimage`
     ON product.productID=productimage.productID)
     LEFT JOIN `category`
-    ON `product`.`category`=`category`.`categoryID` ".$filter.$sorting.";";
-
+    ON `product`.`category`=`category`.`categoryID` ".$where.$searchQ.$and.$filter.$sorting.";";
+    echo $NP_query;
     $NP_result = mysqli_query($dbConnection, $NP_query);
     $NP_row = mysqli_fetch_row($NP_result);
     $NP_total = $NP_row[0];
@@ -111,7 +152,7 @@
     //print button of pagination
     $pageURL = "";
 
-
+    echo "pagenumber".$page_number."   ini".$initial_page."    nptotal".$NP_total;
     if($page_number>=2){
 
         echo '<button onclick="set_page('.($page_number-1).')" class="page" value="'.($page_number-1).'">Prev</button>';

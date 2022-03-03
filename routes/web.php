@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\ProductController;
+use App\Http\Controllers\Auth\CartController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,15 +23,31 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/products', function () {
-    return view('auth.productList');
-});
-
 Route::get('/dbConnect', function () {
     return view('dbConnect');
 });
 
-Route::get('/products/{productID}', function () {
+
+// Products List
+
+Route::get('/products', function () {
+    return view('auth.productList');
+});
+
+// Add Products
+
+Route::get('/products/new', [ProductController::class, 'create'])->middleware('auth');
+
+Route::post('/products/new', [ProductController::class, 'store'])->middleware('auth');
+
+// Product Detail Page
+
+Route::get('/products/{product}', function () {
     return view('auth.productDetailPage');
 });
+
+// Shopping Cart
+
+Route::get('/cart', [CartController::class, 'create'])->middleware('auth');
+
 

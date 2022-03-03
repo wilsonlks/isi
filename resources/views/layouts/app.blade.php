@@ -26,6 +26,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
+    
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -46,6 +47,9 @@
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
 
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ '/products' }}">{{ __('Products') }}</a>
+                            </li>
 
                         @guest
                             @if (Route::has('login'))
@@ -60,6 +64,16 @@
                                 </li>
                             @endif
                         @else
+                            @if (Auth::user()->role=='vendor')
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ '/products/new' }}">{{ __('Add Products') }}</a>
+                                </li>
+                            @else 
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ '/cart' }}">{{ __('Shopping Cart') }}</a>
+                                </li>
+                            @endif
+
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
@@ -84,6 +98,14 @@
         </nav>
 
         <main class="py-4">
+            @if (session()->has('alert'))
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>{{ session()->get('alert') }}</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
             @yield('content')
         </main>
     </div>
