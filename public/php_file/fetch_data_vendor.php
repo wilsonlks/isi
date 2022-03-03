@@ -41,7 +41,7 @@
         if(isset($_POST["searchText"])){
             $searchText = strval($_POST["searchText"]);
             if (strlen($searchText) > 0){
-                $searchQ = "(product.productName LIKE '%".$searchText."%') ";                
+                $searchQ = "(product.productName LIKE '%".$searchText."%') OR (product.productID=".$searchText.") ";                
             }else {
                 $searchQ = "";
             }
@@ -117,6 +117,7 @@
 
             <div class="product"><a href="products/'.$row['productID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
             <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200px"></div>
+            <div class="id_productList">'.$row['productID'].'</div> |
             <div class="name_productList">'.$row['productName'].'</div> |
             <div class="category_productList">'.$row['categoryName'].'</div>
             <div class="price_productList">$'.$row['price'].'</div>
@@ -182,13 +183,5 @@
 
     // echo $NP_total;
 ?>
-
-
-
-
-
-
-
-
 
 

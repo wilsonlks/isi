@@ -16,9 +16,7 @@ class UpdateUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             
             $table->string('shipping_address')->nullable()->after('email');
-         
 
-        //
         });
     }
 
@@ -29,7 +27,10 @@ class UpdateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
-        //
+        Schema::table('users', function (Blueprint $table) {
+            
+            $table->dropColumn('shipping_address');
+            
+        });
     }
 }

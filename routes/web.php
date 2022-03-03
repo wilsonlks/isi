@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\ProductController;
+use App\Http\Controllers\Auth\ProductListController;
 use App\Http\Controllers\Auth\CartController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,9 +31,7 @@ Route::get('/dbConnect', function () {
 
 // Products List
 
-Route::get('/products', function () {
-    return view('auth.productList');
-});
+Route::get('/products', [ProductListController::class, 'create']);
 
 // Add Products
 
@@ -43,6 +42,10 @@ Route::post('/products/new', [ProductController::class, 'store'])->middleware('a
 // Product Detail Page
 
 Route::get('/products/{product}', function () {
+    return view('auth.productDetailPage');
+});
+
+Route::post('/products/{product}', function () {
     return view('auth.productDetailPage');
 });
 
