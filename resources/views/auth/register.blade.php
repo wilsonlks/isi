@@ -40,19 +40,19 @@
                         </div>
 
 
-                        <!-- <div class="row mb-3">
-                            <label for="shipping address" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+                        <div class="row mb-3">
+                            <label for="shipping_address" class="col-md-4 col-form-label text-md-end">{{ __('Shipping Address') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+                                <input id="shipping_address" type="text" class="form-control @error('shipping_address') is-invalid @enderror" name="shipping_address" value="{{ old('shipping_address') }}" required autocomplete="shipping_address">
 
-                                @error('email')
+                                @error('shipping_address')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
                             </div>
-                        </div> -->
+                        </div>
 
 
 
@@ -67,9 +67,11 @@
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
 
                                 @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    @foreach ($errors->get('password') as $message)
+                                         <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                   @endforeach
                                 @enderror
                             </div>
                         </div>
