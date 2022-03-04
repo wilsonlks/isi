@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\ProductController;
 use App\Http\Controllers\Auth\ProductListController;
 use App\Http\Controllers\Auth\CartController;
+use App\Http\Controllers\Auth\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,9 +30,9 @@ Route::get('/dbConnect', function () {
 });
 
 
-// Products List
+// Products List and Product Catalog
 
-Route::get('/products', [ProductListController::class, 'create']);
+Route::get('/products', [ProductListController::class, 'get_product_list']);
 
 // Add Products
 
@@ -47,10 +48,22 @@ Route::get('/products/{product}', function () {
 
 Route::post('/products/{product}', function () {
     return view('auth.productDetailPage');
-});
+})->middleware('auth');
 
 // Shopping Cart
 
-Route::get('/cart', [CartController::class, 'create'])->middleware('auth');
+Route::get('/cart', [CartController::class, 'get_shopping_cart'])->middleware('auth');
 
+Route::post('/cart', [CartController::class, 'purchase'])->middleware('auth');
 
+// Purchase Tracking Page and Purchase Order List Page
+
+Route::get('/orders', [OrderController::class, 'get_orders'])->middleware('auth');
+
+Route::post('/orders', [OrderController::class, 'get_orders'])->middleware('auth');
+
+// Purchase Order Detail Page and Purchase Order Processing Page
+
+Route::get('/orders/{order}', [OrderController::class, 'get_order_detail'])->middleware('auth');
+
+Route::post('/orders/{order}', [OrderController::class, 'process_order_detail'])->middleware('auth');

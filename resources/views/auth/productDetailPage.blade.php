@@ -170,6 +170,15 @@
                                             </div>
                                         </form>
                                     @endif
+                                @else
+                                    <form method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="card-column">
+                                            <button id="submit" type="submit" name="submit" class="btn btn-primary button_detail">
+                                                {{ __('Add to Cart') }}
+                                            </button>
+                                        </div>
+                                    </form>
                                 @endauth
                             </div>
                             <div class="card-subtitle">

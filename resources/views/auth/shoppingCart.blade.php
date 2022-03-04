@@ -3,7 +3,11 @@
 @section('content')
 
 <?php
+
         include("./php_file/dbConnect.php");
+
+
+        // List out all products in shopping cart
 
         $cart_query = "SELECT * FROM
                         (`shoppingcart` INNER JOIN `users`
@@ -16,6 +20,11 @@
         $cart_set = $dbConnection->prepare($cart_query);
         $cart_set->execute();
         $cart_result = $cart_set->get_result();
+        $cart_set->execute();
+        $purchase_result1 = $cart_set->get_result();
+        $cart_set->execute();
+        $purchase_result2 = $cart_set->get_result();
+
 
         $total_query = "SELECT SUM(price) AS total FROM
                         (`shoppingcart` INNER JOIN `users`
@@ -27,7 +36,97 @@
                         WHERE `shoppingcart`.`customerID`=".Auth::id();
         $total_set = $dbConnection->prepare($total_query);
         $total_set->execute();
-        $total_result = $total_set->get_result();
+        $total_result1 = $total_set->get_result();
+        $total_set->execute();
+        $total_result2 = $total_set->get_result();
+
+
+        // check out all items
+
+        $purchase_saved = FALSE;
+        
+        if (isset($_POST['submit'])) {
+
+
+            $purchase_detail1 = mysqli_fetch_array($purchase_result1);
+            $total_detail = mysqli_fetch_array($total_result2);
+
+
+            // create a new purchase order
+
+            $customer = Auth::id();
+            $purchase_date = now();
+            $total_order_amount = $total_detail['total'];
+            $shipping_addr = $purchase_detail1['shipping_address'];
+
+            $add_order_query = "INSERT INTO purchaseorder (
+                                    customerID,
+                                    purchase_date,
+                                    total_order_amount,
+                                    shipping_addr
+                                ) VALUES (
+                                    ?, ?, ?, ?
+                                )";
+
+            $statement = $dbConnection->prepare($add_order_query);
+            $statement->bind_param('isis', $customer, $purchase_date, $total_order_amount, $shipping_addr);
+            $statement->execute();
+
+            $last_insert_poID = $dbConnection->insert_id;
+
+            $statement->close();
+
+
+            // create purchase order details
+
+            while ($purchase_detail2 = mysqli_fetch_array($purchase_result2)) {
+
+                $product = $purchase_detail2['productID'];
+                $price = $purchase_detail2['price'];
+                $quantity = $purchase_detail2['quantity'];
+                $sub_order_amount = $purchase_detail2['price']*$purchase_detail2['quantity'];
+
+                $add_order_detail_query = "INSERT INTO purchaseorderdetail (
+                                                poID,
+                                                productID,
+                                                price,
+                                                quantity,
+                                                sub_order_amount
+                                            ) VALUES (
+                                                ?, ?, ?, ?, ?
+                                            )";
+
+                $statement = $dbConnection->prepare($add_order_detail_query);
+                $statement->bind_param('isisi', $last_insert_poID, $product, $price, $quantity, $sub_order_amount);
+                $statement->execute();
+                $statement->close();
+
+            }                            
+
+
+            $purchase_saved = TRUE;
+            $purchase_detail1 = $purchase_detail2 = $total_detail = $customer = $purchase_date = $total_order_amount = $shipping_addr = NULL;
+            $add_order_query = $product = $price = $quantity = $sub_order_amount = $add_order_detail_query = NULL;
+
+
+            // clear shopping cart
+
+            $delete_cart_query = "DELETE FROM `shoppingcart`
+                                    WHERE `customerID`=".Auth::id();
+            
+            $statement = $dbConnection->prepare($delete_cart_query);
+            $statement->execute();
+            $statement->close();
+
+
+            header("location:http://localhost:8000/orders/".$last_insert_poID); exit;
+
+
+        }
+
+    
+
+
 ?>
 
 <style type="text/css">
@@ -83,9 +182,16 @@
     .total_cart {
         padding-top: 10px;
         font-weight: bold;
+        float: right;
     }
     a {
         text-decoration: none;
+    }
+    form, .button_cart, .total_cart {
+        display: inline-block;
+    }
+    button {
+        margin: 5px 0px 0px 10px;
     }
 </style>
 
@@ -96,7 +202,9 @@
             <div class="card-header">{{ __('My Shopping Cart') }}</div>
             <div class="card-body">
                 <?php
-                    while ($detail= mysqli_fetch_array($cart_result)) { ?>
+                    $data_count = 0;
+                    while ($detail = mysqli_fetch_array($cart_result)) { ?>
+                        <?php $data_count++; ?>
                         <div class="cart">
                             <div class="image_container">
                                 <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
@@ -120,12 +228,27 @@
                             </h6>
                         </div>
                     <?php };
+                    if ($data_count == 0) { ?>
+                        <div>No product.</div>
+                    <?php };
                 ?>
             </div>
-            <div class="card-footer">
-                <?php $total= mysqli_fetch_array($total_result) ?>
-                <h2 class="total_cart">Total: $<?php echo $total['total'] ?></h2>
-            </div>
+            <?php 
+                if ($data_count != 0) { ?>
+                    <div class="card-footer">
+                        <form method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="card-column">
+                                <button id="submit" type="submit" name="submit" class="btn btn-primary button_cart">
+                                    {{ __('Check Out') }}
+                                </button>
+                            </div>
+                        </form>
+                        <?php $total= mysqli_fetch_array($total_result1) ?>
+                        <h3 class="total_cart">Total: $<?php echo $total['total'] ?></h3>
+                    </div>
+                <?php };
+            ?>
         </div>
     </div>
 </div>

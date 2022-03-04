@@ -20,7 +20,21 @@ class CartController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    protected function create()
+    protected function get_shopping_cart()
+    {
+        if(Auth::user()->role=='customer') {
+            return view('auth.shoppingCart');
+        } else {
+            return redirect('products')->with('alert', 'Sorry, You Are Not Allowed to Access This Page.');
+        }        
+    }
+
+    /**
+     * Check out all items in shopping cart.
+     *
+     * @return \Illuminate\View\View
+     */
+    protected function purchase()
     {
         if(Auth::user()->role=='customer') {
             return view('auth.shoppingCart');

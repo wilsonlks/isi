@@ -20,7 +20,7 @@ class ProductListController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    protected function create()
+    protected function get_product_list()
     {
         if(Auth::check()) {
             if(Auth::user()->role=='customer') {
