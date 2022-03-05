@@ -22,19 +22,29 @@
             background: yellow;
         }*/
         .productList{
-            padding: 40px;
+            padding: auto;
             flex-wrap: wrap;
 
 
         }
         .product {
+            display: table;
+            clear: both;
+            border-bottom: 2px solid darkgreen;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
             text-align: center;
-
-            background: #e0ffe1;
-            margin: 25px 50px 75px 100px
         }
-        .image_productList {
-            padding: 20px
+
+        .product img {
+            padding: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            max-height: 200px;
+            min-width: 0;
+            min-height: 0;
         }
 
         .name_productList ,.category_productList ,.price_productList{
@@ -51,136 +61,149 @@
     </style>
 </head>
 
-    <div class="filter">
-
-        <!-- get category from DB -->
-        <?php
-            $categoryQ = "SELECT * FROM category";
-            $CSet = $dbConnection->prepare($categoryQ);
-            $CSet->execute();
-            $CSetResult = $CSet->get_result();
-        ?>
-
-        <!-- sorting by price -->
-        <h4>sorting</h4>
-        <div class="list-group-item sorting_button">
-            <form>
-                <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productName" checked> Product Name </label>
-                <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="price"> Price </label>
-            </form>
-
-            <button onclick = "changeSorting('1')" class="AscDesc" id="asc" value="Asc" style="display:block">ASC</button>
-            <button onclick = "changeSorting('-1')" class="AscDesc" id="desc" value="Desc" style="display:none">DESC</button>
-        </div>
-
-        <div class="list-group-item inputtext">
-            <div>Search: </div><br>
-            <input type="text" id="search_box" onchange="Click()">
-        </div>
-        <!-- checkbox for filter -->
-        <h4>filter</h4>
-        <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
-            <div class="list-group-item checkbox">
-                <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"  > <?php echo $category['categoryName']; ?></label>
-            </div>
-        <?php } ?>
-    </div>
-
-    <button id="current_Page" style="display:none" value="1"></button>
-
-    <!-- ujax will get response from fetch_data.php and set html code to here -->
-    <p id="filter_string"></p>
-
-    <script>
+    <div class="content">
 
 
-        $(document).ready(function(){
-            send_data();
-        });
+        <!-- print data -->
 
-        ;
-            // send checkbox value by using ajax
-            function send_data(){
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <!-- get category from DB -->
+                    <?php
+                        $categoryQ = "SELECT * FROM category";
+                        $CSet = $dbConnection->prepare($categoryQ);
+                        $CSet->execute();
+                        $CSetResult = $CSet->get_result();
+                    ?>
 
-                $('.filter_data').html('<div id="loading" style="" ></div>');
-                var action = 'fetch_data';
-                var category_filter = get_filter('category_checkbox');
-                var sorting = get_sorting('sorting_radio');
-                var page = get_page();
-                var AscDesc = get_AscDesc();
-                var searchText = get_searchText();
-                $.ajax({
-                    url:"./php_file/fetch_data.php",
-                    method:"POST",
-                    data:{action:action, category_filter:category_filter, sorting:sorting, page:page, AscDesc:AscDesc, searchText:searchText},
-                    success:function(data){
-                        $('#filter_string').html(data);
+                    <!-- sorting by price -->
+                    <div class="card">
+                        <!-- sorting by price -->
+                        <div class="card-header">sorting</div>
+                        <div class="card-body list-group-item sorting_button">
+                            <form>
+                                <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productName" checked> Product Name </label>
+                                <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="price"> Price </label>
+                            </form>
+
+                            <button onclick = "changeSorting('1')" class="AscDesc" id="asc" value="Asc" style="display:block">ASC</button>
+                            <button onclick = "changeSorting('-1')" class="AscDesc" id="desc" value="Desc" style="display:none">DESC</button>
+                        </div>
+
+
+                        <div class="card-header">Search</div>
+                            <div class="card-body inputtext">
+                                <input type="text" id="search_box" onchange="Click()">
+                            </div>
+                        </div>
+                        <!-- checkbox for filter -->
+                        <div class="card-header">filter</div>
+                            <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
+                                <div class="card-bod list-group-item checkbox">
+                                    <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"  > <?php echo $category['categoryName']; ?></label>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+
+        <div>
+        <button id="current_Page" style="display:none" value="1"></button>
+
+        <!-- ujax will get response from fetch_data.php and set html code to here -->
+        <p id="filter_string"></p>
+
+        <script>
+
+
+            $(document).ready(function(){
+                send_data();
+            });
+
+            ;
+                // send checkbox value by using ajax
+                function send_data(){
+
+                    $('.filter_data').html('<div id="loading" style="" ></div>');
+                    var action = 'fetch_data';
+                    var category_filter = get_filter('category_checkbox');
+                    var sorting = get_sorting('sorting_radio');
+                    var page = get_page();
+                    var AscDesc = get_AscDesc();
+                    var searchText = get_searchText();
+                    $.ajax({
+                        url:"./php_file/fetch_data.php",
+                        method:"POST",
+                        data:{action:action, category_filter:category_filter, sorting:sorting, page:page, AscDesc:AscDesc, searchText:searchText},
+                        success:function(data){
+                            $('#filter_string').html(data);
+                        }
+                    });
+                    console.log("fetched");
+                }
+
+                function get_searchText(){
+                    return $('#search_box').val();
+                }
+                function get_sorting(class_name){
+                    var sorting_value = $('.'+class_name+':checked').val();
+
+                    return sorting_value;
+                }
+                function get_page(){
+                    current_page = $('#current_Page').val();
+                    console.log('current_page='+ current_page);
+                    return current_page;
+                }
+
+                function get_AscDesc(){
+                    if (document.getElementById('asc').style.display == "block"){
+                        console.log("change 1");
+                        return '1';
                     }
-                });
-                console.log("fetched");
-            }
 
-            function get_searchText(){
-                return $('#search_box').val();
-            }
-            function get_sorting(class_name){
-                var sorting_value = $('.'+class_name+':checked').val();
-
-                return sorting_value;
-            }
-            function get_page(){
-                current_page = $('#current_Page').val();
-                console.log('current_page='+ current_page);
-                return current_page;
-            }
-
-            function get_AscDesc(){
-                if (document.getElementById('asc').style.display == "block"){
-                    console.log("change 1");
-                    return '1';
+                    if (document.getElementById('desc').style.display == "block"){
+                        console.log("change -1");
+                        return '-1';
+                    }
                 }
 
-                if (document.getElementById('desc').style.display == "block"){
-                    console.log("change -1");
-                    return '-1';
-                }
-            }
+                function changeSorting(val){
+                    if (val == '1'){
+                        document.getElementById('asc').style.display = "none";
+                        document.getElementById('desc').style.display = "block";
+                    }
 
-            function changeSorting(val){
-                if (val == '1'){
-                    document.getElementById('asc').style.display = "none";
-                    document.getElementById('desc').style.display = "block";
-                }
+                    if (val == '-1'){
+                        document.getElementById('asc').style.display = "block";
+                        document.getElementById('desc').style.display = "none";
+                    }
 
-                if (val == '-1'){
-                    document.getElementById('asc').style.display = "block";
-                    document.getElementById('desc').style.display = "none";
+                    Click();
                 }
 
-                Click();
-            }
+                function set_page(id){
+                    document.getElementById('current_Page').value = id;
+                    console.log("run set page");
+                    send_data();
+                }
 
-            function set_page(id){
-                document.getElementById('current_Page').value = id;
-                console.log("run set page");
-                send_data();
-            }
+                function get_filter(class_name)
+                {
+                    var filter = [];
+                    $('.'+class_name+':checked').each(function(){
+                        filter.push($(this).val());
+                    });
+                    return filter;
+                }
+                function Click(){
+                    set_page(1);
+                    send_data();
+                    console.log("click");
 
-            function get_filter(class_name)
-            {
-                var filter = [];
-                $('.'+class_name+':checked').each(function(){
-                    filter.push($(this).val());
-                });
-                return filter;
-            }
-            function Click(){
-                set_page(1);
-                send_data();
-                console.log("click");
+                };
 
-            };
-
-    </script>
+        </script>
 
 @endsection

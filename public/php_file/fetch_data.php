@@ -5,7 +5,9 @@
 
     include("./dbConnect.php");
 
-
+    echo "<div class='container'>
+             <div class='row justify-content-center'>
+                <div class='col-md-8'>";
     $filter = "";
     $page_number = 1;
     //get data from productList.blade.php
@@ -41,7 +43,7 @@
         if(isset($_POST["searchText"])){
             $searchText = strval($_POST["searchText"]);
             if (strlen($searchText) > 0){
-                $searchQ = "(product.productName LIKE '%".$searchText."%') ";                
+                $searchQ = "(product.productName LIKE '%".$searchText."%') ";
             }else {
                 $searchQ = "";
             }
@@ -108,19 +110,25 @@
     //print data
     $output = '';
     $data_count = 0;
-    echo '<div class="productList">';
+    echo '<div class="productList">
+            <div class="card">
+                <div class="card-header">Products</div>
+                    ';
 
     while ($row= mysqli_fetch_array($resultSet)){
         $data_count += 1;
         $output .=
             '
 
-            <div class="product"><a href="products/'.$row['productID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
-            <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200px"></div>
-            <div class="name_productList">'.$row['productName'].'</div> |
-            <div class="category_productList">'.$row['categoryName'].'</div>
-            <div class="price_productList">$'.$row['price'].'</div>
-            </a></div>';
+                    <div class="card-body"><div class="product">
+                        <a href="products/'.$row['productID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
+                            <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" ></div>
+                            <div class="name_productList">'.$row['productName'].'</div> |
+                            <div class="category_productList">'.$row['categoryName'].'</div>
+                            <div class="price_productList">$'.$row['price'].'</div>
+                        </a>
+                    </div>
+                ';
     };
 
     echo '';
@@ -128,6 +136,7 @@
         $output .= '<div> No product </div><br>';
     }
     echo $output;
+    echo "</div></div></div>";
 
 
 
@@ -182,13 +191,5 @@
 
     // echo $NP_total;
 ?>
-
-
-
-
-
-
-
-
 
 

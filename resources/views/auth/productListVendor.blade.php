@@ -22,19 +22,29 @@
             background: yellow;
         }*/
         .productList{
-            padding: 40px;
+            padding: auto;
             flex-wrap: wrap;
 
 
         }
         .product {
+            display: table;
+            clear: both;
+            border-bottom: 2px solid darkgreen;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
             text-align: center;
-
-            background: #e0ffe1;
-            margin: 25px 50px 75px 100px
         }
-        .image_productList {
-            padding: 20px
+
+        .product img {
+            padding: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            max-height: 200px;
+            min-width: 0;
+            min-height: 0;
         }
 
         .id_productList, .name_productList ,.category_productList ,.price_productList{
@@ -51,8 +61,14 @@
     </style>
 </head>
 
-    <div class="filter">
+    <div class="content">
 
+
+        <!-- print data -->
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
         <!-- get category from DB -->
         <?php
             $categoryQ = "SELECT * FROM category";
@@ -62,8 +78,10 @@
         ?>
 
         <!-- sorting by price -->
-        <h4>sorting</h4>
-        <div class="list-group-item sorting_button">
+        <div class="card">
+            <!-- sorting by price -->
+                        <div class="card-header">sorting</div>
+                        <div class="card-body list-group-item sorting_button">
             <form>
                 <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productName" checked> Product Name </label>
                 <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="price"> Price </label>
@@ -73,20 +91,24 @@
             <button onclick = "changeSorting('-1')" class="AscDesc" id="desc" value="Desc" style="display:none">DESC</button>
         </div>
 
-        <div class="list-group-item inputtext">
-            <div>Search: </div><br>
-            <input type="text" id="search_box" onchange="Click()">
+
+        <div class="card-header">Search</div>
+            <div class="card-body inputtext">
+                <input type="text" id="search_box" onchange="Click()">
+            </div>
         </div>
         <!-- checkbox for filter -->
-        <h4>filter</h4>
-        <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
-            <div class="list-group-item checkbox">
-                <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"  > <?php echo $category['categoryName']; ?></label>
-            </div>
-        <?php } ?>
-    </div>
-
-    <button id="current_Page" style="display:none" value="1"></button>
+        <div class="card-header">filter</div>
+                            <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
+                                <div class="card-bod list-group-item checkbox">
+                                    <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"  > <?php echo $category['categoryName']; ?></label>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+                <div>
+        <button id="current_Page" style="display:none" value="1"></button>
 
     <!-- ujax will get response from fetch_data_vendor.php and set html code to here -->
     <p id="filter_string"></p>
