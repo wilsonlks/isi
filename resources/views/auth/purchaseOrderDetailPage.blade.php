@@ -3,29 +3,49 @@
 @section('content')
 
     <?php
+
         include("./php_file/dbConnect.php");
 
-        // get specific purchase order from DB
 
         $url=url()->full();
         $split_url=preg_split("#/#", $url);
         $orderID=$split_url[count($split_url)-1];
 
-        $order_query = "SELECT * FROM
-                        (`purchaseorder` INNER JOIN `purchaseorderdetail`
-                        ON purchaseorder.poID=purchaseorderdetail.poID
-                        INNER JOIN `product`
-                        ON purchaseorderdetail.productID=product.productID
-                        INNER JOIN `users`
-                        ON purchaseorder.customerID=users.id
-                        INNER JOIN `productimage`
-                        ON product.productID=productimage.productID)
-                        WHERE `purchaseorder`.`poID`=$orderID";
-        $order_set = $dbConnection->prepare($order_query);
-        $order_set->execute();
-        $order_result1 = $order_set->get_result();
-        $order_set->execute();
-        $order_result2 = $order_set->get_result();
+        // check authorization
+
+        $check_auth_query = "SELECT `customerID` FROM `purchaseorder`
+                                WHERE `poID`=$orderID";
+        $check_auth_set = $dbConnection->prepare($check_auth_query);
+        $check_auth_set->execute();
+        $check_auth_result = $check_auth_set->get_result();
+
+        $check_auth = mysqli_fetch_array($check_auth_result);
+        
+        if ($check_auth['customerID']==Auth::id()) {
+
+            // get specific purchase order from DB
+
+            $order_query = "SELECT * FROM
+                            (`purchaseorder` INNER JOIN `purchaseorderdetail`
+                            ON purchaseorder.poID=purchaseorderdetail.poID
+                            INNER JOIN `product`
+                            ON purchaseorderdetail.productID=product.productID
+                            INNER JOIN `users`
+                            ON purchaseorder.customerID=users.id
+                            INNER JOIN `productimage`
+                            ON product.productID=productimage.productID)
+                            WHERE `purchaseorder`.`poID`=$orderID";
+            $order_set = $dbConnection->prepare($order_query);
+            $order_set->execute();
+            $order_result1 = $order_set->get_result();
+            $order_set->execute();
+            $order_result2 = $order_set->get_result();
+
+        } else {
+
+            // return redirect('orders')->with('alert', 'Sorry, You Are Not Allowed to Access This Page.');
+            header("location:http://localhost:8000/orders"); exit;
+        }
 
     ?>
 
