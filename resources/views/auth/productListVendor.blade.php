@@ -8,19 +8,6 @@
 
 <head>
     <style type="text/css">
-        /* .productList {
-            margin: 20px;
-            padding: 40px;
-            background: #e0ffe1;
-            text-align: center;
-            height: 300px;
-            weight:
-
-
-        }
-        .product {
-            background: yellow;
-        }*/
         .productList{
             padding: auto;
             flex-wrap: wrap;
@@ -80,7 +67,7 @@
         <!-- sorting by price -->
         <div class="card">
             <!-- sorting by price -->
-                        <div class="card-header">sorting</div>
+                        <div class="card-header">Sorting</div>
                         <div class="card-body list-group-item sorting_button">
             <form>
                 <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productName" checked> Product Name </label>
@@ -98,7 +85,7 @@
             </div>
         </div>
         <!-- checkbox for filter -->
-        <div class="card-header">filter</div>
+        <div class="card-header">Filter</div>
                             <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
                                 <div class="card-bod list-group-item checkbox">
                                     <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"  > <?php echo $category['categoryName']; ?></label>
