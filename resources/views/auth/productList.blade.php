@@ -121,7 +121,7 @@
                 send_data();
             });
 
-            ;
+
                 // send checkbox value by using ajax
                 function send_data(){
 

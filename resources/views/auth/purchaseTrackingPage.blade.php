@@ -2,21 +2,6 @@
 
 @section('content')
 
-    <?php
-
-        include("./php_file/dbConnect.php");
-
-        // get purchase orders of a specific customer from DB
-
-        $order_query = "SELECT * FROM
-                        (`purchaseorder` INNER JOIN `users`
-                        ON purchaseorder.customerID=users.id)
-                        WHERE `purchaseorder`.`customerID`=".Auth::id();
-        $order_set = $dbConnection->prepare($order_query);
-        $order_set->execute();
-        $order_result = $order_set->get_result();
-
-    ?>
 
     <style type="text/css">
         .id_order, .date_order, .total_order, .status_order {
@@ -43,33 +28,88 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
+                    <!-- filter for state -->
+                    <div class="card">
+
+                        <div class="card-header">Status</div>
+
+                            <div class="card-bod list-group-item checkbox">
+                                <label><input type="checkbox" class="status_checkbox" onchange="Click()" value="current_purchases"  > Current purchases</label>
+                                <label><input type="checkbox" class="status_checkbox" onchange="Click()" value="past_purchases"  > Past purchases</label>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            <!-- print data -->
+            <div class="row justify-content-center">
+                <div class="col-md-8">
                     <div class="card">
                         <div class="card-header">{{ __('My Purchase Orders') }}</div>
                         <div class="card-body">
-                            <?php
-                                $data_count = 0;
-                                while ($detail= mysqli_fetch_array($order_result)) { ?>
-                                    <?php $data_count++; ?>
-                                    <div class="order">
-                                        <a href="orders/<?php echo $detail['poID'] ?>">
-                                            <div class="order-header"><p class="mb-2 id_order">Purchase Order No.<?php echo $detail['poID'] ?></p></div>
-                                            <div class="order-body">
-                                                <p class="mb-2 date_order"><?php echo $detail['purchase_date'] ?></p>
-                                                <p class="mb-2 total_order">$ <?php echo $detail['total_order_amount'] ?></p>
-                                                <p class="mb-2 status_order"><?php echo $detail['status'] ?></p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                <?php };
-                                if ($data_count == 0) { ?>
-                                    <div>No order.</div>
-                                <?php };
-                            ?>
+                            <p id="fetch_data"></p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <button id="userid" style="display:none" value="{{ Auth::id() }}"></button>
+<script>
+        $(document).ready(function(){
+                send_data();
+            });
+
+
+                // send checkbox value by using ajax
+                function send_data(){
+
+                    $('.filter_data').html('<div id="loading" style="" ></div>');
+                    var action = 'fetch_data';
+                    var status_filter = get_filter('status_checkbox');
+                    var userid = get_userid();
+
+                    $.ajax({
+                        url:"../php_file/fetch_data_purchaseTrackingPage.php",
+                        method:"POST",
+                        data:{action:action, status_filter:status_filter, userid:userid},
+                        success:function(data){
+                            $('#fetch_data').html(data);
+                        }
+                    });
+                    console.log("fetched");
+                }
+
+                function get_filter(class_name)
+                {
+                    var filter = [];
+
+                    $('.'+class_name+':checked').each(function(){
+                        if ($(this).val() == 'current_purchases'){
+                            filter.push('"pending"');
+                            filter.push('"hold"');
+                        }
+                        if ($(this).val() == 'past_purchases'){
+                            filter.push('"shipped"');
+                            filter.push('"cancelled"');
+                        }
+                    });
+                    return filter;
+                }
+                function get_userid(){
+                    var userid = $('#userid').val();
+                    return userid;
+                }
+                function Click(){
+                    send_data();
+                    console.log("click");
+
+                };
+
+        </script>
+
+
 
 @endsection

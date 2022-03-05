@@ -20,7 +20,7 @@
         $check_auth_result = $check_auth_set->get_result();
 
         $check_auth = mysqli_fetch_array($check_auth_result);
-        
+
         if ($check_auth['customerID']==Auth::id()) {
 
             // get specific purchase order from DB
@@ -112,7 +112,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card">
