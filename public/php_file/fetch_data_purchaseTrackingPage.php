@@ -44,17 +44,17 @@
         $data_count++;
         $output .= '<div class="order">
                         <a href="orders/'.$detail["poID"].'">
-                            <div class="order-header"><p class="mb-2 id_order">Purchase Order No.'.$detail['poID'].'</p></div>
+                            <div class="order-header"><p class="id_order">Purchase Order No.'.$detail['poID'].'</p></div>
                             <div class="order-body">
-                                <p class="mb-2 date_order">'.$detail["purchase_date"].'</p>
-                                <p class="mb-2 total_order">$ '.$detail["total_order_amount"].'</p>
-                                <p class="mb-2 status_order">'.$detail["status"].'</p>
+                                <p class="date_order">'.$detail["purchase_date"].'</p>
+                                <p class="total_order">$ '.$detail["total_order_amount"].'</p>
+                                <p class="status_order">'.$detail["status"].'</p>
                             </div>
                         </a>
                     </div>';
     };
     if ($data_count == 0) {
-        $output .= '<div>No order</div>';
+        $output .= '<div class="no_order">No order</div>';
     };
     echo $output;
 

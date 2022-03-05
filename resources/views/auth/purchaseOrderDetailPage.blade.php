@@ -55,18 +55,22 @@
             margin: auto;
         }
         .card-body {
-            margin: 0px 30px 0px 10px;
+            padding: 16px;
         }
-        .id_order, .date_order, .total_order, .status_order {
+        .order_detail .card-body {
+            padding: 0px 16px 0px;
+        }
+        .date_order, .customer_order, .addr_order, .total_order, .status_order {
+            margin-bottom: 0px;
+            font-size: 0.85rem;
         }
         .order {
             width: 100%;
-            margin: auto;
             display: table;
             clear: both;
-            padding: 15px 0px 15px;
+        }
+        .order:not(:last-child) {
             border-bottom: 2px solid darkgreen;
-            margin: 10px;
         }
         .name_order, .price_order, .quantity_order, .sub_total_order {
             text-align: right;
@@ -103,19 +107,18 @@
                         ?>
                         <div class="card-header">Purchase Order No.<?php echo $detail['poID'] ?></div>
                             <div class="card-body">
-                                <p class="mb-2 date_order"><?php echo $detail['purchase_date'] ?></p>
-                                <p class="mb-2 customer_order"><?php echo $detail['name'] ?></p>
-                                <p class="mb-2 addr_order"><?php echo $detail['shipping_addr'] ?></p>
-                                <p class="mb-2 total_order">Total order amount: $<?php echo $detail['total_order_amount'] ?></p>
-                                <p class="mb-2 status_order"><?php echo $detail['status'] ?></p>
+                                <p class="date_order"><?php echo $detail['purchase_date'] ?></p>
+                                <p class="customer_order"><?php echo $detail['name'] ?></p>
+                                <p class="addr_order"><?php echo $detail['shipping_addr'] ?></p>
+                                <p class="total_order">Total order amount: $<?php echo $detail['total_order_amount'] ?></p>
+                                <p class="status_order"><?php echo $detail['status'] ?></p>
                             </div>
                         </div>
                     </div>
                 </div>
-
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <div class="card">
+                    <div class="card order_detail">
                         <div class="card-header">{{ __('Order Details') }}</div>
                         <div class="card-body">
                             <?php

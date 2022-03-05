@@ -11,19 +11,21 @@
         .productList{
             padding: auto;
             flex-wrap: wrap;
-
-
+        }
+        .productList .card-body {
+            padding: 0px 16px 0px;
         }
         .product {
             display: table;
             clear: both;
-            border-bottom: 2px solid darkgreen;
             margin-left: auto;
             margin-right: auto;
             width: 100%;
             text-align: center;
         }
-
+        .product:not(:last-child) {
+            border-bottom: 2px solid darkgreen;
+        }
         .product img {
             padding: 10px;
             display: block;
@@ -33,23 +35,96 @@
             min-width: 0;
             min-height: 0;
         }
-
         .name_productList ,.category_productList ,.price_productList{
             padding: 10px;
         }
-
         .name_productList ,.category_productList{
             display: inline;
         }
         .name_productList {
             font-weight: bold;
         }
-
+        .list-group-item {
+            border: 0px;
+        }
+        .sorting, .sorting_button, .checkbox {
+            padding: 0px 15px 0px 0px;
+            display: inline;
+        }
+        .inputtext {
+            padding: 0px;
+            display: inline;
+        }
+        .AscDesc {
+            float: right;
+            display: inline;
+            background: none;
+            border: none;
+            margin: 0px;
+            padding: 0px;
+        }
+        #search_box {
+            width: 100%;
+            padding: 1px 5px 1px;
+        }
+        .no_product {
+            padding-top: 16px;
+        }
+        .page_productList {
+            display: flex;
+            padding-left: 0;
+        }
+        .page {
+            position: relative;
+            display: block;
+            color: #0d6efd;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            padding: 0.35rem 0.5rem 0.25rem 0.5rem;
+            font-size: 0.7875rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .page:hover {
+            z-index: 2;
+            color: #0a58ca;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+        .page:focus {
+            z-index: 3;
+            color: #0a58ca;
+            background-color: #e9ecef;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        .page:not(:first-child) {
+            margin-left: -1px;
+        }
+        .page:first-child {
+            border-top-left-radius: 0.2rem;
+            border-bottom-left-radius: 0.2rem;
+        }
+        .page:last-child {
+            border-top-right-radius: 0.2rem;
+            border-bottom-right-radius: 0.2rem;
+        }
+        .page_active, .page_active:hover {
+            z-index: 3;
+            color: #fff;
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .page_disabled {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
     </style>
 </head>
 
     <div class="content">
-
 
         <!-- print data -->
 
@@ -63,39 +138,48 @@
                         $CSet->execute();
                         $CSetResult = $CSet->get_result();
                     ?>
-
-                    <!-- sorting by price -->
                     <div class="card">
-                        <!-- sorting by price -->
-                        <div class="card-header">Sorting</div>
-                        <div class="card-body list-group-item sorting_button">
-                            <form>
-                                <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productName" checked> Product Name </label>
-                                <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="price"> Price </label>
-                            </form>
-
-                            <button onclick = "changeSorting('1')" class="AscDesc" id="asc" value="Asc" style="display:block">ASC</button>
-                            <button onclick = "changeSorting('-1')" class="AscDesc" id="desc" value="Desc" style="display:none">DESC</button>
-                        </div>
-
-
-                        <div class="card-header">Search</div>
-                            <div class="card-body inputtext">
-                                <input type="text" id="search_box" onchange="Click()">
+                        <div class="card-header">
+                            <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-sort-tab" data-toggle="tab" href="#nav-sort" role="tab" aria-controls="nav-sort" aria-selected="true">Sort</a>
+                                <a class="nav-item nav-link" id="nav-search-tab" data-toggle="tab" href="#nav-search" role="tab" aria-controls="nav-search" aria-selected="false">Search</a>
+                                <a class="nav-item nav-link" id="nav-filter-tab" data-toggle="tab" href="#nav-filter" role="tab" aria-controls="nav-filter" aria-selected="false">Filter</a>
                             </div>
                         </div>
-                        <!-- checkbox for filter -->
-                        <div class="card-header">Filter</div>
-                            <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
-                                <div class="card-bod list-group-item checkbox">
-                                    <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"  > <?php echo $category['categoryName']; ?></label>
+                        <div class="card-body">
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane show active" id="nav-sort" role="tabpanel" aria-labelledby="nav-sort-tab">
+                                    <form class="sorting">
+                                        <div class="list-group-item sorting_button">
+                                            <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productName" checked> Product Name </label>
+                                        </div>
+                                        <div class="list-group-item sorting_button">
+                                            <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="price"> Price </label>
+                                        </div>
+                                    </form>
+                                    <button onclick = "changeSorting('1')" class="AscDesc" id="asc" value="Asc" style="display:block">ASC&#9650;</button>
+                                    <button onclick = "changeSorting('-1')" class="AscDesc" id="desc" value="Desc" style="display:none">DESC&#9660;</button>
                                 </div>
-                            <?php } ?>
+                                <div class="tab-pane" id="nav-search" role="tabpanel" aria-labelledby="nav-search-tab">
+                                    <div class="list-group-item inputtext">
+                                        <input type="text" id="search_box" placeholder="Search by product name" onchange="Click()">
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="nav-filter" role="tabpanel" aria-labelledby="nav-filter-tab">
+                                    <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
+                                        <div class="list-group-item checkbox">
+                                            <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"> <?php echo $category['categoryName']; ?></label>
+                                        </div>
+                                    <?php } ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    </div>
                 </div>
-
+            </div>
         <div>
+
         <button id="current_Page" style="display:none" value="1"></button>
 
         <!-- ujax will get response from fetch_data.php and set html code to here -->
@@ -107,7 +191,6 @@
             $(document).ready(function(){
                 send_data();
             });
-
 
                 // send checkbox value by using ajax
                 function send_data(){

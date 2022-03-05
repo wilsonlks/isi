@@ -113,27 +113,26 @@
     echo '<div class="productList">
             <div class="card">
                 <div class="card-header">Products</div>
-                    ';
+                    <div class="card-body">';
 
     while ($row= mysqli_fetch_array($resultSet)){
         $data_count += 1;
         $output .=
             '
 
-                    <div class="card-body"><div class="product">
+                    <div class="product">
                         <a href="products/'.$row['productID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
                             <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" ></div>
                             <div class="name_productList">'.$row['productName'].'</div> |
                             <div class="category_productList">'.$row['categoryName'].'</div>
                             <div class="price_productList">$'.$row['price'].'</div>
                         </a>
-                    </div>
-                ';
+                    </div>';
     };
 
     echo '';
     if($data_count == 0){
-        $output .= '<div> No product </div><br>';
+        $output .= '<div class="no_product">No product</div><br>';
     }
     echo $output;
     echo "</div></div></div>";
@@ -159,37 +158,40 @@
     $pageURL = "";
 
     echo "pagenumber".$page_number."   ini".$initial_page."    nptotal".$NP_total;
-    if($page_number>=2){
 
-        echo '<button onclick="set_page('.($page_number-1).')" class="page" value="'.($page_number-1).'">Prev</button>';
+    if ($total_pages != 0) {
 
-    };
+        $pageURL .= '<div class="page_productList justify-content-center">';
 
-    for ($i=1; $i<=$total_pages; $i++) {
+        if($page_number==1){
+            $pageURL .= '<span class="page page_disabled">Previous</span>';
+        } else {
+            $pageURL .= '<button onclick="set_page('.($page_number-1).')" class="page" value="'.($page_number-1).'">Previous</button>';
+        };
 
-        if ($i == $page_number) {
+        for ($i=1; $i<=$total_pages; $i++) {
+            if ($i == $page_number) {
+                $pageURL .= '<span class="page page_active">'.$i.'</span>';
+            } else {
+                $pageURL .= '<button onclick="set_page('.$i.')" class="page" value="'.$i.'">'.$i.'</button>';
+            };
+        };
 
-            $pageURL .= '<button onclick="set_page('.$i.')" class="page" value="'.$i.'" style="color: red">'.$i.'</button>';
-
+        if($page_number!=$total_pages){
+            $pageURL .= '<button onclick="set_page('.($page_number+1).')" class="page" value="'.($page_number+1).'">Next</button>';
+        } else {
+            $pageURL .= '<span class="page page_disabled" value="'.($page_number+1).'">Next</span>';
         }
 
-        else  {
+        $pageURL .= '</div>';
 
-            $pageURL .= '<button onclick="set_page('.$i.')" class="page" value="'.$i.'">'.$i.'</button>';
+        echo $pageURL;
+        
+        // echo $total_pages.'<br>';
 
-        }
-    };
-
-    echo $pageURL;
-
-    if($page_number<$total_pages){
-
-        echo '<button onclick="set_page('.($page_number+1).')" class="page" value="'.($page_number+1).'">Next</button>';
+        // echo $NP_total;
 
     };
-    // echo $total_pages.'<br>';
-
-    // echo $NP_total;
 ?>
 
 

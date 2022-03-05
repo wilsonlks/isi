@@ -5,10 +5,19 @@
 
     <style type="text/css">
         .id_order, .date_order, .total_order, .status_order {
+            margin-bottom: 0px;
+            font-size: 0.85rem;
         }
-        .order {
+        .purchase_order_list .card-body {
+            padding: 0px 16px 0px;
+        }
+        .order-header, .order-body, .order {
+            margin: 0px;
+            padding: 0px;
+            font-size: 0.85rem;
+        }
+        .order:not(:last-child) {
             border-bottom: 2px solid darkgreen;
-            margin: 10px;
         }
         .status_order::first-letter {
             text-transform: uppercase;
@@ -16,6 +25,16 @@
         a {
             text-decoration: none;
             color: black;
+        }
+        .list-group-item {
+            border: 0px;
+        }
+        .checkbox {
+            padding: 0px 15px 0px 0px;
+            display: inline;
+        }
+        .no_order {
+            padding-top: 16px;
         }
     </style>
 
@@ -28,24 +47,30 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <!-- filter for state -->
                     <div class="card">
-
-                        <div class="card-header">Status</div>
-
-                            <div class="card-bod list-group-item checkbox">
-                                <label><input type="checkbox" class="status_checkbox" onchange="Click()" value="current_purchases"  > Current purchases</label>
-                                <label><input type="checkbox" class="status_checkbox" onchange="Click()" value="past_purchases"  > Past purchases</label>
+                        <div class="card-header">
+                            <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-status-tab" data-toggle="tab" href="#nav-status" role="tab" aria-controls="nav-status" aria-selected="true">Status</a>
                             </div>
-
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane show active" id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
+                                    <div class="list-group-item checkbox">
+                                        <label><input type="checkbox" class="status_checkbox" onchange="Click()" value="current_purchases"  > Current purchases</label>
+                                        <label><input type="checkbox" class="status_checkbox" onchange="Click()" value="past_purchases"  > Past purchases</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
             <!-- print data -->
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <div class="card">
+                    <div class="card purchase_order_list">
                         <div class="card-header">{{ __('My Purchase Orders') }}</div>
                         <div class="card-body">
                             <p id="fetch_data"></p>
