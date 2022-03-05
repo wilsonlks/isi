@@ -43,7 +43,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header">{{ __('My Purchase Orders') }}</div>
+                        <div class="card-header">{{ __('Purchase Orders') }}</div>
                         <div class="card-body">
                             <?php
                                 $data_count = 0;
