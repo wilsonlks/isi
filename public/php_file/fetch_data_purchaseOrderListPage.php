@@ -17,21 +17,14 @@
             $s_status_filter = strval($_status_filter); //like toString()
 
             $filter .= "
-             AND (status IN (".$s_status_filter."))
+             WHERE (status IN (".$s_status_filter."))
             ";
-        }
-        if(isset($_POST["userid"])){
-            $userid = strval($_POST["userid"]);
-
         }
     }
 
-    $order_query = "SELECT * FROM
-                        (`purchaseorder` INNER JOIN `users`
-                        ON purchaseorder.customerID=users.id)
-                        WHERE `purchaseorder`.`customerID`=".$userid.$filter;
+    $order_query = "SELECT * FROM `purchaseorder`".$filter;
 
-    // echo '<div>'.$order_query.'</div>';
+    //echo '<div>'.$order_query.'</div>';
 
     $order_set = $dbConnection->prepare($order_query);
     $order_set->execute();
