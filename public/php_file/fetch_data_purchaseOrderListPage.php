@@ -22,9 +22,7 @@
         }
     }
 
-    $order_query = "SELECT * FROM
-    (`purchaseorder` INNER JOIN `users`
-    ON purchaseorder.customerID=users.id)".$filter;
+    $order_query = "SELECT * FROM `purchaseorder`".$filter;
 
     //echo '<div>'.$order_query.'</div>';
 
@@ -42,7 +40,6 @@
                             <div class="order-header"><p class="mb-2 id_order">Purchase Order No.'.$detail['poID'].'</p></div>
                             <div class="order-body">
                                 <p class="mb-2 date_order">'.$detail["purchase_date"].'</p>
-                                <p class="mb-2 customer_name_order">'.$detail["name"].'</p>
                                 <p class="mb-2 total_order">$ '.$detail["total_order_amount"].'</p>
                                 <p class="mb-2 status_order">'.$detail["status"].'</p>
                             </div>
