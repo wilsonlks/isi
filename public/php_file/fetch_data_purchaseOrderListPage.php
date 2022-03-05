@@ -17,16 +17,31 @@
             $s_status_filter = strval($_status_filter); //like toString()
 
             $filter .= "
-             WHERE (status IN (".$s_status_filter."))
+              (status IN (".$s_status_filter."))
             ";
+        }
+        if(isset($_POST["searchText"])){
+            $searchText = strval($_POST["searchText"]);
+            if (strlen($searchText) > 0){
+                $searchQ = "(poID LIKE '%".$searchText."%') ";
+            }else {
+                $searchQ = "";
+            }
+        }
+    }
+
+    if(strlen($searchQ)>0 OR strlen($s_status_filter)>0){
+        $where = " WHERE ";
+        if(strlen($searchQ)>0 AND strlen($s_status_filter)>0){
+            $and = " AND ";
         }
     }
 
     $order_query = "SELECT * FROM
     (`purchaseorder` INNER JOIN `users`
-    ON purchaseorder.customerID=users.id)".$filter;
+    ON purchaseorder.customerID=users.id)".$where.$filter.$and.$searchQ;
 
-    //echo '<div>'.$order_query.'</div>';
+    echo '<div>'.$order_query.'</div>';
 
     $order_set = $dbConnection->prepare($order_query);
     $order_set->execute();

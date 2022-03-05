@@ -40,9 +40,14 @@
                             <label><input type="checkbox" class="status_checkbox" onchange="Click()" value="past_orders"  > Past orders</label>
                         </div>
 
+                        <div class="card-header">Search</div>
+                            <div class="card-body inputtext">
+                                <input type="text" id="search_box" onchange="Click()">
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+
 
             <!-- print data -->
             <div class="row justify-content-center">
@@ -69,12 +74,13 @@
                     $('.filter_data').html('<div id="loading" style="" ></div>');
                     var action = 'fetch_data';
                     var status_filter = get_filter('status_checkbox');
+                    var searchText = get_searchText();
 
 
                     $.ajax({
                         url:"../php_file/fetch_data_purchaseOrderListPage.php",
                         method:"POST",
-                        data:{action:action, status_filter:status_filter},
+                        data:{action:action, status_filter:status_filter, searchText:searchText},
                         success:function(data){
                             $('#fetch_data').html(data);
                         }
@@ -99,6 +105,10 @@
                         }
                     });
                     return filter;
+                }
+
+                function get_searchText(){
+                    return $('#search_box').val();
                 }
                 function Click(){
                     send_data();
