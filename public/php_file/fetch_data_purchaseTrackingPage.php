@@ -22,14 +22,15 @@
         }
         if(isset($_POST["userid"])){
             $userid = strval($_POST["userid"]);
-
         }
     }
+
+    $sorting = "ORDER BY `purchaseorder`.`purchase_date` DESC, `purchaseorder`.`poID` DESC";
 
     $order_query = "SELECT * FROM
                         (`purchaseorder` INNER JOIN `users`
                         ON purchaseorder.customerID=users.id)
-                        WHERE `purchaseorder`.`customerID`=".$userid.$filter;
+                        WHERE (`purchaseorder`.`customerID`=".$userid.")".$filter.$sorting;
 
     // echo '<div>'.$order_query.'</div>';
 

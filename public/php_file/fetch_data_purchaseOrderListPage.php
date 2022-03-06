@@ -37,9 +37,11 @@
         }
     }
 
+    $sorting = "ORDER BY `purchaseorder`.`purchase_date` DESC, `purchaseorder`.`poID` DESC";
+
     $order_query = "SELECT * FROM
     (`purchaseorder` INNER JOIN `users`
-    ON purchaseorder.customerID=users.id)".$where.$filter.$and.$searchQ;
+    ON purchaseorder.customerID=users.id)".$where.$filter.$and.$searchQ.$sorting;
 
     echo '<div>'.$order_query.'</div>';
 
