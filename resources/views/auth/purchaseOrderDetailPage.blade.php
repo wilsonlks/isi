@@ -47,6 +47,23 @@
             header("location:http://localhost:8000/orders"); exit;
         }
 
+
+        if (isset($_POST['submit'])) {
+
+            $update_status = $_POST['cancel_order'];
+
+
+                $update_status_query = "UPDATE `purchaseorder`
+                                        SET `status`=\"".$update_status."\"
+                                        WHERE `poID`=$orderID";
+
+                $update_status_set = $dbConnection->prepare($update_status_query);
+                $update_status_set->execute();
+                $update_status_set->close();
+
+                header("location:http://localhost:8000/orders/".$orderID); exit;
+
+            }
     ?>
 
     <style type="text/css">
@@ -57,13 +74,26 @@
         .card-body {
             padding: 16px;
         }
+        .status-box {
+            /* display: table; */
+            clear: both;
+        }
+        .status_order {
+            float: left;
+            display: inline-block;
+            width: 50%;
+        }
+        #button-box {
+            float: right;
+            display: inline-block;
+        }
         .order_detail .card-body {
             padding: 0px 16px 0px;
         }
-        .date_order, .customer_order, .addr_order, .total_order, .status_order {
+        /* .date_order, .customer_order, .addr_order, .total_order, .status_order {
             margin-bottom: 0px;
             font-size: 0.85rem;
-        }
+        } */
         .order {
             width: 100%;
             display: table;
@@ -75,7 +105,7 @@
         .name_order, .price_order, .quantity_order, .sub_total_order {
             text-align: right;
         }
-        .status_order::first-letter {
+        .status_order {
             text-transform: uppercase;
         }
         .image_order {
@@ -89,7 +119,6 @@
             text-decoration: none;
             color: black;
         }
-
     </style>
 
     <!-- customer order detail page -->
@@ -107,11 +136,45 @@
                         ?>
                         <div class="card-header">Purchase Order No.<?php echo $detail['poID'] ?></div>
                             <div class="card-body">
-                                <p class="date_order"><?php echo $detail['purchase_date'] ?></p>
-                                <p class="customer_order"><?php echo $detail['name'] ?></p>
-                                <p class="addr_order"><?php echo $detail['shipping_addr'] ?></p>
-                                <p class="total_order">Total order amount: $<?php echo $detail['total_order_amount'] ?></p>
-                                <p class="status_order"><?php echo $detail['status'] ?></p>
+                                <form method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="form-group row">
+                                        <label for="date_order" class="col-sm-3 col-form-label">Purchase Date</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="date_order" name="date_order" value="<?php echo $detail['purchase_date'] ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="customer_order" class="col-sm-3 col-form-label">Customer Name</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="customer_order" name="customer_order" value="<?php echo $detail['name'] ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="addr_order" class="col-sm-3 col-form-label">Shipping Address</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="addr_order" name="addr_order" value="<?php echo $detail['shipping_addr'] ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="total_order" class="col-sm-3 col-form-label">Total Order Amounts</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="total_order" name="total_order" value="$<?php echo $detail['total_order_amount'] ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row status-box">
+                                        <label for="status_order" class="col-sm-3 col-form-label">Status</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext status_order" id="status" name="status_order" value="<?php echo $detail['status'] ?>">
+                                            @if (($detail['status'] == 'pending') || ($detail['status'] == 'hold'))
+                                                <div class="input-group-append" id="button-box">
+                                                    <input type="hidden" class="cancel_order" name="cancel_order" value="cancelled">
+                                                    <button class="btn btn-primary button-cancel" type="submit" id="submit" name="submit">Cancel Order</button>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>

@@ -30,7 +30,7 @@
             border: 0px;
         }
         .checkbox {
-            padding: 0px 15px 0px 0px;
+            padding: 0px 25px 0px 0px;
             display: inline;
         }
         .no_order {
@@ -58,6 +58,8 @@
                                 <div class="tab-pane show active" id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
                                     <div class="list-group-item checkbox">
                                         <label><input type="checkbox" class="status_checkbox" onchange="Click()" value="current_purchases"  > Current purchases</label>
+                                    </div>
+                                    <div class="list-group-item checkbox">
                                         <label><input type="checkbox" class="status_checkbox" onchange="Click()" value="past_purchases"  > Past purchases</label>
                                     </div>
                                 </div>

@@ -30,7 +30,7 @@
             border: 0px;
         }
         .checkbox {
-            padding: 0px 15px 0px 0px;
+            padding: 0px 25px 0px 0px;
             display: inline;
         }
         .inputtext {

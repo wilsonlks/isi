@@ -3,6 +3,7 @@
 @section('content')
 
     <?php
+
         include("./php_file/dbConnect.php");
 
         // get specific purchase order from DB
@@ -27,6 +28,29 @@
         $order_set->execute();
         $order_result2 = $order_set->get_result();
 
+        if (isset($_POST['submit'])) {
+
+            $update_status = isset($_POST['status_order']) ? $_POST['status_order'] : '';
+            if (empty($update_status)) {
+                $error = 'Please select an available status.';
+            }
+
+            if (!isset($error)) {
+
+                $update_status_query = "UPDATE `purchaseorder`
+                                        SET `status`=\"".$update_status."\"
+                                        WHERE `poID`=$orderID";
+
+                $update_status_set = $dbConnection->prepare($update_status_query);
+                $update_status_set->execute();
+                $update_status_set->close();
+
+                header("location:http://localhost:8000/orders/".$orderID); exit;
+
+            }
+
+        }
+
     ?>
 
     <style type="text/css">
@@ -37,13 +61,33 @@
         .card-body {
             padding: 16px;
         }
+        #status {
+            border-top-left-radius: 0.2rem;
+            border-bottom-left-radius: 0.2rem;
+            border-top-right-radius: 0rem;
+            border-bottom-right-radius: 0rem;
+        }
+        .button-process {
+            border-top-left-radius: 0rem;
+            border-bottom-left-radius: 0rem;
+            border-top-right-radius: 0.2rem;
+            border-bottom-right-radius: 0.2rem;
+        }
+        .status-select {
+            padding: 0px;
+        }
+        .input-group-append {
+            padding: 0px;
+        }
+        #button-box {
+            margin: 0px;
+        }
         .order_detail .card-body {
             padding: 0px 16px 0px;
         }
-        .date_order, .customer_order, .addr_order, .total_order, .status_order {
-            margin-bottom: 0px;
-            font-size: 0.85rem;
-        }
+        /* .date_order, .customer_order, .addr_order, .total_order, .status_order {
+            width: auto;
+        } */
         .order {
             width: 100%;
             display: table;
@@ -69,7 +113,6 @@
             text-decoration: none;
             color: black;
         }
-
     </style>
 
     <!-- vendor order detail page -->
@@ -87,11 +130,66 @@
                         ?>
                         <div class="card-header">Purchase Order No.<?php echo $detail['poID'] ?></div>
                             <div class="card-body">
-                                <p class="date_order"><?php echo $detail['purchase_date'] ?></p>
-                                <p class="customer_order"><?php echo $detail['name'] ?></p>
-                                <p class="addr_order"><?php echo $detail['shipping_addr'] ?></p>
-                                <p class="total_order">Total order amount: $<?php echo $detail['total_order_amount'] ?></p>
-                                <p class="status_order"><?php echo $detail['status'] ?></p>
+                                <form method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="form-group row">
+                                        <label for="date_order" class="col-sm-3 col-form-label">Purchase Date</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="date_order" name="date_order" value="<?php echo $detail['purchase_date'] ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="customer_order" class="col-sm-3 col-form-label">Customer Name</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="customer_order" name="customer_order" value="<?php echo $detail['name'] ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="addr_order" class="col-sm-3 col-form-label">Shipping Address</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="addr_order" name="addr_order" value="<?php echo $detail['shipping_addr'] ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="total_order" class="col-sm-3 col-form-label">Total Order Amounts</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="total_order" name="total_order" value="$<?php echo $detail['total_order_amount'] ?>">
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="status_order" class="col-md-3 col-form-label">Status</label>
+                                        <div class="col-md-7 status-select">
+                                        <select class="form-select @if (isset($error_name)) is-invalid @endif" id="status" name="status_order">
+                                            <option value="" disabled>Status change</option>
+                                            @if ($detail['status'] == 'pending')
+                                                <option value="pending" selected disabled>Pending</option>
+                                                <option value="hold">Hold</option>
+                                                <option value="shipped">Shipped</option>
+                                                <option value="cancelled">Cancelled</option>
+                                            @elseif ($detail['status'] == 'hold')
+                                                <option value="hold" selected disabled>Hold</option>
+                                                <option value="shipped">Shipped</option>
+                                                <option value="cancelled">Cancelled</option>
+                                            @elseif ($detail['status'] == 'shipped')
+                                                <option value="shipped" selected disabled>Shipped</option>
+                                            @else
+                                                <option value="cancelled" selected disabled>Cancelled</option>
+                                            @endif
+                                        </select>
+                                        <?php
+                                            if (isset($error)) {
+                                                ?> 
+                                                <span class="invalid-feedback" role="alert" style="display:block"><strong> <?php
+                                                echo $error;
+                                                ?> </strong></span> <?php
+                                            }
+                                        ?>
+                                        </div>
+                                        <div class="input-group-append col-md-auto" id="button-box">
+                                            <button class="btn btn-primary button-process" type="submit" id="submit" name="submit">Process</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>

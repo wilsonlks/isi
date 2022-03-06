@@ -169,7 +169,7 @@
         clear: both;
     }
     .card-body, .alert_cart {
-        margin: 0px 10px 0px;
+        /* margin: 0px 10px 0px; */
     }
     .card-title, .card-subtitle {
         float: none;
@@ -259,7 +259,7 @@
                         </div>
                     <?php };
                     if ($data_count == 0) { ?>
-                        <div>No product</div>
+                        <div class="no_product">No product</div>
                     <?php };
                 ?>
             </div>
@@ -283,10 +283,10 @@
     </div>
 </div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                @if (isset($message))
+    @if (isset($message))
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
                     <form method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -300,8 +300,9 @@
                             </button>
                         </div>
                     </form>
-                @endif
+                </div>
             </div>
         </div>
-    </div>
+    @endif
+    
 @endsection
