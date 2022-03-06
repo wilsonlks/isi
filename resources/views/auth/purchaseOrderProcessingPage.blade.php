@@ -31,15 +31,32 @@
         if (isset($_POST['submit'])) {
 
             $update_status = isset($_POST['status_order']) ? $_POST['status_order'] : '';
+            $date = now();
             if (empty($update_status)) {
                 $error = 'Please select an available status.';
             }
 
             if (!isset($error)) {
 
-                $update_status_query = "UPDATE `purchaseorder`
-                                        SET `status`=\"".$update_status."\"
-                                        WHERE `poID`=$orderID";
+                if ($update_status == 'hold') {
+
+                    $update_status_query = "UPDATE `purchaseorder`
+                                            SET `status`=\"".$update_status."\"
+                                            WHERE `poID`=$orderID";
+
+                } elseif ($update_status == 'shipped') {
+
+                    $update_status_query = "UPDATE `purchaseorder`
+                                            SET `status`=\"".$update_status."\", `shipment_date`=\"".$date."\"
+                                            WHERE `poID`=$orderID";
+
+                } elseif ($update_status == 'cancelled') {
+
+                    $update_status_query = "UPDATE `purchaseorder`
+                                            SET `status`=\"".$update_status."\", `cancel_date`=\"".$date."\", `cancel_by`=\"vendor\"
+                                            WHERE `poID`=$orderID";
+
+                }
 
                 $update_status_set = $dbConnection->prepare($update_status_query);
                 $update_status_set->execute();
@@ -99,7 +116,7 @@
         .name_order, .price_order, .quantity_order, .sub_total_order {
             text-align: right;
         }
-        .status_order::first-letter {
+        .status_order, #cancel_by_order {
             text-transform: uppercase;
         }
         .image_order {
@@ -135,25 +152,25 @@
                                     <div class="form-group row">
                                         <label for="date_order" class="col-sm-3 col-form-label">Purchase Date</label>
                                         <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control-plaintext" id="date_order" name="date_order" value="<?php echo $detail['purchase_date'] ?>">
+                                            <input type="text" readonly class="form-control-plaintext" id="date_order" name="date_order" value="<?php echo $detail['purchase_date'] ?>" disabled>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="customer_order" class="col-sm-3 col-form-label">Customer Name</label>
                                         <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control-plaintext" id="customer_order" name="customer_order" value="<?php echo $detail['name'] ?>">
+                                            <input type="text" readonly class="form-control-plaintext" id="customer_order" name="customer_order" value="<?php echo $detail['name'] ?>" disabled>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="addr_order" class="col-sm-3 col-form-label">Shipping Address</label>
                                         <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control-plaintext" id="addr_order" name="addr_order" value="<?php echo $detail['shipping_addr'] ?>">
+                                            <input type="text" readonly class="form-control-plaintext" id="addr_order" name="addr_order" value="<?php echo $detail['shipping_addr'] ?>" disabled>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="total_order" class="col-sm-3 col-form-label">Total Order Amounts</label>
                                         <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control-plaintext" id="total_order" name="total_order" value="$<?php echo $detail['total_order_amount'] ?>">
+                                            <input type="text" readonly class="form-control-plaintext" id="total_order" name="total_order" value="$<?php echo $detail['total_order_amount'] ?>" disabled>
                                         </div>
                                     </div>
                                     <div class="input-group">
@@ -189,6 +206,27 @@
                                             <button class="btn btn-primary button-process" type="submit" id="submit" name="submit">Process</button>
                                         </div>
                                     </div>
+                                    @if ($detail['status'] == 'shipped')
+                                        <div class="form-group row">
+                                            <label for="shipment_order" class="col-sm-3 col-form-label">Shipment Date</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" readonly class="form-control-plaintext" id="shipment_order" name="shipment_order" value="<?php echo $detail['shipment_date'] ?>" disabled>
+                                            </div>
+                                        </div>
+                                    @elseif ($detail['status'] == 'cancelled')
+                                        <div class="form-group row">
+                                            <label for="cancel_order" class="col-sm-3 col-form-label">Cancel Date</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" readonly class="form-control-plaintext" id="cancel_order" name="cancel_order" value="<?php echo $detail['cancel_date'] ?>" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="cancel_by_order" class="col-sm-3 col-form-label">Cancel By</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" readonly class="form-control-plaintext" id="cancel_by_order" name="cancel_by_order" value="<?php echo $detail['cancel_by'] ?>" disabled>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </form>
                             </div>
                         </div>
