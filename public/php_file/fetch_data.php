@@ -97,7 +97,7 @@
     ON `product`.`category`=`category`.`categoryID` ".$where.$searchQ.$and.$filter.$sorting.$limitQ.";";
 
     //print Query
-    echo $query."<br>";
+    // echo $query."<br>";
 
     //get data
     $statement = $dbConnection->prepare($query);
@@ -146,7 +146,7 @@
     ON product.productID=productimage.productID)
     LEFT JOIN `category`
     ON `product`.`category`=`category`.`categoryID` ".$where.$searchQ.$and.$filter.$sorting.";";
-    echo $NP_query;
+    //echo $NP_query;
     $NP_result = mysqli_query($dbConnection, $NP_query);
     $NP_row = mysqli_fetch_row($NP_result);
     $NP_total = $NP_row[0];
@@ -186,7 +186,7 @@
         $pageURL .= '</div>';
 
         echo $pageURL;
-        
+
         // echo $total_pages.'<br>';
 
         // echo $NP_total;

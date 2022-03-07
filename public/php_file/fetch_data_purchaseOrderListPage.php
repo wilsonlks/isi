@@ -43,7 +43,7 @@
     (`purchaseorder` INNER JOIN `users`
     ON purchaseorder.customerID=users.id)".$where.$filter.$and.$searchQ.$sorting;
 
-    echo '<div>'.$order_query.'</div>';
+    //echo '<div>'.$order_query.'</div>';
 
     $order_set = $dbConnection->prepare($order_query);
     $order_set->execute();
