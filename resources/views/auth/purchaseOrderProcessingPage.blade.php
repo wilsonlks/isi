@@ -12,7 +12,7 @@
         $split_url=preg_split("#/#", $url);
         $orderID=$split_url[count($split_url)-1];
 
-        $order_query = "SELECT * FROM
+        $order_query = "SELECT *, purchaseorderdetail.price AS oldprice FROM
                         (`purchaseorder` INNER JOIN `purchaseorderdetail`
                         ON purchaseorder.poID=purchaseorderdetail.poID
                         INNER JOIN `product`
@@ -252,7 +252,7 @@
                                         </h4>
                                         <h5 class="price_order">
                                             <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                $<?php echo $detail['price'] ?>
+                                                $<?php echo $detail['oldprice'] ?>
                                             </a>
                                         </h5>
                                         <h6 class="quantity_order">
@@ -262,7 +262,7 @@
                                         </h6>
                                         <h5 class="sub_total_order">
                                             <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                Sub order amount: $<?php echo ($detail['price']*$detail['quantity']) ?>
+                                                Sub order amount: $<?php echo ($detail['oldprice']*$detail['quantity']) ?>
                                             </a>
                                         </h5>
                                     </div>
