@@ -262,7 +262,7 @@
                                         </h6>
                                         <h5 class="sub_total_order">
                                             <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                Sub order amount: $<?php echo ($detail['oldprice']*$detail['quantity']) ?>
+                                                Sub order amount: $<?php echo ($detail['sub_order_amount']) ?>
                                             </a>
                                         </h5>
                                     </div>

@@ -48,22 +48,51 @@
         }
 
 
-        if (isset($_POST['submit'])) {
+        if (isset($_POST['cancel'])) {
 
-            $update_status = $_POST['cancel_order'];
+            $message = 'Do you really want to cancel this order?';
+    
+        }
+
+        if (isset($_POST['keep-confirm'])) {
+
+            $message = '';
+    
+        }
+    
+        if (isset($_POST['cancel-confirm'])) {
+    
             $date = now();
 
-                $update_status_query = "UPDATE `purchaseorder`
-                                        SET `status`=\"".$update_status."\", `cancel_date`=\"".$date."\", `cancel_by`=\"customer\"
-                                        WHERE `poID`=$orderID";
+            $update_status_query = "UPDATE `purchaseorder`
+                                    SET `status`=\"cancelled\", `cancel_date`=\"".$date."\", `cancel_by`=\"customer\"
+                                    WHERE `poID`=$orderID";
 
-                $update_status_set = $dbConnection->prepare($update_status_query);
-                $update_status_set->execute();
-                $update_status_set->close();
+            $update_status_set = $dbConnection->prepare($update_status_query);
+            $update_status_set->execute();
+            $update_status_set->close();
 
-                header("location:http://localhost:8000/orders/".$orderID); exit;
+            header("location:http://localhost:8000/orders/".$orderID); exit;
 
-            }
+        }
+    
+    
+        // if (isset($_POST['submit'])) {
+
+        //     $update_status = $_POST['cancel_order'];
+        //     $date = now();
+
+        //         $update_status_query = "UPDATE `purchaseorder`
+        //                                 SET `status`=\"".$update_status."\", `cancel_date`=\"".$date."\", `cancel_by`=\"customer\"
+        //                                 WHERE `poID`=$orderID";
+
+        //         $update_status_set = $dbConnection->prepare($update_status_query);
+        //         $update_status_set->execute();
+        //         $update_status_set->close();
+
+        //         header("location:http://localhost:8000/orders/".$orderID); exit;
+
+        // }
     ?>
 
     <style type="text/css">
@@ -119,6 +148,22 @@
             text-decoration: none;
             color: black;
         }
+        .alert {
+            margin: 0px;
+            padding-right: 16px;
+        }
+        .alert button {
+            background: none;
+            border: 0px;
+            font-weight: bold;
+            float: right;
+        }
+        .cancel-order:hover {
+            color: blue;
+        }
+        .keep-order:hover {
+            color: grey;
+        }
     </style>
 
     <!-- customer order detail page -->
@@ -168,8 +213,8 @@
                                             <input type="text" readonly class="form-control-plaintext status_order" id="status" name="status_order" value="<?php echo $detail['status'] ?>" disabled>
                                             @if (($detail['status'] == 'pending') || ($detail['status'] == 'hold'))
                                                 <div class="input-group-append" id="button-box">
-                                                    <input type="hidden" class="cancel_order" name="cancel_order" value="cancelled">
-                                                    <button class="btn btn-primary button-cancel" type="submit" id="submit" name="submit">Cancel Order</button>
+                                                    <!-- <input type="hidden" class="cancel_order" name="cancel_order" value="cancelled"> -->
+                                                    <button class="btn btn-primary button-cancel" type="submit" id="submit" name="cancel">Cancel Order</button>
                                                 </div>
                                             @endif
                                         </div>
@@ -200,6 +245,26 @@
                         </div>
                     </div>
                 </div>
+                @if (isset($message))
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card mt-2">
+                                <form method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="alert alert-warning" role="alert">
+                                        <strong class="alert_detail text">{{ $message }}</strong>
+                                        <button type="submit" name="cancel-confirm" class="close cancel-order">
+                                            <span>Cancel</span>
+                                        </button>
+                                        <button type="submit" class="keep-order" name="keep-order">
+                                            <span>Keep</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card order_detail mt-2">
@@ -230,7 +295,7 @@
                                         </h6>
                                         <h5 class="sub_total_order">
                                             <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                Sub order amount: $<?php echo ($detail['oldprice']*$detail['quantity']) ?>
+                                                Sub order amount: $<?php echo ($detail['sub_order_amount']) ?>
                                             </a>
                                         </h5>
                                     </div>

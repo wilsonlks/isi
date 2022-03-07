@@ -21,6 +21,8 @@
     $cart_set->execute();
     $cart_result = $cart_set->get_result();
     $cart_set->execute();
+    $cart_result2 = $cart_set->get_result();
+    $cart_set->execute();
     $purchase_result1 = $cart_set->get_result();
     $cart_set->execute();
     $purchase_result2 = $cart_set->get_result();
@@ -124,13 +126,6 @@
     }
 
     if (isset($_POST['delete'])) {
-
-        $message = 'Do you really want to remove this item?';
-        $product = $_POST['delete_cart'];
-
-    }
-
-    if (isset($_POST['delete-confirm'])) {
 
         // remove an item
         $product = $_POST['delete_cart'];
@@ -257,52 +252,47 @@
                                 </button>
                             </form>
                         </div>
-                    <?php };
-                    if ($data_count == 0) { ?>
-                        <div class="no_product">No product</div>
+                        <?php };
+                        if ($data_count == 0) { ?>
+                            <div class="no_product">No product</div>
+                        <?php };
+                    ?>
+                    <!-- <ul class="list-unstyled">
+                        <?php 
+                            $data_count = 0;
+                            while ($detail = mysqli_fetch_array($cart_result2)) { ?>
+                                <?php $data_count++; ?>
+                                <li class="media">
+                                    <img class="align-self-center mr-3" src="<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>">
+                                    <div class="media-body">
+                                        <h5 class="mt-0 mb-1"><?php echo $detail['productName'] ?></h5>
+                                        <p>$<?php echo $detail['price'] ?></p>
+                                        <p class="mb-0">&times;<?php echo $detail['quantity'] ?></p>
+                                    </div>
+                                </li>
+                            <?php };
+                        ?>
+                    </ul> -->
+                </div>
+                <?php 
+                    if ($data_count != 0) { ?>
+                        <div class="card-footer">
+                            <form method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="card-column">
+                                    <button id="submit" type="submit" name="submit" class="btn btn-primary button_cart">
+                                        {{ __('Check Out') }}
+                                    </button>
+                                </div>
+                            </form>
+                            <?php $total= mysqli_fetch_array($total_result1) ?>
+                            <h3 class="total_cart">Total: $<?php echo $total['total'] ?></h3>
+                        </div>
                     <?php };
                 ?>
             </div>
-            <?php 
-                if ($data_count != 0) { ?>
-                    <div class="card-footer">
-                        <form method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="card-column">
-                                <button id="submit" type="submit" name="submit" class="btn btn-primary button_cart">
-                                    {{ __('Check Out') }}
-                                </button>
-                            </div>
-                        </form>
-                        <?php $total= mysqli_fetch_array($total_result1) ?>
-                        <h3 class="total_cart">Total: $<?php echo $total['total'] ?></h3>
-                    </div>
-                <?php };
-            ?>
         </div>
     </div>
 </div>
-
-    @if (isset($message))
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <form method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <strong class="alert_detail text">{{ $message }}</strong>
-                            <button type="button" class="alert_detail close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">Cancel</span>
-                            </button>
-                            <button type="submit" name="delete-confirm" class="close cart-<?php echo $product ?>">
-                                <input type="hidden" class="delete_cart" name="delete_cart" value="<?php echo $product ?>">
-                                <span>Remove</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    @endif
     
 @endsection
