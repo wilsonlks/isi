@@ -72,7 +72,7 @@
             <!-- print data -->
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <div class="card purchase_order_list">
+                    <div class="card purchase_order_list mt-2">
                         <div class="card-header">{{ __('My Purchase Orders') }}</div>
                         <div class="card-body">
                             <p id="fetch_data"></p>

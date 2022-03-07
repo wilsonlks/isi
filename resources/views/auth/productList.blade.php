@@ -13,7 +13,7 @@
             flex-wrap: wrap;
         }
         .productList .card-body {
-            padding: 0px 16px 0px;
+            /* padding: 0px 16px 0px; */
         }
         .product {
             display: table;
@@ -68,7 +68,7 @@
             padding: 1px 5px 1px;
         }
         .no_product {
-            padding-top: 16px;
+            /* padding-top: 16px; */
         }
         .page_productList {
             display: flex;

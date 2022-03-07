@@ -68,7 +68,7 @@
             padding: 1px 5px 1px;
         }
         .no_product {
-            padding-top: 16px;
+            /* padding-top: 16px; */
         }
         .page_productList {
             display: flex;

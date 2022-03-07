@@ -138,6 +138,10 @@
             color: grey;
             font-weight: bold;
         }
+        a {
+        text-decoration: none;
+        color: black;
+    }
     </style>
 
     <div class="content">
@@ -199,7 +203,7 @@
                     </div>                                    
                     @if (isset($message))
                         <div class="alert @if($cart_saved==TRUE) alert-success @else alert-warning @endif alert-dismissible fade show" role="alert">
-                            <strong class="alert_detail text">{{ $message }}</strong>
+                            <strong class="alert_detail text"><a href="../../cart">{{ $message }}</a></strong>
                             <button type="button" class="alert_detail close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
