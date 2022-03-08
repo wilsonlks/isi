@@ -125,9 +125,32 @@
 
     }
 
+    // change quantity of an item
+
+    if (isset($_POST['change-quantity'])) {
+
+        $product = $_POST['change-quantity-item'];
+        $oldquantity = $_POST['change-quantity-old'];
+        $update_quantity = $_POST['change-quantity'] > 0 ? $_POST['change-quantity'] : $oldquantity;
+
+        $update_quantity_query = "UPDATE `shoppingcart`
+                                    SET `quantity`=$update_quantity
+                                    WHERE `productID`=$product";
+
+        $update_quantity_set = $dbConnection->prepare($update_quantity_query);
+        $update_quantity_set->execute();
+        $update_quantity_set->close();
+
+        $product = $update_quantity = NULL;
+
+        header("location:http://localhost:8000/cart"); exit;
+
+    }
+
+    // remove an item
+
     if (isset($_POST['delete'])) {
 
-        // remove an item
         $product = $_POST['delete_cart'];
 
         $delete_query = "DELETE FROM `shoppingcart`
@@ -136,6 +159,8 @@
         $delete_set = $dbConnection->prepare($delete_query);
         $delete_set->execute();
         $delete_set->close();
+
+        $product = NULL;
 
         header("location:http://localhost:8000/cart"); exit;
 
@@ -154,6 +179,8 @@
         display: table;
         clear: both;
         padding: 15px 0px 15px;
+    }
+    .cart:not(:last-child) {
         border-bottom: 2px solid darkgreen;
     }
     .image_cart {
@@ -165,6 +192,9 @@
     }
     .card-body, .alert_cart {
         /* margin: 0px 10px 0px; */
+    }
+    .card-body {
+        padding: 0px 16px 0px;
     }
     .card-title, .card-subtitle {
         float: none;
@@ -194,7 +224,8 @@
         font-weight: bold;
     }
     .total_cart {
-        padding-top: 10px;
+        margin-top: 5px;
+        margin-bottom: 0px;
         font-weight: bold;
         float: right;
     }
@@ -208,7 +239,11 @@
         padding-right: 16px;
         margin: 0px;
     }
-    button {
+    .delete-button {
+        right: 0px;
+        bottom: 0px;
+    }
+    .input-group {
         float: right;
     }
 </style>
@@ -235,21 +270,27 @@
                                 </a>
                             </h4>
                             <h5 class="price_cart">
-                                <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                    $<?php echo $detail['price'] ?>
-                                </a>
+                                    $ <?php echo $detail['price'] ?>
                             </h5>
-                            <h6 class="quantity_cart">
-                                <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                    &times;<?php echo $detail['quantity'] ?>
-                                </a>
-                            </h6>
                             <form method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <button type="submit" name="delete" class="close delete-button cart-<?php echo $detail['productID'] ?>">
-                                    <input type="hidden" class="delete_cart" name="delete_cart" value="<?php echo $detail['productID'] ?>">
-                                    <span>&times;</span>
-                                </button>
+                                <div class="quantity_cart input-group">
+                                    <input type="hidden" class="change-quantity-item[<?php echo $detail['productID'] ?>]" name="change-quantity-item" value="<?php echo $detail['productID'] ?>">
+                                    <input type="hidden" class="change-quantity-old[<?php echo $detail['productID'] ?>]" name="change-quantity-old" value="<?php echo $detail['quantity'] ?>">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon">&times;</span>
+                                    </div>
+                                    <input type="number" class="change-quantity-<?php echo $detail['productID'] ?>" name="change-quantity" placeholder="<?php echo $detail['quantity'] ?>" aria-label="Quantity" aria-describedby="basic-addon" min="1">
+                                </div>
+                            </form>
+                            <form method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div>
+                                    <button type="submit" name="delete" class="close delete-button cart-<?php echo $detail['productID'] ?>">
+                                        <input type="hidden" class="delete_cart" name="delete_cart" value="<?php echo $detail['productID'] ?>">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
                             </form>
                         </div>
                         <?php };
@@ -286,7 +327,7 @@
                                 </div>
                             </form>
                             <?php $total= mysqli_fetch_array($total_result1) ?>
-                            <h3 class="total_cart">Total: $<?php echo $total['total'] ?></h3>
+                            <h3 class="total_cart">Total: $ <?php echo $total['total'] ?></h3>
                         </div>
                     <?php };
                 ?>
