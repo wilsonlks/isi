@@ -27,13 +27,15 @@
             border-bottom: 2px solid darkgreen;
         }
         .product img {
-            padding: 10px;
             display: block;
             margin-left: auto;
             margin-right: auto;
-            max-height: 200px;
-            min-width: 0;
-            min-height: 0;
+            width: 200px;
+            height: 200px;
+            object-fit: scale-down;
+        }
+        .image_productList {
+            padding: 10px 0px 10px;
         }
         .id_productList, .name_productList ,.category_productList ,.price_productList{
             padding: 10px;
@@ -168,7 +170,7 @@
                                 <div class="tab-pane" id="nav-filter" role="tabpanel" aria-labelledby="nav-filter-tab">
                                     <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
                                         <div class="list-group-item checkbox">
-                                            <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"  > <?php echo $category['categoryName']; ?></label>
+                                            <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"> <?php echo $category['categoryName']; ?></label>
                                         </div>
                                     <?php } ?>
                                 </div>

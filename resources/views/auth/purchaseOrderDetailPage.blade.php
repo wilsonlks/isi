@@ -139,7 +139,8 @@
         }
         .image_order {
             width: 150px;
-            height: auto;
+            height: 150px;
+            object-fit: scale-down;
             display: inline-block;
             float: left;
             clear: both;

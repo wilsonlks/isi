@@ -13,7 +13,7 @@
             flex-wrap: wrap;
         }
         .productList .card-body {
-            /* padding: 0px 16px 0px; */
+            padding: 0px 16px 0px;
         }
         .product {
             display: table;
@@ -27,13 +27,16 @@
             border-bottom: 2px solid darkgreen;
         }
         .product img {
-            padding: 10px;
             display: block;
             margin-left: auto;
             margin-right: auto;
-            max-height: 200px;
-            min-width: 0;
-            min-height: 0;
+            width: 200px;
+            height: 200px;
+            object-fit: scale-down;
+        }
+        .image_productList {
+            padding: 10px 0px 10px;
+            object-fit: cover;
         }
         .name_productList ,.category_productList ,.price_productList{
             padding: 10px;
