@@ -188,7 +188,7 @@
                             <div class="card-subtitle">
                                 @auth
                                     @if (Auth::user()->role=='vendor')
-                                        <h4 class="mb-2 text-muted id_detail">No. <?php echo $detail['productID'] ?></h4>
+                                        <h4 class="mb-2 text-muted id_detail">No.<?php echo $detail['productID'] ?></h4>
                                     @endif
                                 @endauth
                                 <h4 class="mb-2 text-muted category_detail"><?php echo $detail['categoryName'] ?></h4>

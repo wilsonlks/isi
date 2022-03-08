@@ -314,7 +314,7 @@
                             <div class="row mb-3">
                                 <label for="price" class="col-md-4 col-form-label text-md-end">{{ __('Price') }}</label>
                                 <div class="col-md-6">
-                                    <input id="price" type="number" class="form-control @if (isset($error_price)) is-invalid @endif" name="price" placeholder="Price" min="0" value="<?php echo isset($price) ? $price : ''; ?>">
+                                    <input id="price" type="number" step="any" class="form-control @if (isset($error_price)) is-invalid @endif" name="price" placeholder="Price" min="0" value="<?php echo isset($price) ? $price : ''; ?>">
                                     <?php
                                         if (isset($error_price)) {
                                             ?> <span class="invalid-feedback" role="alert" style="display:block"><strong> <?php

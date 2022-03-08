@@ -204,7 +204,7 @@
                                     <div class="form-group row">
                                         <label for="total_order" class="col-sm-3 col-form-label">Total Order Amounts</label>
                                         <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control-plaintext" id="total_order" name="total_order" value="$<?php echo $detail['total_order_amount'] ?>" disabled>
+                                            <input type="text" readonly class="form-control-plaintext" id="total_order" name="total_order" value="$ <?php echo $detail['total_order_amount'] ?>" disabled>
                                         </div>
                                     </div>
                                     <div class="form-group row status-box">
@@ -285,7 +285,7 @@
                                         </h4>
                                         <h5 class="price_order">
                                             <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                $<?php echo $detail['oldprice'] ?>
+                                                $ <?php echo $detail['oldprice'] ?>
                                             </a>
                                         </h5>
                                         <h6 class="quantity_order">
@@ -295,7 +295,7 @@
                                         </h6>
                                         <h5 class="sub_total_order">
                                             <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                Sub order amount: $<?php echo ($detail['sub_order_amount']) ?>
+                                                Sub order amount: $ <?php echo ($detail['sub_order_amount']) ?>
                                             </a>
                                         </h5>
                                     </div>

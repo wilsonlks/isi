@@ -60,7 +60,7 @@
                             <div class="order-body">
                                 <p class="date_order">'.$detail["purchase_date"].'</p>
                                 <p class="customer_name_order">'.$detail["name"].'</p>
-                                <p class="total_order">$'.$detail["total_order_amount"].'</p>
+                                <p class="total_order">$ '.$detail["total_order_amount"].'</p>
                                 <p class="status_order">'.$detail["status"].'</p>
                             </div>
                         </a>

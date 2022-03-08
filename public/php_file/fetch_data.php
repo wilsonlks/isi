@@ -125,7 +125,7 @@
                             <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" ></div>
                             <div class="name_productList">'.$row['productName'].'</div> |
                             <div class="category_productList">'.$row['categoryName'].'</div>
-                            <div class="price_productList">$'.$row['price'].'</div>
+                            <div class="price_productList">$ '.$row['price'].'</div>
                         </a>
                     </div>';
     };
