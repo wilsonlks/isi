@@ -50,6 +50,12 @@ Route::post('/products/{product}', function () {
     return view('auth.productDetailPage');
 })->middleware('auth');
 
+// Edit Products
+
+Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->middleware('auth');
+
+Route::post('/products/{product}/edit', [ProductController::class, 'edit'])->middleware('auth');
+
 // Shopping Cart
 
 Route::get('/cart', [CartController::class, 'get_shopping_cart'])->middleware('auth');
@@ -67,6 +73,8 @@ Route::post('/orders', [OrderController::class, 'get_orders'])->middleware('auth
 Route::get('/orders/{order}', [OrderController::class, 'get_order_detail'])->middleware('auth');
 
 Route::post('/orders/{order}', [OrderController::class, 'process_order_detail'])->middleware('auth');
+
+// Best Selling Products
 
 Route::get('/bestSelling', function () {
     return view('auth.bestSellingProducts');

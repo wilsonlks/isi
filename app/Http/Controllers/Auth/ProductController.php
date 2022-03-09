@@ -43,4 +43,18 @@ class ProductController extends Controller
         }        
     }
 
+    /**
+     * Edit a product.
+     *
+     * @return \Illuminate\View\View
+     */
+    protected function edit()
+    {
+        if(Auth::user()->role=='vendor') {
+            return view('auth.editProduct');
+        } else {
+            return redirect('products')->with('alert', 'Sorry, You Are Not Allowed to Access This Page.');
+        }        
+    }
+
 }

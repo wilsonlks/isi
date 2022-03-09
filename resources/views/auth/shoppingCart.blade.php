@@ -218,6 +218,10 @@
         font-weight: bold;
         float: right;
     }
+    .no_product {
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
     a {
         text-decoration: none;
     }

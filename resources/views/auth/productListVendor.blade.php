@@ -153,7 +153,10 @@
                                 <div class="tab-pane show active" id="nav-sort" role="tabpanel" aria-labelledby="nav-sort-tab">
                                     <form class="sorting">
                                         <div class="list-group-item sorting_button">
-                                            <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productName" checked> Product Name </label>
+                                            <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productID" checked> Product ID </label>
+                                        </div>
+                                        <div class="list-group-item sorting_button">
+                                            <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productName"> Product Name </label>
                                         </div>
                                         <div class="list-group-item sorting_button">
                                             <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="price"> Price </label>

@@ -3,6 +3,8 @@
 @section('content')
 
     <?php
+
+        include("./php_file/config.php");
         include("./php_file/dbConnect.php");
 
         // get specific product from DB
@@ -76,10 +78,19 @@
 
         }
 
+        // edit product
+
+        if (isset($_POST['edit'])) {
+
+            $productID = $_POST['edit'];
+            header("location:http://localhost:8000/products/".$productID."/edit"); exit;
+
+        }
+
     ?>
 
     <style type="text/css">
-        .card-header {
+        .product-header {
             padding: 0px;
             background: #e0ffe1;
         }
@@ -140,9 +151,9 @@
             font-weight: bold;
         }
         a {
-        text-decoration: none;
-        color: black;
-    }
+            text-decoration: none;
+            color: black;
+        }
     </style>
 
     <div class="content">
@@ -156,7 +167,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header">    
+                        <div class="card-header product-header">    
                             <div class="card-image">
                                 <img class="image_detail" src="../<?php echo $detail['image_url'] ?>" alt="Card image cap">
                             </div>
@@ -171,6 +182,15 @@
                                             <div class="card-column">
                                                 <button id="submit" type="submit" name="submit" class="btn btn-primary button_detail">
                                                     {{ __('Add to Cart') }}
+                                                </button>
+                                            </div>
+                                        </form>
+                                    @else
+                                        <form method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="card-column">
+                                                <button id="submit" type="submit" name="edit" class="btn btn-primary button_detail" value="<?php echo $detail['productID'] ?>">
+                                                    {{ __('Edit') }}
                                                 </button>
                                             </div>
                                         </form>
