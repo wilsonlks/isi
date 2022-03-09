@@ -28,6 +28,22 @@
                 $searchQ = "";
             }
         }
+
+        if(isset($_POST["sorting"])){
+            $s_sorting_value = strval($_POST["sorting"]);
+        }
+
+        if (isset($_POST["AscDesc"])) {
+
+            $AscDesc  = intval($_POST["AscDesc"]);
+            if ($AscDesc == 1){
+                $AscDesc = "ASC";
+            }elseif ($AscDesc == -1) {
+                $AscDesc = "DESC";
+
+            }
+
+        }
     }
 
     if(strlen($searchQ)>0 OR strlen($s_status_filter)>0){
@@ -37,7 +53,7 @@
         }
     }
 
-    $sorting = "ORDER BY `purchaseorder`.`purchase_date` DESC, `purchaseorder`.`poID` DESC";
+    $sorting = " ORDER BY ".$s_sorting_value." ".$AscDesc.", `poID` ".$AscDesc;
 
     $order_query = "SELECT * FROM
     (`purchaseorder` INNER JOIN `users`

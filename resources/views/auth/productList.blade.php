@@ -136,7 +136,7 @@
                 <div class="col-md-8">
                     <!-- get category from DB -->
                     <?php
-                        $categoryQ = "SELECT * FROM category";
+                        $categoryQ = "SELECT * FROM category ORDER BY categoryName";
                         $CSet = $dbConnection->prepare($categoryQ);
                         $CSet->execute();
                         $CSetResult = $CSet->get_result();
@@ -155,6 +155,9 @@
                                     <form class="sorting">
                                         <div class="list-group-item sorting_button">
                                             <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="productName" checked> Product Name </label>
+                                        </div>
+                                        <div class="list-group-item sorting_button">
+                                            <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="categoryName"> Category Name </label>
                                         </div>
                                         <div class="list-group-item sorting_button">
                                             <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="price"> Price </label>

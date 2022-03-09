@@ -71,7 +71,7 @@
     }
 
     //may do sorting requirement?? DONE
-    $sorting = " ORDER BY product.".$s_sorting_value." ".$AscDesc;
+    $sorting = " ORDER BY ".$s_sorting_value." ".$AscDesc.", `productName` ".$AscDesc;
 
     //echo "page = ".$page_number;
 
@@ -191,7 +191,7 @@
 
         // echo $NP_total;
 
-    };
+    }
 ?>
 
 

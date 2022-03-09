@@ -71,7 +71,7 @@
     }
 
     //may do sorting requirement?? DONE
-    $sorting = " ORDER BY product.".$s_sorting_value." ".$AscDesc;
+    $sorting = " ORDER BY ".$s_sorting_value." ".$AscDesc.", `product`.`productID` ".$AscDesc.", `productName` ".$AscDesc;
 
     //echo "page = ".$page_number;
 
