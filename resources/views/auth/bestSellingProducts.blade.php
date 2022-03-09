@@ -42,11 +42,16 @@
             padding: 0px 25px 0px 0px;
             display: inline;
         }
-        .inputtext {
+        .inputdate {
             padding: 0px;
             display: inline;
         }
-        #search_box {
+        #fromDate {
+            width: 100%;
+            padding: 1px 5px 1px;
+        }
+
+        #toDate {
             width: 100%;
             padding: 1px 5px 1px;
         }
@@ -141,16 +146,18 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
-                                <a class="nav-item nav-link active" id="nav-sort-tab" data-toggle="tab" href="#nav-sort" role="tab" aria-controls="nav-sort" aria-selected="true">Sort</a>
-                                <a class="nav-item nav-link" id="nav-search-tab" data-toggle="tab" href="#nav-search" role="tab" aria-controls="nav-search" aria-selected="false">Search</a>
+                                <a class="nav-item nav-link active" id="nav-date-tab" data-toggle="tab" href="#nav-date" role="tab" aria-controls="nav-date" aria-selected="true">date</a>
                                 <a class="nav-item nav-link" id="nav-filter-tab" data-toggle="tab" href="#nav-filter" role="tab" aria-controls="nav-filter" aria-selected="false">Filter</a>
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="tab-content" id="nav-tabContent">
-                                <div class="tab-pane" id="nav-search" role="tabpanel" aria-labelledby="nav-search-tab">
-                                    <div class="list-group-item inputtext">
-                                        <input type="text" id="search_box" placeholder="Search by product name" onchange="Click()">
+                                <div class="tab-pane active" id="nav-date" role="tabpanel" aria-labelledby="nav-date-tab">
+                                    <div class="list-group-item inputdate">
+                                        From <input type="date" id="fromDate" value="" onchange="Click()">
+                                    </div>
+                                    <div class="list-group-item inputdate">
+                                        To <input type="date" id="toDate" value="" onchange="Click()">
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="nav-filter" role="tabpanel" aria-labelledby="nav-filter-tab">
@@ -181,8 +188,12 @@
 
     <script>
         $(document).ready(function(){
-                send_data();
-            });
+            set_default_date();
+            //get_date('#fromDate');
+
+            send_data();
+
+        });
 
 
                 // send checkbox value by using ajax
@@ -190,13 +201,15 @@
 
                     $('.filter_data').html('<div id="loading" style="" ></div>');
                     var action = 'fetch_data';
-                    var searchText = get_searchText();
+                    var dateText = get_dateText();
                     var category_filter = get_filter('category_checkbox');
+                    var from_date = get_date('fromDate');
+                    var to_date = get_date('toDate');
 
                     $.ajax({
                         url:"../php_file/fetch_data_bestSellingProducts.php",
                         method:"POST",
-                        data:{action:action, searchText:searchText, category_filter:category_filter},
+                        data:{action:action, dateText:dateText, category_filter:category_filter, from_date:from_date, to_date:to_date},
                         success:function(data){
                             $('#fetch_data').html(data);
                         }
@@ -204,8 +217,8 @@
                     console.log("fetched");
                 }
 
-                function get_searchText(){
-                    return $('#search_box').val();
+                function get_dateText(){
+                    return $('#fromDate').val();
                 }
 
                 function get_filter(class_name)
@@ -221,7 +234,39 @@
                     send_data();
                     console.log("click");
 
-                };
+                }
+
+                function get_date(inputid){
+                    console.log($('#'+inputid).val());
+                    return $('#'+inputid).val();
+                }
+
+                function changeDateFormat(date){
+                    var y = date.getFullYear();
+                    var m = date.getMonth()+1;
+                    if (m<10){
+                        m = '0' + m;
+                    }
+                    var d = date.getDate();
+                    if (d<10){
+                        d = '0' + d;
+                    }
+                    var format = y + '-' + m + '-' + d;
+                    return format;
+                }
+
+                function getLastdate(date, days){
+                    var last = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
+                    return last;
+                }
+
+                function set_default_date(){
+                    var lastDate = getLastdate(new Date(), 30);
+                    $('#fromDate').val(changeDateFormat(lastDate));
+                    var today = changeDateFormat(new Date());
+                    $('#toDate').val(today);
+                    document.getElementById('toDate').max = today;
+                }
 
         </script>
 @endsection

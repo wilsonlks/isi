@@ -19,15 +19,12 @@
             category IN (".$s_category_filter.") ";
         }
 
+        if(isset($_POST["from_date"])){
+            $from_date = strval("'".$_POST["from_date"]."'");
+        }
 
-
-        if(isset($_POST["searchText"])){
-            $searchText = strval($_POST["searchText"]);
-            if (strlen($searchText) > 0){
-                $searchQ = "(product.productName LIKE '%".$searchText."%') ";
-            }else {
-                $searchQ = "";
-            }
+        if(isset($_POST["to_date"])){
+            $to_date = strval("'".$_POST["to_date"]."'");
         }
 
     }
@@ -39,30 +36,25 @@
 
 
 
-
+    //count how many best selling products
     //set query
     $query_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
-                WHERE `purchaseorder`.`status` != 'cancelled'".$and1.$filter."
+                WHERE `purchaseorder`.`status` != 'cancelled'
+                AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date.' AND '.$to_date.$and1.$filter."
                 GROUP BY `productID`
                 ORDER BY `totalQuantity` DESC";
-
 
     //get data
     $statement = $dbConnection->prepare($query_for_count);
     $statement->execute();
     $resultSet1 = $statement->get_result();
 
-
-    echo $query;
+    // echo $query_for_count;
 
     //print data
-    $output = '';
-
-    echo '<div class="card-header">Best Selling Products</div>
-    <div class="card-body">';
     $n_of_BSQ = 0;
     $row_for_count= mysqli_fetch_array($resultSet1);
     if ($row_for_count){
@@ -82,7 +74,8 @@
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
-                WHERE `purchaseorder`.`status` != 'cancelled'".$and1.$filter."
+                WHERE `purchaseorder`.`status` != 'cancelled'
+                AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date.' AND '.$to_date.$and1.$filter."
                 GROUP BY `productID`
                 ORDER BY `totalQuantity` DESC";
 
@@ -93,7 +86,9 @@
     $resultSet2 = $statement->get_result();
 
     $data_count = 0;
-
+    $output = '';
+    echo '<div class="card-header">Best Selling Products</div>
+    <div class="card-body">';
 
     while ($row= mysqli_fetch_array($resultSet2)){
         $data_count .= 1;
@@ -116,7 +111,7 @@
                         </h6>
                         <h5 class="sub_total_order">
                             <a href="../products/'.$row['productID'].'" class="link-to-product-details">
-                                Sub order amount: $ '.$row['totalAmount'].'
+                                Total sales amount: $ '.$row['totalAmount'].'
                             </a>
                         </h5>
                     </div>'
@@ -128,7 +123,7 @@
             break;
         }
     };
-    echo '</div>';
+    //echo '</div>';
     echo '';
     if($data_count == 0){
         $output .= '<div class="no_product">No order</div>';
