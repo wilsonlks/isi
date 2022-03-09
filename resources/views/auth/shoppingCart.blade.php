@@ -176,8 +176,8 @@
     .cart {
         width: 100%;
         margin: auto;
-        display: table;
-        clear: both;
+        /* display: table;
+        clear: both; */
         padding: 15px 0px 15px;
     }
     .cart:not(:last-child) {
@@ -191,31 +191,19 @@
         float: left;
         clear: both;
     }
-    .card-body, .alert_cart {
-        /* margin: 0px 10px 0px; */
-    }
     .card-body {
         padding: 0px 16px 0px;
     }
-    .card-title, .card-subtitle {
-        float: none;
-        padding-bottom: 35px;
-    }
-    .card-subtitle, .card-text, .alert {
-        padding-top: 10px;
-    }
-    /* .alert {
-        padding-right: 15px;
-    } */
     .name_cart a {
         text-transform: uppercase;
         font-weight: bold;
+        font-size: 1.5rem;
         color: green;
     }
-    .price_cart a, .quantity_cart a {
-        color: black;
+    .price_cart {
+        font-size: 1rem;
     }
-    .name_cart, .price_cart, .quantity_cart, .total_cart, .close {
+    .name_cart, .price_cart, .total_cart, .close {
         text-align: right;
     }
     .close {
@@ -236,16 +224,30 @@
     form, .button_cart, .total_cart {
         display: inline-block;
     }
-    .alert {
-        padding-right: 16px;
-        margin: 0px;
-    }
     .delete-button {
-        right: 0px;
-        bottom: 0px;
-    }
-    .input-group {
         float: right;
+    }
+    /* .input-group {
+        font-size: 0.7875rem;
+    } */
+    .sm-detail {
+        width: 77px;
+    }
+    #basic-addon {
+        border-top-left-radius: 0.2rem;
+        border-bottom-left-radius: 0.2rem;
+        border-top-right-radius: 0rem;
+        border-bottom-right-radius: 0rem;
+        font-size: 0.7875rem;
+        padding: 0.2rem 0.5rem;
+    }
+    #basic-addonn {
+        border-top-left-radius: 0rem;
+        border-bottom-left-radius: 0rem;
+        border-top-right-radius: 0.2rem;
+        border-bottom-right-radius: 0.2rem;
+        font-size: 0.7875rem;
+        padding: 0.2rem 0.5rem;
     }
 </style>
 
@@ -259,41 +261,51 @@
                     $data_count = 0;
                     while ($detail = mysqli_fetch_array($cart_result)) { ?>
                         <?php $data_count++; ?>
-                        <div class="cart cart-<?php echo $detail['productID'] ?>">
-                            <div class="image_container">
-                                <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                    <img class="image_cart" src="<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
-                                </a>
-                            </div>
-                            <h4 class="name_cart">
-                                <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                    <?php echo $detail['productName'] ?>
-                                </a>
-                            </h4>
-                            <h5 class="price_cart">
-                                    $ <?php echo $detail['price'] ?>
-                            </h5>
+                        <table class="cart cart-<?php echo $detail['productID'] ?>">
+                            <tr>
+                                <td rowspan="4" class="image_container">
+                                    <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
+                                        <img class="image_cart" src="<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
+                                    </a>
+                                </td>
+                                <td colspan="2" class="name_cart detail">
+                                    <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
+                                        <?php echo $detail['productName'] ?>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="price_cart detail">
+                                        $ <?php echo $detail['price'] ?>
+                                </td>
+                            </tr>
                             <form method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <div class="quantity_cart input-group">
-                                    <input type="hidden" class="change-quantity-item[<?php echo $detail['productID'] ?>]" name="change-quantity-item" value="<?php echo $detail['productID'] ?>">
-                                    <input type="hidden" class="change-quantity-old[<?php echo $detail['productID'] ?>]" name="change-quantity-old" value="<?php echo $detail['quantity'] ?>">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="basic-addon">&times;</span>
-                                    </div>
-                                    <input type="number" class="change-quantity-<?php echo $detail['productID'] ?>" name="change-quantity" placeholder="<?php echo $detail['quantity'] ?>" aria-label="Quantity" aria-describedby="basic-addon" min="1">
-                                </div>
+                                <tr>
+                                    <td></td>
+                                    <td class="quantity_cart input-group detail sm-detail">
+                                        <input type="hidden" class="change-quantity-item[<?php echo $detail['productID'] ?>]" name="change-quantity-item" value="<?php echo $detail['productID'] ?>">
+                                        <input type="hidden" class="change-quantity-old[<?php echo $detail['productID'] ?>]" name="change-quantity-old" value="<?php echo $detail['quantity'] ?>">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon">&times;</span>
+                                        </div>
+                                        <input type="number" class="change-quantity-<?php echo $detail['productID'] ?> form-control" id="basic-addonn" name="change-quantity" placeholder="<?php echo $detail['quantity'] ?>" aria-label="Quantity" aria-describedby="basic-addon" min="1" max="99">
+                                    </td>
+                                </tr>
                             </form>
                             <form method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <div>
-                                    <button type="submit" name="delete" class="close delete-button cart-<?php echo $detail['productID'] ?>">
-                                        <input type="hidden" class="delete_cart" name="delete_cart" value="<?php echo $detail['productID'] ?>">
-                                        <span>&times;</span>
-                                    </button>
-                                </div>
+                                <tr>
+                                    <td></td>
+                                    <td class="detail sm-detail">
+                                        <button type="submit" name="delete" class="close delete-button cart-<?php echo $detail['productID'] ?>">
+                                            <input type="hidden" class="delete_cart" name="delete_cart" value="<?php echo $detail['productID'] ?>">
+                                            <span>&times;</span>
+                                        </button>
+                                    </td>
+                                </tr>
                             </form>
-                        </div>
+                        </table>
                         <?php };
                         if ($data_count == 0) { ?>
                             <div class="no_product">No product</div>
