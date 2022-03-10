@@ -76,13 +76,6 @@
 
         }
     
-        if (isset($_POST['review'])) {
-
-            $productID = $_POST['review-product'];
-            header("location:http://localhost:8000/orders/".$orderID."/products/".$productID."/reviews"); exit;
-
-        }
-
     ?>
 
     <style type="text/css">
@@ -106,28 +99,20 @@
             float: right;
             display: inline-block;
         }
-        .order_detail .card-body {
+        .order-detail .card-body {
             padding: 0px 16px 0px;
         }
-        /* .date_order, .customer_order, .addr_order, .total_order, .status_order {
-            margin-bottom: 0px;
-            font-size: 0.85rem;
-        } */
-        .order {
+        .order-product {
             width: 100%;
             display: table;
-            clear: both;
         }
-        .order:not(:last-child) {
+        .order-product-box:not(:last-child) {
             border-bottom: 2px solid darkgreen;
-        }
-        .name_order, .price_order, .quantity_order, .sub_total_order {
-            text-align: right;
         }
         .status_order, #cancel_by_order {
             text-transform: uppercase;
         }
-        .image_order {
+        .image-order {
             width: 150px;
             height: 150px;
             object-fit: scale-down;
@@ -135,7 +120,27 @@
             float: left;
             clear: both;
         }
-        a {
+        .name-order {
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: green;
+            text-align: right;
+        }
+        .price-order, .quantity-order, .sub-total-order {
+            font-size: 1rem;
+            text-align: right;
+        }
+        .sm-detail {
+            width: 77px;
+        }
+        .rate-review-link {
+            font-size: 1rem;
+            float: right;
+            color: darkgreen;
+            text-decoration: none;
+        }
+        .link-to-product-details:link, .link-to-product-details:hover, .link-to-product-details:active, .link-to-product-details:visited {
             text-decoration: none;
             color: black;
         }
@@ -257,48 +262,47 @@
                 @endif
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <div class="card order_detail mt-2">
+                    <div class="card order-detail mt-2">
                         <div class="card-header">{{ __('Order Details') }}</div>
                         <div class="card-body">
                             <?php
                                 while ($detail= mysqli_fetch_array($order_result2)) { ?>
-                                    <div class="order">
-                                        <div class="image_container">
-                                            <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                <img class="image_order" src="../<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
-                                            </a>
-                                        </div>
-                                        <h4 class="name_order">
-                                            <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                <?php echo $detail['productName'] ?>
-                                            </a>
-                                        </h4>
-                                        <h5 class="price_order">
-                                            <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                $ <?php echo $detail['oldprice'] ?>
-                                            </a>
-                                        </h5>
-                                        <h6 class="quantity_order">
-                                            <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                &times;<?php echo $detail['quantity'] ?>
-                                            </a>
-                                        </h6>
-                                        <h5 class="sub_total_order">
-                                            <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                Sub order amount: $ <?php echo ($detail['sub_order_amount']) ?>
-                                            </a>
-                                        </h5>
-                                        @if ($detail['status'] == 'shipped')
-                                            <form method="POST" enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="form-group row mb-1 justify-content-end">
-                                                    <div class="col-md-auto justify-content-end" id="button-review-box">
-                                                        <input type="hidden" class="review-product" name="review-product" value="<?php echo $detail['productID'] ?>">
-                                                        <button class="btn btn-primary button-review" type="submit" id="submit" name="review">Rate and Review</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        @endif
+                                    <div class="order-product-box">
+                                        <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
+                                            <table class="order-product">
+                                                <tr>
+                                                    <td rowspan="5" class="image_container">
+                                                        <img class="image-order" src="../<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
+                                                    </td>
+                                                    <td colspan="2" class="name-order order">
+                                                        <?php echo $detail['productName'] ?>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" class="price-order order">
+                                                            $ <?php echo $detail['oldprice'] ?>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td class="quantity-order order sm-detail">
+                                                            &times;<?php echo $detail['quantity'] ?>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" class="sub-total-order order">
+                                                            Sub order amount: $ <?php echo $detail['sub_order_amount'] ?>
+                                                    </td>
+                                                </tr>
+                                                @if ($detail['status'] == 'shipped')
+                                                    <tr>
+                                                        <td colspan="2" class="rate-review-link-box order">
+                                                            <a href="<?php echo $detail['poID'] ?>/products/<?php echo $detail['productID'] ?>/reviews" class="rate-review-link">Rate and Review</a>
+                                                        </td>
+                                                    </tr>
+                                                @endif
+                                            </table>
+                                        </a>
                                     </div>
                                 <?php };
                             ?>

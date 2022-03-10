@@ -279,9 +279,9 @@
                                     <input id="name" type="text" class="form-control @if (isset($error_name)) is-invalid @endif" name="name" placeholder="Product name" value="<?php echo isset($productName) ? $productName : ''; ?>" autofocus>
                                     <?php
                                         if (isset($error_name)) {
-                                                ?> <span class="invalid-feedback" role="alert" style="display:block"><strong> <?php
-                                                    echo implode('<br/>', $error_name);
-                                                ?> </strong></span> <?php
+                                            ?> <span class="invalid-feedback" role="alert" style="display:block"><strong> <?php
+                                                echo implode('<br/>', $error_name);
+                                            ?> </strong></span> <?php
                                         }
                                     ?>                                   
                                 </div>
@@ -292,7 +292,7 @@
                                 <div class="col-md-6">
                                     <select id="category" class="form-select @if (isset($error_category)) is-invalid @endif" name="category" value="">
                                         <option value="0">Category select</option>
-                                        <?php $category_qurey = "SELECT * FROM category";
+                                        <?php $category_qurey = "SELECT * FROM category ORDER BY categoryName";
                                                 $category_get = $dbConnection->prepare($category_qurey);
                                                 $category_get->execute();
                                                 $category_result = $category_get->get_result();

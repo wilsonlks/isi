@@ -353,7 +353,7 @@
                                         <input type="hidden" id="old-category" name="old-category" value="<?php echo $detail['category'] ?>">
                                         <select id="edit-category" class="form-select @if (isset($error_category)) is-invalid @endif" name="edit-category">
                                             <option value="0" disabled>Category select</option>
-                                            <?php $category_qurey = "SELECT * FROM category";
+                                            <?php $category_qurey = "SELECT * FROM category ORDER BY categoryName";
                                                     $category_get = $dbConnection->prepare($category_qurey);
                                                     $category_get->execute();
                                                     $category_result = $category_get->get_result();

@@ -29,6 +29,49 @@
         $PSet->execute();
         $PSetResult3 = $PSet->get_result();
 
+        // get rate and review
+
+        $count_review_query = "SELECT COUNT(*) AS reviews FROM `productreview`
+                                WHERE `productID`=$productID";
+        $count_review_set = $dbConnection->prepare($count_review_query);
+        $count_review_set->execute();
+        $count_review_result = $count_review_set->get_result();
+
+        $count_review = mysqli_fetch_array($count_review_result);
+
+        if ($count_review['reviews'] != 0) {
+
+            $total_review = $count_review['reviews'];
+
+            $get_review_query = "SELECT * FROM `productreview`
+                                    WHERE `productID`=$productID";
+            $get_review_set = $dbConnection->prepare($get_review_query);
+            $get_review_set->execute();
+            $get_review_result1 = $get_review_set->get_result();
+            $get_review_set->execute();
+            $get_review_result2 = $get_review_set->get_result();
+
+            $total_rating = 0;
+
+            while ($get_review = mysqli_fetch_array($get_review_result1)) {
+                if (empty($get_review['review_date_new'])) {
+                    $total_rating += $get_review['rating'];
+                } else {
+                    $total_rating += $get_review['rating_new'];
+                }
+            }
+
+            $avg_rating = round(($total_rating / $total_review), 1);
+
+        } else {
+
+            $total_review = 0;
+            $rating_message = 'No ratings.';
+            $review_message = 'No reviews.';
+
+        }
+
+
         // add to cart
 
         $cart_saved = FALSE;
@@ -78,14 +121,14 @@
 
         }
 
-        // edit product
+        // // edit product
 
-        if (isset($_POST['edit'])) {
+        // if (isset($_POST['edit'])) {
 
-            $productID = $_POST['edit'];
-            header("location:http://localhost:8000/products/".$productID."/edit"); exit;
+        //     $productID = $_POST['edit'];
+        //     header("location:http://localhost:8000/products/".$productID."/edit"); exit;
 
-        }
+        // }
 
     ?>
 
@@ -106,9 +149,9 @@
             margin-left: auto;
             margin-right: auto;
         }
-        .card-body, .alert_detail {
+        /* .card-body, .alert_detail {
             margin: 0px 10px 0px;
-        }
+        } */
         .card-title, .card-subtitle, .alert {
             float: none;
             clear: both;
@@ -154,6 +197,18 @@
             text-decoration: none;
             color: black;
         }
+        .rate-review-product .card-body {
+            padding: 0px 16px 0px;
+        }
+        .ratings {
+            border-bottom: 1px solid black;
+        }
+        .ratings, .reviews:not(:last-child) .row:last-child {
+            border-bottom: 1px solid black;
+        }
+        .current-review {
+            border-top: 1px dashed black;
+        }
     </style>
 
     <div class="content">
@@ -186,14 +241,11 @@
                                             </div>
                                         </form>
                                     @else
-                                        <form method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="card-column">
-                                                <button id="submit" type="submit" name="edit" class="btn btn-primary button_detail" value="<?php echo $detail['productID'] ?>">
-                                                    {{ __('Edit') }}
-                                                </button>
+                                        <div class="card-column">
+                                            <div class="button_detail" id="button-edit-box">
+                                                <a href="<?php echo $detail['productID'] ?>/edit" class="btn btn-primary" role="button">Edit</a>
                                             </div>
-                                        </form>
+                                        </div>
                                     @endif
                                 @else
                                     <form method="POST" enctype="multipart/form-data">
@@ -231,6 +283,81 @@
                         <?php $message = $cart_saved = NULL; ?>
                         </div>
                     @endif
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card rate-review-product mt-2">
+                        <div class="card-header">{{ __('Ratings and Reviews') }}</div>
+                            <div class="card-body">
+                                @if ($total_review==0)
+                                    <div class="form-group row">
+                                        <label for="rate-no" class="col-sm-3 col-form-label">Average Ratings</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="rate-no" name="rate-no" value="<?php echo $rating_message ?>" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="review-no" class="col-sm-3 col-form-label">Reviews</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="review-no" name="review-no" value="<?php echo $review_message ?>" disabled>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="form-group row ratings">
+                                        <label for="rate-avg" class="col-sm-3 col-form-label">Average Ratings</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="rate-avg" name="rate-avg" value="<?php echo $avg_rating ?> / 5" disabled>
+                                        </div>
+                                    </div>
+                                    <?php 
+                                        while ($rate_review_detail=mysqli_fetch_array($get_review_result2)) { ?>
+                                            <div class="reviews">
+                                                <div class="form-group row">
+                                                    <label for="rate-old" class="col-sm-3 col-form-label">Rating</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" readonly class="form-control-plaintext" id="rate-old" name="rate-old" value="<?php echo $rate_review_detail['rating'] ?> / 5" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="review-old" class="col-sm-3 col-form-label">Review</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" readonly class="form-control-plaintext" id="review-old" name="review-old" value="<?php echo $rate_review_detail['review'] ?>" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="review-date-old" class="col-sm-3 col-form-label">Review Date</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" readonly class="form-control-plaintext" id="review-date-old" name="review-date-old" value="<?php echo $rate_review_detail['review_date'] ?>" disabled>
+                                                    </div>
+                                                </div>
+                                                @if (!empty($rate_review_detail['review_date_new']))
+                                                    <div class="form-group row current-review">
+                                                        <label for="rate-new" class="col-sm-3 col-form-label">Current Rating</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" readonly class="form-control-plaintext" id="rate-new" name="rate-new" value="<?php echo $rate_review_detail['rating_new'] ?> / 5" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="review-new" class="col-sm-3 col-form-label">Current Review</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" readonly class="form-control-plaintext" id="review-new" name="review-new" value="<?php echo $rate_review_detail['review_new'] ?>" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="review-date-new" class="col-sm-3 col-form-label">Current Review Date</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" readonly class="form-control-plaintext" id="review-date-new" name="review-date-new" value="<?php echo $rate_review_detail['review_date_new'] ?>" disabled>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        <?php };
+                                    ?>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
