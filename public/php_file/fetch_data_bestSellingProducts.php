@@ -42,7 +42,7 @@
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
-                WHERE `purchaseorder`.`status` != 'cancelled'
+                WHERE `purchaseorder`.`status` = 'shipped'
                 AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date.' AND '.$to_date.$and1.$filter."
                 GROUP BY `productID`
                 ORDER BY `totalQuantity` DESC";
@@ -74,7 +74,7 @@
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
-                WHERE `purchaseorder`.`status` != 'cancelled'
+                WHERE `purchaseorder`.`status` = 'shipped'
                 AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date.' AND '.$to_date.$and1.$filter."
                 GROUP BY `productID`
                 ORDER BY `totalQuantity` DESC";
@@ -87,29 +87,35 @@
 
     $data_count = 0;
     $output = '';
-    echo '<div class="card-header">Best Selling Products</div>
+    $title = '';
+    if ($n_of_BSQ > 1){
+        $title = 'Best Selling Products';
+    }else {
+        $title = 'Best Selling Product';
+    }
+    echo '<div class="card-header">'.$title.'</div>
     <div class="card-body">';
 
     while ($row= mysqli_fetch_array($resultSet2)){
         $data_count .= 1;
         $output .='
-                    <div class="order">
+                    <div class="best_products">
                         <div class="image_container">
                             <a href="../products/'.$row['productID'].'" class="link-to-product-details">
-                                <img class="image_order" src="../'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200px">
+                                <img class="image_best_products" src="../'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200px">
                             </a>
                         </div>
-                        <h4 class="name_order">
+                        <h4 class="name_best_products">
                             <a href="../products/'.$row['productID'].'" class="link-to-product-details">
                                 '.$row['productName'].'
                             </a>
                         </h4>
-                        <h6 class="quantity_order">
+                        <h6 class="total_quantity_best_products">
                             <a href="../products/'.$row['productID'].'" class="link-to-product-details">
                                 &times;'.$row['totalQuantity'].'
                             </a>
                         </h6>
-                        <h5 class="sub_total_order">
+                        <h5 class="total_amount_best_products">
                             <a href="../products/'.$row['productID'].'" class="link-to-product-details">
                                 Total sales amount: $ '.$row['totalAmount'].'
                             </a>
@@ -126,7 +132,7 @@
     //echo '</div>';
     echo '';
     if($data_count == 0){
-        $output .= '<div class="no_product">No order</div>';
+        $output .= '<div class="no_product">No best_products</div>';
     }
     echo $output;
 
