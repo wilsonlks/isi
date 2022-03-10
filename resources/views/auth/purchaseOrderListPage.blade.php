@@ -49,6 +49,9 @@
             margin: 0px;
             padding: 0px;
         }
+        .no_order {
+            padding-top: 16px;
+        }
     </style>
 
     <!-- vendor order list page -->

@@ -9,20 +9,20 @@
 
         $url=url()->full();
         $split_url=preg_split("#/#", $url);
-        $orderID=$split_url[count($split_url)-2];
+        $orderID=$split_url[count($split_url)-4];
+        $productID=$split_url[count($split_url)-2];
 
         // check authorization
 
-        $check_auth_query = "SELECT `customerID` FROM `purchaseorder`
-                                WHERE `poID`=$orderID
-                                AND `status`=\"shipped\"";
+        $check_auth_query = "SELECT * FROM `purchaseorder`
+                                WHERE `poID`=$orderID";
         $check_auth_set = $dbConnection->prepare($check_auth_query);
         $check_auth_set->execute();
         $check_auth_result = $check_auth_set->get_result();
 
         $check_auth = mysqli_fetch_array($check_auth_result);
 
-        if ($check_auth['customerID']==Auth::id()) {
+        if (($check_auth['customerID']==Auth::id()) && ($check_auth['status'] == 'shipped')) {
 
             // get specific purchase order from DB
 
@@ -35,7 +35,8 @@
                             ON purchaseorder.customerID=users.id
                             INNER JOIN `productimage`
                             ON product.productID=productimage.productID)
-                            WHERE `purchaseorder`.`poID`=$orderID";
+                            WHERE `purchaseorder`.`poID`=$orderID
+                            AND `purchaseorderdetail`.`productID`=$productID";
             $order_set = $dbConnection->prepare($order_query);
             $order_set->execute();
             $order_result1 = $order_set->get_result();
@@ -157,7 +158,7 @@
         }
     </style>
 
-    <!-- customer order rate and review page -->
+    <!-- customer order product rate and review page -->
 
     <div class="content">
 
@@ -170,56 +171,61 @@
                         <?php
                             $detail= mysqli_fetch_array($order_result1);
                         ?>
-                        <div class="card-header">Purchase Order No.<?php echo $detail['poID'] ?></div>
+                        <div class="card-header">Purchase Order No.<?php echo $detail['poID'] ?> Product No.<?php echo $detail['productID'] ?></div>
                             <div class="card-body">
                                 <form method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="date_order" class="col-sm-3 col-form-label">Purchase Date</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="date_order" name="date_order" value="<?php echo $detail['purchase_date'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="customer_order" class="col-sm-3 col-form-label">Customer Name</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="customer_order" name="customer_order" value="<?php echo $detail['name'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="addr_order" class="col-sm-3 col-form-label">Shipping Address</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="addr_order" name="addr_order" value="<?php echo $detail['shipping_addr'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="total_order" class="col-sm-3 col-form-label">Total Order Amounts</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="total_order" name="total_order" value="$ <?php echo $detail['total_order_amount'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row status-box">
+                                    <div class="form-group row mb-1 status-box">
                                         <label for="status_order" class="col-sm-3 col-form-label">Status</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext status_order" id="status" name="status_order" value="<?php echo $detail['status'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="shipment_order" class="col-sm-3 col-form-label">Shipment Date</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="shipment_order" name="shipment_order" value="<?php echo $detail['shipment_date'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="rate_order" class="col-sm-3 col-form-label">Rate</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control" id="rate_order" name="rate_order" value="">
+                                            <input type="number" class="form-control" id="rate_order" name="rate_order" value="" min="1" max="5">
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-2">
                                         <label for="review_order" class="col-sm-3 col-form-label">Review</label>
                                         <div class="col-sm-9">
                                             <textarea type="text" class="form-control" id="review_order" name="review_order" value=""></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mb-1 justify-content-end">
+                                        <div class="col-md-auto justify-content-end" id="button-review-box">
+                                            <button class="btn btn-primary button-review" type="submit" id="submit" name="review">Rate and Review</button>
                                         </div>
                                     </div>
                                 </form>
@@ -250,14 +256,12 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card order_detail mt-2">
-                        <div class="card-header">{{ __('Order Details') }}</div>
+                        <div class="card-header">{{ __('Product Details') }}</div>
                         <div class="card-body">
-                            <?php
-                                while ($detail= mysqli_fetch_array($order_result2)) { ?>
                                     <div class="order">
                                         <div class="image_container">
                                             <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                <img class="image_order" src="../../<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
+                                                <img class="image_order" src="../../../../<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
                                             </a>
                                         </div>
                                         <h4 class="name_order">
@@ -281,8 +285,6 @@
                                             </a>
                                         </h5>
                                     </div>
-                                <?php };
-                            ?>
                         </div>
                     </div>
                 </div>

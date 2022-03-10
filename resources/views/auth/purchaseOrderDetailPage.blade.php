@@ -76,11 +76,12 @@
 
         }
     
-        // if (isset($_POST['review'])) {
+        if (isset($_POST['review'])) {
 
-        //     header("location:http://localhost:8000/orders/".$orderID."/review"); exit;
+            $productID = $_POST['review-product'];
+            header("location:http://localhost:8000/orders/".$orderID."/products/".$productID."/reviews"); exit;
 
-        // }
+        }
 
     ?>
 
@@ -92,16 +93,16 @@
         .card-body {
             padding: 16px;
         }
-        .status-box, .shipped-box {
+        .status-box {
             /* display: table; */
             clear: both;
         }
-        .status_order, .shipment_order {
+        .status_order {
             float: left;
             display: inline-block;
             width: 50%;
         }
-        #button-cancel-box, #button-review-box {
+        #button-cancel-box {
             float: right;
             display: inline-block;
         }
@@ -173,31 +174,31 @@
                             <div class="card-body">
                                 <form method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="date_order" class="col-sm-3 col-form-label">Purchase Date</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="date_order" name="date_order" value="<?php echo $detail['purchase_date'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="customer_order" class="col-sm-3 col-form-label">Customer Name</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="customer_order" name="customer_order" value="<?php echo $detail['name'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="addr_order" class="col-sm-3 col-form-label">Shipping Address</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="addr_order" name="addr_order" value="<?php echo $detail['shipping_addr'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="total_order" class="col-sm-3 col-form-label">Total Order Amounts</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="total_order" name="total_order" value="$ <?php echo $detail['total_order_amount'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row status-box">
+                                    <div class="form-group row mb-1 status-box">
                                         <label for="status_order" class="col-sm-3 col-form-label">Status</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext status_order" id="status" name="status_order" value="<?php echo $detail['status'] ?>" disabled>
@@ -209,35 +210,20 @@
                                         </div>
                                     </div>
                                     @if ($detail['status'] == 'shipped')
-                                        <div class="form-group row shipped-box">
+                                        <div class="form-group row mb-1 shipped-box">
                                             <label for="shipment_order" class="col-sm-3 col-form-label">Shipment Date</label>
                                             <div class="col-sm-9">
                                                 <input type="text" readonly class="form-control-plaintext shipment_order" id="shipment" name="shipment_order" value="<?php echo $detail['shipment_date'] ?>" disabled>
-                                                <!-- <div class="input-group-append" id="button-review-box">
-                                                    <button class="btn btn-primary button-review" type="submit" id="submit" name="review">Rate and Review</button>
-                                                </div> -->
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="rate_order" class="col-sm-3 col-form-label">Rate</label>
-                                            <div class="col-sm-9">
-                                                <input type="number" class="form-control" id="rate_order" name="rate_order" value="" min="1" max="5">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="review_order" class="col-sm-3 col-form-label">Review</label>
-                                            <div class="col-sm-9">
-                                                <textarea type="text" class="form-control" id="review_order" name="review_order" value=""></textarea>
                                             </div>
                                         </div>
                                     @elseif ($detail['status'] == 'cancelled')
-                                        <div class="form-group row">
+                                        <div class="form-group row mb-1">
                                             <label for="cancel_order" class="col-sm-3 col-form-label">Cancel Date</label>
                                             <div class="col-sm-9">
                                                 <input type="text" readonly class="form-control-plaintext" id="cancel_order" name="cancel_order" value="<?php echo $detail['cancel_date'] ?>" disabled>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
+                                        <div class="form-group row mb-1">
                                             <label for="cancel_by_order" class="col-sm-3 col-form-label">Cancel By</label>
                                             <div class="col-sm-9">
                                                 <input type="text" readonly class="form-control-plaintext" id="cancel_by_order" name="cancel_by_order" value="<?php echo $detail['cancel_by'] ?>" disabled>
@@ -302,6 +288,17 @@
                                                 Sub order amount: $ <?php echo ($detail['sub_order_amount']) ?>
                                             </a>
                                         </h5>
+                                        @if ($detail['status'] == 'shipped')
+                                            <form method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="form-group row mb-1 justify-content-end">
+                                                    <div class="col-md-auto justify-content-end" id="button-review-box">
+                                                        <input type="hidden" class="review-product" name="review-product" value="<?php echo $detail['productID'] ?>">
+                                                        <button class="btn btn-primary button-review" type="submit" id="submit" name="review">Rate and Review</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        @endif
                                     </div>
                                 <?php };
                             ?>

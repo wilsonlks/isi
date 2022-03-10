@@ -28,7 +28,7 @@
     $purchase_result2 = $cart_set->get_result();
 
 
-    $total_query = "SELECT SUM(price) AS total FROM
+    $total_query = "SELECT SUM(price*quantity) AS total FROM
                     (`shoppingcart` INNER JOIN `users`
                     ON shoppingcart.customerID=users.id
                     INNER JOIN `product`

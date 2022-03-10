@@ -69,18 +69,18 @@ class OrderController extends Controller
         }
     }
 
-    // /**
-    //  * Rate and review a specific purchase order.
-    //  *
-    //  * @return \Illuminate\View\View
-    //  */
-    // protected function rate_and_review()
-    // {
-    //     if(Auth::user()->role=='customer') {
-    //         return view('auth.rateAndReview');
-    //     } else {
-    //         return redirect('orders')->with('alert', 'Sorry, You Are Not Allowed to Access This Page.');
-    //     }        
-    // }
+    /**
+     * Rate and review a specific purchase order.
+     *
+     * @return \Illuminate\View\View
+     */
+    protected function rate_and_review()
+    {
+        if(Auth::user()->role=='customer') {
+            return view('auth.rateAndReview');
+        } else {
+            return redirect('orders')->with('alert', 'Sorry, You Are Not Allowed to Access This Page.');
+        }        
+    }
 
 }
