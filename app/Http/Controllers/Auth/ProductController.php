@@ -62,7 +62,7 @@ class ProductController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    protected function bestSelling()
+    protected function best_selling()
     {
         if(Auth::user()->role=='vendor') {
             return view('auth.bestSellingProducts');

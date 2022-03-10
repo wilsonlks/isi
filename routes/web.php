@@ -74,6 +74,12 @@ Route::get('/orders/{order}', [OrderController::class, 'get_order_detail'])->mid
 
 Route::post('/orders/{order}', [OrderController::class, 'process_order_detail'])->middleware('auth');
 
+// // Rate and Review Page
+
+// Route::get('/orders/{order}/review', [OrderController::class, 'rate_and_review'])->middleware('auth');
+
+// Route::post('/orders/{order}/review', [OrderController::class, 'rate_and_review'])->middleware('auth');
+
 // Best Selling Products
 
-Route::get('/bestSelling', [ProductController::class, 'bestSelling'])->middleware('auth');
+Route::get('/bestSelling', [ProductController::class, 'best_selling'])->middleware('auth');

@@ -9,12 +9,13 @@
 
         $url=url()->full();
         $split_url=preg_split("#/#", $url);
-        $orderID=$split_url[count($split_url)-1];
+        $orderID=$split_url[count($split_url)-2];
 
         // check authorization
 
         $check_auth_query = "SELECT `customerID` FROM `purchaseorder`
-                                WHERE `poID`=$orderID";
+                                WHERE `poID`=$orderID
+                                AND `status`=\"shipped\"";
         $check_auth_set = $dbConnection->prepare($check_auth_query);
         $check_auth_set->execute();
         $check_auth_result = $check_auth_set->get_result();
@@ -76,12 +77,12 @@
 
         }
     
-        // if (isset($_POST['review'])) {
+    
+        if (isset($_POST['review'])) {
 
-        //     header("location:http://localhost:8000/orders/".$orderID."/review"); exit;
+            header("location:http://localhost:8000/orders/".$orderID."/review"); exit;
 
-        // }
-
+        }
     ?>
 
     <style type="text/css">
@@ -92,16 +93,16 @@
         .card-body {
             padding: 16px;
         }
-        .status-box, .shipped-box {
+        .status-box {
             /* display: table; */
             clear: both;
         }
-        .status_order, .shipment_order {
+        .status_order {
             float: left;
             display: inline-block;
             width: 50%;
         }
-        #button-cancel-box, #button-review-box {
+        #button-box {
             float: right;
             display: inline-block;
         }
@@ -156,7 +157,7 @@
         }
     </style>
 
-    <!-- customer order detail page -->
+    <!-- customer order rate and review page -->
 
     <div class="content">
 
@@ -201,55 +202,32 @@
                                         <label for="status_order" class="col-sm-3 col-form-label">Status</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext status_order" id="status" name="status_order" value="<?php echo $detail['status'] ?>" disabled>
-                                            @if (($detail['status'] == 'pending') || ($detail['status'] == 'hold'))
-                                                <div class="input-group-append" id="button-cancel-box">
-                                                    <button class="btn btn-primary button-cancel" type="submit" id="submit" name="cancel">Cancel Order</button>
-                                                </div>
-                                            @endif
                                         </div>
                                     </div>
-                                    @if ($detail['status'] == 'shipped')
-                                        <div class="form-group row shipped-box">
-                                            <label for="shipment_order" class="col-sm-3 col-form-label">Shipment Date</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control-plaintext shipment_order" id="shipment" name="shipment_order" value="<?php echo $detail['shipment_date'] ?>" disabled>
-                                                <!-- <div class="input-group-append" id="button-review-box">
-                                                    <button class="btn btn-primary button-review" type="submit" id="submit" name="review">Rate and Review</button>
-                                                </div> -->
-                                            </div>
+                                    <div class="form-group row">
+                                        <label for="shipment_order" class="col-sm-3 col-form-label">Shipment Date</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control-plaintext" id="shipment_order" name="shipment_order" value="<?php echo $detail['shipment_date'] ?>" disabled>
                                         </div>
-                                        <div class="form-group row">
-                                            <label for="rate_order" class="col-sm-3 col-form-label">Rate</label>
-                                            <div class="col-sm-9">
-                                                <input type="number" class="form-control" id="rate_order" name="rate_order" value="" min="1" max="5">
-                                            </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="rate_order" class="col-sm-3 col-form-label">Rate</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="rate_order" name="rate_order" value="">
                                         </div>
-                                        <div class="form-group row">
-                                            <label for="review_order" class="col-sm-3 col-form-label">Review</label>
-                                            <div class="col-sm-9">
-                                                <textarea type="text" class="form-control" id="review_order" name="review_order" value=""></textarea>
-                                            </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="review_order" class="col-sm-3 col-form-label">Review</label>
+                                        <div class="col-sm-9">
+                                            <textarea type="text" class="form-control" id="review_order" name="review_order" value=""></textarea>
                                         </div>
-                                    @elseif ($detail['status'] == 'cancelled')
-                                        <div class="form-group row">
-                                            <label for="cancel_order" class="col-sm-3 col-form-label">Cancel Date</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control-plaintext" id="cancel_order" name="cancel_order" value="<?php echo $detail['cancel_date'] ?>" disabled>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="cancel_by_order" class="col-sm-3 col-form-label">Cancel By</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control-plaintext" id="cancel_by_order" name="cancel_by_order" value="<?php echo $detail['cancel_by'] ?>" disabled>
-                                            </div>
-                                        </div>
-                                    @endif
+                                    </div>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                @if (isset($message))
+                <!-- @if (isset($message))
                     <div class="row justify-content-center">
                         <div class="col-md-8">
                             <div class="card mt-2">
@@ -268,7 +246,7 @@
                             </div>
                         </div>
                     </div>
-                @endif
+                @endif -->
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card order_detail mt-2">
@@ -279,7 +257,7 @@
                                     <div class="order">
                                         <div class="image_container">
                                             <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                <img class="image_order" src="../<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
+                                                <img class="image_order" src="../../<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
                                             </a>
                                         </div>
                                         <h4 class="name_order">
