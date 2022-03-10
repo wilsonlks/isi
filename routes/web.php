@@ -76,6 +76,4 @@ Route::post('/orders/{order}', [OrderController::class, 'process_order_detail'])
 
 // Best Selling Products
 
-Route::get('/bestSelling', function () {
-    return view('auth.bestSellingProducts');
-});
+Route::get('/bestSelling', [ProductController::class, 'bestSelling'])->middleware('auth');

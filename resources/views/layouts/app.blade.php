@@ -68,6 +68,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ '/products/new' }}">{{ __('Add Products') }}</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ '/bestSelling' }}">{{ __('Best-Sellings') }}</a>
+                                </li>
                             @else 
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ '/cart' }}">{{ __('Shopping Cart') }}</a>

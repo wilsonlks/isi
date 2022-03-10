@@ -6,10 +6,10 @@
 
         include("./php_file/dbConnect.php");
 
-        $categoryQ = "SELECT * FROM category";
-        $CSet = $dbConnection->prepare($categoryQ);
-        $CSet->execute();
-        $CSetResult = $CSet->get_result();
+        // $categoryQ = "SELECT * FROM category ORDER BY categoryName";
+        // $CSet = $dbConnection->prepare($categoryQ);
+        // $CSet->execute();
+        // $CSetResult = $CSet->get_result();
     ?>
 
 <style type="text/css">
@@ -109,23 +109,10 @@
             text-decoration: none;
             color: black;
         }
-        .alert {
-            margin: 0px;
+        .inputdate {
+            padding-left: 16px;
             padding-right: 16px;
         }
-        .alert button {
-            background: none;
-            border: 0px;
-            font-weight: bold;
-            float: right;
-        }
-        .cancel-order:hover {
-            color: blue;
-        }
-        .keep-order:hover {
-            color: grey;
-        }
-
     </style>
 
     <div class="content">
@@ -138,7 +125,7 @@
                 <div class="col-md-8">
                     <!-- get category from DB -->
                     <?php
-                        $categoryQ = "SELECT * FROM category";
+                        $categoryQ = "SELECT * FROM category ORDER BY categoryName";
                         $CSet = $dbConnection->prepare($categoryQ);
                         $CSet->execute();
                         $CSetResult = $CSet->get_result();
@@ -146,18 +133,20 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
-                                <a class="nav-item nav-link active" id="nav-date-tab" data-toggle="tab" href="#nav-date" role="tab" aria-controls="nav-date" aria-selected="true">date</a>
+                                <a class="nav-item nav-link active" id="nav-date-tab" data-toggle="tab" href="#nav-date" role="tab" aria-controls="nav-date" aria-selected="true">Date</a>
                                 <a class="nav-item nav-link" id="nav-filter-tab" data-toggle="tab" href="#nav-filter" role="tab" aria-controls="nav-filter" aria-selected="false">Filter</a>
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="tab-content" id="nav-tabContent">
-                                <div class="tab-pane active" id="nav-date" role="tabpanel" aria-labelledby="nav-date-tab">
-                                    <div class="list-group-item inputdate">
-                                        From <input type="date" id="fromDate" value="" onchange="Click()">
-                                    </div>
-                                    <div class="list-group-item inputdate">
-                                        To <input type="date" id="toDate" value="" onchange="Click()">
+                                <div class="tab-pane show active" id="nav-date" role="tabpanel" aria-labelledby="nav-date-tab">
+                                    <div class="row">
+                                        <div class="list-group-item inputdate col-md-6">
+                                            From <input type="date" id="fromDate" value="" onchange="Click()">
+                                        </div>
+                                        <div class="list-group-item inputdate col-md-6">
+                                            To <input type="date" id="toDate" value="" onchange="Click()">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="nav-filter" role="tabpanel" aria-labelledby="nav-filter-tab">

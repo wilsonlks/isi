@@ -57,4 +57,18 @@ class ProductController extends Controller
         }        
     }
 
+    /**
+     * Show the best selling products.
+     *
+     * @return \Illuminate\View\View
+     */
+    protected function bestSelling()
+    {
+        if(Auth::user()->role=='vendor') {
+            return view('auth.bestSellingProducts');
+        } else {
+            return redirect('products')->with('alert', 'Sorry, You Are Not Allowed to Access This Page.');
+        }        
+    }
+
 }
