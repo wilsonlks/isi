@@ -10,21 +10,11 @@
 
 <style type="text/css">
 
-        .purchase_best_products_list .card-body {
-            padding: 0px 16px 0px;
-        }
-        .best_products {
+        /* .best-products {
             margin: 0px;
             padding: 0px;
             font-size: 0.85rem;
-        }
-        .best_products:not(:last-child) {
-            border-bottom: 2px solid darkgreen;
-        }
-        a {
-            text-decoration: none;
-            color: black;
-        }
+        } */
         .list-group-item {
             border: 0px;
         }
@@ -40,12 +30,10 @@
             width: 100%;
             padding: 1px 5px 1px;
         }
-
         #toDate {
             width: 100%;
             padding: 1px 5px 1px;
         }
-
         .card {
             width: 100%;
             margin: auto;
@@ -53,25 +41,29 @@
         .card-body {
             padding: 16px;
         }
-        #button-box {
-            float: right;
-            display: inline-block;
-        }
-        .best_products_detail .card-body {
+        .best-products-detail .card-body {
             padding: 0px 16px 0px;
         }
-        .best_products {
+        .best-products {
             width: 100%;
-            display: table;
-            clear: both;
+            margin: auto;
+            padding: 15px 0px 15px;
         }
-        .best_products:not(:last-child) {
+        .best-products-box:not(:last-child) {
             border-bottom: 2px solid darkgreen;
         }
-        .name_best_products, .total_quantity_best_products, .total_amount_best_products {
+        .name-best {
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: green;
             text-align: right;
         }
-        .image_best_products {
+        .total-quantity-best, .total-amount-best {
+            font-size: 1rem;
+            text-align: right;
+        }
+        .image-best {
             width: 150px;
             height: 150px;
             object-fit: scale-down;
@@ -79,13 +71,19 @@
             float: left;
             clear: both;
         }
-        a {
+        .sm-detail {
+            width: 77px;
+        }
+        a:link, a:hover, a:active, a:visited {
             text-decoration: none;
             color: black;
         }
         .inputdate {
             padding-left: 16px;
             padding-right: 16px;
+        }
+        #fetch_data {
+            margin: 0px;
         }
     </style>
 
@@ -139,7 +137,7 @@
             <!-- print data -->
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <div class="card purchase_best_products_list mt-2">
+                    <div class="card best-products-detail mt-2">
 
                             <p id="fetch_data"></p>
 

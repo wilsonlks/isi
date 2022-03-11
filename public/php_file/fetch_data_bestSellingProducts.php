@@ -99,27 +99,33 @@
     while ($row= mysqli_fetch_array($resultSet2)){
         $data_count .= 1;
         $output .='
-                    <div class="best_products">
-                        <div class="image_container">
-                            <a href="../products/'.$row['productID'].'" class="link-to-product-details">
-                                <img class="image_best_products" src="../'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200px">
-                            </a>
-                        </div>
-                        <h4 class="name_best_products">
-                            <a href="../products/'.$row['productID'].'" class="link-to-product-details">
-                                '.$row['productName'].'
-                            </a>
-                        </h4>
-                        <h6 class="total_quantity_best_products">
-                            <a href="../products/'.$row['productID'].'" class="link-to-product-details">
-                                &times;'.$row['totalQuantity'].'
-                            </a>
-                        </h6>
-                        <h5 class="total_amount_best_products">
-                            <a href="../products/'.$row['productID'].'" class="link-to-product-details">
-                                Total sales amount: $ '.$row['totalAmount'].'
-                            </a>
-                        </h5>
+                    <div class="best-products-box">
+                        <a href="../products/'.$row['productID'].'" class="link-to-product-details">
+                            <table class="best-products">
+                                <tr>
+                                    <td rowspan="4" class="image_container">
+                                        <img class="image-best" src="../'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200px">
+                                    </td>
+                                    <td colspan="2" class="name-best best">
+                                        '.$row['productName'].'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="total-quantity-best best sm-detail">
+                                        &times;'.$row['totalQuantity'].'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="total-amount-best best">
+                                        Total sales amount: $ '.$row['totalAmount'].'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td</td><td</td>
+                                </tr>
+                            </table>
+                        </a>
                     </div>'
                 ;
         $n_of_BSQ = $n_of_BSQ-1;
@@ -132,7 +138,7 @@
     //echo '</div>';
     echo '';
     if($data_count == 0){
-        $output .= '<div class="no_product">No best_products</div>';
+        $output .= '<div class="no_product">No best products</div>';
     }
     echo $output;
 
