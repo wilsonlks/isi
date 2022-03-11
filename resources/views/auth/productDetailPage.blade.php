@@ -66,8 +66,8 @@
         } else {
 
             $total_review = 0;
-            $rating_message = 'No ratings.';
-            $review_message = 'No reviews.';
+            $rating_message = 'No ratings';
+            $review_message = 'No reviews';
 
         }
 
@@ -158,7 +158,7 @@
         }
         .card-subtitle {
             border-bottom: 2px solid darkgreen;
-            padding-bottom: 35px;
+            padding-bottom: 15px;
             padding-top: 5px;
         }
         .card-text, .alert {
@@ -208,6 +208,45 @@
         }
         .current-review {
             border-top: 1px dashed black;
+        }
+        .badge-warning {
+            color: black;
+            background: orange;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .badge-warning:hover {
+            color: black;
+            background: darkorange;
+        }
+        .out-of-stock {
+            margin: 0px;
+        }
+        .badge-info {
+            color: black;
+            background: deepskyblue;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .badge-info:hover {
+            color: black;
+            background: dodgerblue;
+        }
+        .few-items-left {
+            margin: 0px;
+        }
+        .badge-success {
+            color: black;
+            background: springgreen;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .badge-success:hover {
+            color: black;
+            background: limegreen;
+        }
+        .in-stock {
+            margin: 0px;
         }
     </style>
 
@@ -265,6 +304,33 @@
                                     @endif
                                 @endauth
                                 <h4 class="mb-2 text-muted category_detail"><?php echo $detail['categoryName'] ?></h4>
+                                @auth
+                                    @if (Auth::user()->role=='vendor')
+                                        @if ($detail['stock'] == 0)
+                                            <span class="out-of-stock"><a href="/products/<?php echo $detail['productID'] ?>/edit" class="badge badge-warning">Out-of-stock</a></span>
+                                        @elseif (($detail['stock'] <= 5))
+                                            <span class="few-items-left"><a href="/products/<?php echo $detail['productID'] ?>/edit" class="badge badge-info">Few items left</a></span>
+                                        @else
+                                            <span class="in-stock"><a href="/products/<?php echo $detail['productID'] ?>/edit" class="badge badge-success">In-stock</a></span>
+                                        @endif
+                                    @else
+                                        @if ($detail['stock'] == 0)
+                                            <span class="out-of-stock badge badge-warning">Out-of-stock</span>
+                                        @elseif ($detail['stock'] <= 5)
+                                            <span class="few-items-left badge badge-info">Few items left</span>
+                                        @else
+                                            <span class="in-stock badge badge-success">In-stock</span>
+                                        @endif
+                                    @endif
+                                @else
+                                    @if ($detail['stock'] == 0)
+                                        <span class="out-of-stock badge badge-warning">Out-of-stock</span>
+                                    @elseif ($detail['stock'] <= 5)
+                                        <span class="few-items-left badge badge-info">Few items left</span>
+                                    @else
+                                        <span class="in-stock badge badge-success">In-stock</span>
+                                    @endif
+                                @endauth
                                 <h4 class="mb-2 text-muted price_detail">$ <?php echo $detail['price'] ?></h4>
                             </div>
                             <div class="card-text"><?php

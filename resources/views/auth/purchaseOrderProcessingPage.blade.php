@@ -27,6 +27,17 @@
         $order_result1 = $order_set->get_result();
         $order_set->execute();
         $order_result2 = $order_set->get_result();
+        $order_set->execute();
+        $order_result3 = $order_set->get_result();
+        $order_set->execute();
+        $order_result4 = $order_set->get_result();
+
+        $out_of_stock = FALSE;
+        while ($detail=mysqli_fetch_array($order_result3)) {
+            if ($detail['quantity'] > $detail['stock']) {
+                $out_of_stock = TRUE;
+            }
+        }
 
         if (isset($_POST['submit'])) {
 
@@ -50,6 +61,19 @@
                                             SET `status`=\"".$update_status."\", `shipment_date`=\"".$date."\"
                                             WHERE `poID`=$orderID";
 
+                    while ($detail=mysqli_fetch_array($order_result4)) {
+
+                        $productID = $detail['productID'];
+                        $update_stock = $detail['stock'] - $detail['quantity'];
+                        $update_stock_query = "UPDATE `product`
+                                                SET `stock`=$update_stock
+                                                WHERE `productID`=$productID";
+                        $update_stock_set = $dbConnection->prepare($update_stock_query);
+                        $update_stock_set->execute();
+                        $update_stock_set->close();
+
+                    }
+                                    
                 } elseif ($update_status == 'cancelled') {
 
                     $update_status_query = "UPDATE `purchaseorder`
@@ -99,27 +123,20 @@
         #button-box {
             margin: 0px;
         }
-        .order_detail .card-body {
+        .order-detail .card-body {
             padding: 0px 16px 0px;
         }
-        /* .date_order, .customer_order, .addr_order, .total_order, .status_order {
-            width: auto;
-        } */
-        .order {
+        .order-product {
             width: 100%;
             display: table;
-            clear: both;
         }
-        .order:not(:last-child) {
+        .order-product-box:not(:last-child) {
             border-bottom: 2px solid darkgreen;
-        }
-        .name_order, .price_order, .quantity_order, .sub_total_order {
-            text-align: right;
         }
         .status_order, #cancel_by_order {
             text-transform: uppercase;
         }
-        .image_order {
+        .image-order {
             width: 150px;
             height: 150px;
             object-fit: scale-down;
@@ -127,9 +144,49 @@
             float: left;
             clear: both;
         }
-        a {
+        .name-order {
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: green;
+            text-align: right;
+        }
+        .price-order, .quantity-order, .sub-total-order {
+            font-size: 1rem;
+            text-align: right;
+        }
+        .sm-detail {
+            width: 170px;
+        }
+        .link-to-product-details:link, .link-to-product-details:hover, .link-to-product-details:active, .link-to-product-details:visited {
             text-decoration: none;
             color: black;
+        }
+        .badge-warning {
+            color: black;
+            background: orange;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .badge-warning:hover {
+            color: black;
+            background: darkorange;
+        }
+        .out-of-stock {
+            margin: 5px;
+        }
+        .badge-info {
+            color: black;
+            background: deepskyblue;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .badge-info:hover {
+            color: black;
+            background: dodgerblue;
+        }
+        .few-items-left {
+            margin: 5px;
         }
     </style>
 
@@ -177,16 +234,16 @@
                                     <div class="input-group">
                                         <label for="status_order" class="col-md-3 col-form-label">Status</label>
                                         <div class="col-md-7 status-select">
-                                        <select class="form-select @if (isset($error_name)) is-invalid @endif" id="status" name="status_order">
+                                        <select class="form-select @if (isset($error)) is-invalid @endif" id="status" name="status_order">
                                             <option value="" disabled>Status change</option>
                                             @if ($detail['status'] == 'pending')
                                                 <option value="pending" selected disabled>Pending</option>
                                                 <option value="hold">Hold</option>
-                                                <option value="shipped">Shipped</option>
+                                                <option value="shipped" {{ ($out_of_stock==TRUE) ? "disabled" : "" }}>Shipped</option>
                                                 <option value="cancelled">Cancelled</option>
                                             @elseif ($detail['status'] == 'hold')
                                                 <option value="hold" selected disabled>Hold</option>
-                                                <option value="shipped">Shipped</option>
+                                                <option value="shipped" {{ ($out_of_stock==TRUE) ? "disabled" : "" }}>Shipped</option>
                                                 <option value="cancelled">Cancelled</option>
                                             @elseif ($detail['status'] == 'shipped')
                                                 <option value="shipped" selected disabled>Shipped</option>
@@ -235,37 +292,46 @@
                 </div>
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <div class="card order_detail mt-2">
+                    <div class="card order-detail mt-2">
                         <div class="card-header">{{ __('Order Details') }}</div>
                         <div class="card-body">
                             <?php
                                 while ($detail= mysqli_fetch_array($order_result2)) { ?>
-                                    <div class="order">
-                                        <div class="image_container">
-                                            <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                <img class="image_order" src="../<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
-                                            </a>
-                                        </div>
-                                        <h4 class="name_order">
-                                            <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                <?php echo $detail['productName'] ?>
-                                            </a>
-                                        </h4>
-                                        <h5 class="price_order">
-                                            <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                $ <?php echo $detail['oldprice'] ?>
-                                            </a>
-                                        </h5>
-                                        <h6 class="quantity_order">
-                                            <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                &times;<?php echo $detail['quantity'] ?>
-                                            </a>
-                                        </h6>
-                                        <h5 class="sub_total_order">
-                                            <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                                Sub order amount: $ <?php echo ($detail['sub_order_amount']) ?>
-                                            </a>
-                                        </h5>
+                                    <div class="order-product-box">
+                                        <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
+                                            <table class="order-product">
+                                                <tr>
+                                                    <td rowspan="4" class="image_container">
+                                                        <img class="image-order" src="../<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
+                                                    </td>
+                                                    <td colspan="2" class="name-order order">
+                                                        <?php echo $detail['productName'] ?>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" class="price-order order">
+                                                            $ <?php echo $detail['oldprice'] ?>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                    </td>
+                                                    <td class="quantity-order order sm-detail">
+                                                        @if (((($detail['status'] == 'pending') || ($detail['status'] == 'hold')) && ($detail['quantity'] > $detail['stock'])) || ($detail['stock'] == 0))
+                                                            <span class="out-of-stock"><a href="../products/<?php echo $detail['productID'] ?>/edit" class="badge badge-warning">Out-of-stock</a></span>
+                                                        @elseif (($detail['stock'] <= 5))
+                                                            <span class="few-items-left"><a href="../products/<?php echo $detail['productID'] ?>/edit" class="badge badge-info">Few items left</a></span>
+                                                        @endif
+                                                        &times;<?php echo $detail['quantity'] ?>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" class="sub-total-order order">
+                                                            Sub order amount: $ <?php echo $detail['sub_order_amount'] ?>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </a>
                                     </div>
                                 <?php };
                             ?>
