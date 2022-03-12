@@ -32,10 +32,16 @@
 
             $AscDesc  = intval($_POST["AscDesc"]);
             if ($AscDesc == 1){
-                $AscDesc = "ASC";
+                if ($s_sorting_value=="-avg_rating") {
+                    $AscDesc = "DESC";
+                } else {
+                    $AscDesc = "ASC";
+                }
             }elseif ($AscDesc == -1) {
+                if ($s_sorting_value=="-avg_rating") {
+                    $s_sorting_value = "avg_rating";
+                }
                 $AscDesc = "DESC";
-
             }
 
         }
@@ -94,7 +100,19 @@
     (`product` INNER JOIN `productimage`
     ON product.productID=productimage.productID)
     LEFT JOIN `category`
-    ON `product`.`category`=`category`.`categoryID` ".$where.$searchQ.$and.$filter.$sorting.$limitQ.";";
+    ON `product`.`category`=`category`.`categoryID`     
+            LEFT JOIN (
+                SELECT `productID`, 
+                    AVG(
+                        CASE 
+                            WHEN `review_date_new` <> 'NULL'
+                                THEN `rating_new`
+                            WHEN `review_date` <> 'NULL'
+                                THEN `rating`
+                        END) AS `avg_rating`
+                    FROM `productreview`
+                    GROUP BY `productID`) AS `rating_table`
+                    ON `product`.`productID`=`rating_table`.`productID` ".$where.$searchQ.$and.$filter.$sorting.$limitQ.";";
 
     //print Query
     //echo $query."<br>";
@@ -117,6 +135,30 @@
 
     while ($row= mysqli_fetch_array($resultSet)){
         $data_count += 1;
+
+        if ($row['avg_rating'] != NULL) {
+
+            $avg_rating = round($row['avg_rating'], 1);
+            if ($avg_rating <= 1) {
+                $avg_rating .= ' star';
+            } else {
+                $avg_rating .= ' stars';
+            }
+            if ($avg_rating < 2) {
+                $rating = ' low_rating_productList';
+            } elseif ($avg_rating < 4) {
+                $rating = ' mid_rating_productList';
+            } else {
+                $rating = ' high_rating_productList';
+            }
+
+        } else {
+
+            $avg_rating = 'No ratings';
+            $rating = '';
+
+        }
+
         $output .=
             '
 
@@ -125,7 +167,8 @@
                             <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" ></div>
                             <div class="id_productList">No.'.$row['productID'].'</div> |
                             <div class="name_productList">'.$row['productName'].'</div> |
-                            <div class="category_productList">'.$row['categoryName'].'</div>
+                            <div class="category_productList">'.$row['categoryName'].'</div> |
+                            <div class="rating_productList'.$rating.'">'.$avg_rating.'</div>
                             <div class="price_productList">$ '.$row['price'].'</div>
                         </a>
                     </div>';
@@ -146,7 +189,19 @@
     (`product` INNER JOIN `productimage`
     ON product.productID=productimage.productID)
     LEFT JOIN `category`
-    ON `product`.`category`=`category`.`categoryID` ".$where.$searchQ.$and.$filter.$sorting.";";
+                ON `product`.`category`=`category`.`categoryID`     
+                LEFT JOIN (
+                    SELECT `productID`, 
+                        AVG(
+                            CASE 
+                                WHEN `review_date_new` <> 'NULL'
+                                    THEN `rating_new`
+                                WHEN `review_date` <> 'NULL'
+                                    THEN `rating`
+                            END) AS `avg_rating`
+                        FROM `productreview`
+                        GROUP BY `productID`) AS `rating_table`
+                        ON `product`.`productID`=`rating_table`.`productID` ".$where.$searchQ.$and.$filter.$sorting.";";
     //echo $NP_query;
     $NP_result = mysqli_query($dbConnection, $NP_query);
     $NP_row = mysqli_fetch_row($NP_result);

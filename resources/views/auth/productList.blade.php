@@ -38,14 +38,27 @@
             padding: 10px 0px 10px;
             object-fit: cover;
         }
-        .name_productList ,.category_productList ,.price_productList{
+        .name_productList, .category_productList, .rating_productList, .price_productList {
             padding: 10px;
         }
-        .name_productList ,.category_productList{
+        .name_productList, .category_productList, .rating_productList {
             display: inline;
+        }
+        .rating_productList {
+            font-weight: bold;
+        }
+        .low_rating_productList {
+            color: red;
+        }
+        .mid_rating_productList {
+            color: orange;
+        }
+        .high_rating_productList {
+            color: limegreen;
         }
         .name_productList {
             font-weight: bold;
+            text-transform: uppercase;
         }
         .list-group-item {
             border: 0px;
@@ -161,6 +174,9 @@
                                         </div>
                                         <div class="list-group-item sorting_button">
                                             <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="price"> Price </label>
+                                        </div>
+                                        <div class="list-group-item sorting_button">
+                                            <label><input type="radio" class="sorting_radio" name="sorting_radio" onclick="Click()" value="-avg_rating"> Average Ratings </label>
                                         </div>
                                     </form>
                                     <button onclick = "changeSorting('1')" class="AscDesc" id="asc" value="Asc" style="display:block">ASC&#9650;</button>
