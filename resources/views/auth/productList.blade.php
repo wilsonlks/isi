@@ -84,8 +84,8 @@
             padding: 1px 5px 1px;
         }
         .category-filter {
-            padding-bottom: 10px;
-            border-bottom: 1px solid black;
+            /* padding-bottom: 10px; */
+            /* border-bottom: 1px solid black; */
         }
         .category-filter-label {
             padding-bottom: 5px;

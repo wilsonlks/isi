@@ -10,21 +10,25 @@
                 <div class='col-md-8'>";
     $filter = "";
     $page_number = 1;
+
     //get data from productList.blade.php
-    if(isset($_POST["action"])){
+    if (isset($_POST["action"])) {
 
         //get category filter from productList.blade.php
-        if(isset($_POST["category_filter"])){
+        if (isset($_POST["category_filter"])) {
+
             $_category_filter = implode(",", $_POST["category_filter"]);//get data
             $s_category_filter = strval($_category_filter); //like toString()
 
             $filter .= "
             product.category IN (".$s_category_filter.")
             ";
+
         }
 
         //get stock filter from productList.blade.php
-        if(isset($_POST["stock_filter"])){
+        if (isset($_POST["stock_filter"])) {
+
             $_stock_filter = implode("OR", $_POST["stock_filter"]);//get data
             $s_stock_filter = strval($_stock_filter); //like toString()
 
@@ -33,23 +37,26 @@
             }
 
             $filter .= $s_stock_filter." ";
+
         }
 
         //get and set sorting value
-        if(isset($_POST["sorting"])){
+        if (isset($_POST["sorting"])) {
+
             $s_sorting_value = strval($_POST["sorting"]);
+
         }
 
         if (isset($_POST["AscDesc"])) {
 
             $AscDesc  = intval($_POST["AscDesc"]);
-            if ($AscDesc == 1){
+            if ($AscDesc == 1) {
                 if ($s_sorting_value=="-avg_rating") {
                     $AscDesc = "DESC";
                 } else {
                     $AscDesc = "ASC";
                 }
-            }elseif ($AscDesc == -1) {
+            } elseif ($AscDesc == -1) {
                 if ($s_sorting_value=="-avg_rating") {
                     $s_sorting_value = "avg_rating";
                 }
@@ -58,11 +65,13 @@
 
         }
 
-        if(isset($_POST["searchText"])){
+        if (isset($_POST["searchText"])) {
+
             $searchText = strval($_POST["searchText"]);
-            if (strlen($searchText) > 0){
+
+            if (strlen($searchText) > 0) {
                 $searchQ = "((product.productName LIKE '%".$searchText."%') OR (product.productID='".$searchText."')) ";
-            }else {
+            } else {
                 $searchQ = "";
             }
         }
@@ -71,21 +80,22 @@
 
             $page_number  = intval($_POST["page"]);
 
-        }
+        } else {
 
-        else {
-
-          $page_number=1;
+            $page_number=1;
 
         }
 
     }
 
-    if(strlen($searchQ)>0 OR strlen($s_category_filter)>0 OR strlen($s_stock_filter)>0){
+    if (strlen($searchQ)>0 OR strlen($s_category_filter)>0 OR strlen($s_stock_filter)>0) {
+
         $where = " WHERE ";
-        if(strlen($searchQ)>0 AND (strlen($s_category_filter)>0 OR strlen($s_stock_filter)>0)){
+        
+        if (strlen($searchQ)>0 AND (strlen($s_category_filter)>0 OR strlen($s_stock_filter)>0)) {
             $and = " AND ";
         }
+
     }
 
     //may do sorting requirement?? DONE
@@ -135,8 +145,6 @@
     $resultSet = $statement->get_result();
 
 
-
-
     //print data
     $output = '';
     $data_count = 0;
@@ -145,17 +153,20 @@
                 <div class="card-header">Products</div>
                 <div class="card-body">';
 
-    while ($row= mysqli_fetch_array($resultSet)){
+    while ($row= mysqli_fetch_array($resultSet)) {
+
         $data_count += 1;
 
         if ($row['avg_rating'] != NULL) {
 
             $avg_rating = round($row['avg_rating'], 1);
+
             if ($avg_rating <= 1) {
                 $avg_rating .= ' star';
             } else {
                 $avg_rating .= ' stars';
             }
+
             if ($avg_rating < 2) {
                 $rating = ' low_rating_productList';
             } elseif ($avg_rating < 4) {
@@ -172,17 +183,23 @@
         }
 
         if ($row['stock'] == 0) {
+
             $stock_status = 'out-of-stock';
             $badge = 'warning';
             $stock_label = 'Out-of-stock';
+
         } elseif ($row['stock'] <= 10) {
+
             $stock_status = 'few-items-left';
             $badge = 'info';
             $stock_label = 'Few items left';
+
         } else {
+
             $stock_status = 'in-stock';
             $badge = 'success';
             $stock_label = 'In-stock';
+
         }
 
         $output .=
@@ -199,11 +216,14 @@
                             <div class="price_productList">$ '.$row['price'].'</div>
                         </a>
                     </div>';
+
     };
 
     echo '';
-    if($data_count == 0){
+    if ($data_count == 0) {
+
         $output .= '<div class="no_product">No product</div>';
+
     }
     echo $output;
     echo "</div></div></div></div>";
@@ -246,7 +266,7 @@
 
             $pageURL .= '<div class="page_productList justify-content-center mt-2">';
 
-        if($page_number==1){
+        if ($page_number==1) {
             $pageURL .= '<span class="page page_disabled">Previous</span>';
         } else {
             $pageURL .= '<button onclick="set_page('.($page_number-1).')" class="page" value="'.($page_number-1).'">Previous</button>';
@@ -260,7 +280,7 @@
             };
         };
 
-        if($page_number!=$total_pages){
+        if ($page_number!=$total_pages) {
             $pageURL .= '<button onclick="set_page('.($page_number+1).')" class="page" value="'.($page_number+1).'">Next</button>';
         } else {
             $pageURL .= '<span class="page page_disabled" value="'.($page_number+1).'">Next</span>';
