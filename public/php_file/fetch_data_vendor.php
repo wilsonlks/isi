@@ -23,6 +23,18 @@
             ";
         }
 
+        //get stock filter from productList.blade.php
+        if(isset($_POST["stock_filter"])){
+            $_stock_filter = implode("OR", $_POST["stock_filter"]);//get data
+            $s_stock_filter = strval($_stock_filter); //like toString()
+
+            if (isset($_POST["category_filter"])) {
+                $filter .= " AND ";
+            }
+
+            $filter .= $s_stock_filter." ";
+        }
+
         //get and set sorting value
         if(isset($_POST["sorting"])){
             $s_sorting_value = strval($_POST["sorting"]);
@@ -69,9 +81,9 @@
 
     }
 
-    if(strlen($searchQ)>0 OR strlen($s_category_filter)>0){
+    if(strlen($searchQ)>0 OR strlen($s_category_filter)>0 OR strlen($s_stock_filter)>0){
         $where = " WHERE ";
-        if(strlen($searchQ)>0 AND strlen($s_category_filter)>0){
+        if(strlen($searchQ)>0 AND (strlen($s_category_filter)>0 OR strlen($s_stock_filter)>0)){
             $and = " AND ";
         }
     }
@@ -96,7 +108,7 @@
     $limitQ = " LIMIT ".$initial_page.", ".$NP_limit;
 
     //set query
-    $query = "SELECT * FROM
+    $query = "SELECT *, `product`.`productID` AS pID FROM
     (`product` INNER JOIN `productimage`
     ON product.productID=productimage.productID)
     LEFT JOIN `category`
@@ -159,16 +171,31 @@
 
         }
 
+        if ($row['stock'] == 0) {
+            $stock_status = 'out-of-stock';
+            $badge = 'warning';
+            $stock_label = 'Out-of-stock';
+        } elseif ($row['stock'] <= 10) {
+            $stock_status = 'few-items-left';
+            $badge = 'info';
+            $stock_label = 'Few items left';
+        } else {
+            $stock_status = 'in-stock';
+            $badge = 'success';
+            $stock_label = 'In-stock';
+        }
+
         $output .=
             '
 
                     <div class="product">
-                        <a href="products/'.$row['productID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
+                        <a href="products/'.$row['pID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
                             <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" ></div>
-                            <div class="id_productList">No.'.$row['productID'].'</div> |
+                            <div class="id_productList">No.'.$row['pID'].'</div> |
                             <div class="name_productList">'.$row['productName'].'</div> |
                             <div class="category_productList">'.$row['categoryName'].'</div> |
-                            <div class="rating_productList'.$rating.'">'.$avg_rating.'</div>
+                            <div class="rating_productList'.$rating.'">'.$avg_rating.'</div> |
+                            <div class="stock_productList '.$stock_status.'"><a href="products/'.$row['pID'].'/edit" class="badge badge-'.$badge.'">'.$stock_label.'</a></div>
                             <div class="price_productList">$ '.$row['price'].'</div>
                         </a>
                     </div>';

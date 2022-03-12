@@ -96,7 +96,7 @@
     $limitQ = " LIMIT ".$initial_page.", ".$NP_limit;
 
     //set query
-    $query = "SELECT * FROM
+    $query = "SELECT *, `product`.`productID` AS pID FROM
             (`product` INNER JOIN `productimage`
             ON product.productID=productimage.productID)
             LEFT JOIN `category`
@@ -140,9 +140,9 @@
 
             $avg_rating = round($row['avg_rating'], 1);
             if ($avg_rating <= 1) {
-                $avg_rating .= " star";
+                $avg_rating .= ' star';
             } else {
-                $avg_rating .= " stars";
+                $avg_rating .= ' stars';
             }
             if ($avg_rating < 2) {
                 $rating = ' low_rating_productList';
@@ -159,11 +159,25 @@
 
         }
 
+        // if ($row['stock'] == 0) {
+        //     $stock_status = 'out-of-stock';
+        //     $badge = 'warning';
+        //     $stock_label = 'Out-of-stock';
+        // } elseif ($row['stock'] <= 10) {
+        //     $stock_status = 'few-items-left';
+        //     $badge = 'info';
+        //     $stock_label = 'Few items left';
+        // } else {
+        //     $stock_status = 'in-stock';
+        //     $badge = 'success';
+        //     $stock_label = 'In-stock';
+        // }
+
         $output .=
             '
 
                     <div class="product">
-                        <a href="products/'.$row['productID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
+                        <a href="products/'.$row['pID'].'" class="link-to-product-details" style="text-decoration: none; color:black;">
                             <div class="image_productList"><img src="'.$row['image_url'].'" alt="'.$row['productName'].'" ></div>
                             <div class="name_productList">'.$row['productName'].'</div> |
                             <div class="category_productList">'.$row['categoryName'].'</div> |
@@ -173,6 +187,7 @@
                     </div>';
     };
 
+                            // <div class="stock_productList '.$stock_status.'"><a href="products/'.$row['pID'].'" class="badge badge-'.$badge.'">'.$stock_label.'</a></div>
     echo '';
     if($data_count == 0){
         $output .= '<div class="no_product">No product</div>';

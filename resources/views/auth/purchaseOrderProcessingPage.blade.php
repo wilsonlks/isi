@@ -151,7 +151,7 @@
             color: green;
             text-align: right;
         }
-        .price-order, .quantity-order, .sub-total-order {
+        .price-order, .quantity-order, .sub-total-order, .stock-order {
             font-size: 1rem;
             text-align: right;
         }
@@ -173,9 +173,6 @@
             color: black;
             background: darkorange;
         }
-        .out-of-stock {
-            margin: 5px;
-        }
         .badge-info {
             color: black;
             background: deepskyblue;
@@ -187,8 +184,19 @@
             color: black;
             background: dodgerblue;
         }
-        .few-items-left {
-            margin: 5px;
+        .badge-success {
+            color: black;
+            background: lime;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-success:hover {
+            color: black;
+            background: limegreen;
+        }
+        .out-of-stock, .few-items-left, .in-stock {
+            margin: 0px;
         }
     </style>
 
@@ -303,11 +311,22 @@
                                         <a href="../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
                                             <table class="order-product">
                                                 <tr>
-                                                    <td rowspan="4" class="image_container">
+                                                    <td rowspan="5" class="image_container">
                                                         <img class="image-order" src="../<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
                                                     </td>
                                                     <td colspan="2" class="name-order order">
                                                         <?php echo $detail['productName'] ?>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" class="stock-order order">
+                                                        @if (((($detail['status'] == 'pending') || ($detail['status'] == 'hold')) && ($detail['quantity'] > $detail['stock'])) || ($detail['stock'] == 0))
+                                                            <span class="out-of-stock"><a href="../products/<?php echo $detail['productID'] ?>/edit" class="badge badge-warning">Out-of-stock</a></span>
+                                                        @elseif (($detail['stock'] <= 10))
+                                                            <span class="few-items-left"><a href="../products/<?php echo $detail['productID'] ?>/edit" class="badge badge-info">Few items left</a></span>
+                                                        @else
+                                                            <span class="in-stock"><a href="../products/<?php echo $detail['productID'] ?>/edit" class="badge badge-success">In-stock</a></span>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -319,11 +338,6 @@
                                                     <td>
                                                     </td>
                                                     <td class="quantity-order order sm-detail">
-                                                        @if (((($detail['status'] == 'pending') || ($detail['status'] == 'hold')) && ($detail['quantity'] > $detail['stock'])) || ($detail['stock'] == 0))
-                                                            <span class="out-of-stock"><a href="../products/<?php echo $detail['productID'] ?>/edit" class="badge badge-warning">Out-of-stock</a></span>
-                                                        @elseif (($detail['stock'] <= 5))
-                                                            <span class="few-items-left"><a href="../products/<?php echo $detail['productID'] ?>/edit" class="badge badge-info">Few items left</a></span>
-                                                        @endif
                                                         &times;<?php echo $detail['quantity'] ?>
                                                     </td>
                                                 </tr>

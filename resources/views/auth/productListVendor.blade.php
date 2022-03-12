@@ -40,12 +40,12 @@
         .id_productList, .name_productList, .category_productList, .rating_productList, .price_productList {
             padding: 10px;
         }
-        .id_productList, .name_productList, .category_productList, .rating_productList {
+        .id_productList, .name_productList, .category_productList, .rating_productList, .stock_productList {
             display: inline;
         }
-        .rating_productList {
+        /* .rating_productList {
             font-weight: bold;
-        }
+        } */
         .low_rating_productList {
             color: red;
         }
@@ -82,8 +82,19 @@
             width: 100%;
             padding: 1px 5px 1px;
         }
+        .category-filter {
+            padding-bottom: 10px;
+            border-bottom: 1px solid black;
+        }
+        .stock-filter {
+            padding-top: 10px;
+        }
+        .category-filter-label, .stock-filter-label {
+            padding-bottom: 5px;
+        }
         .no_product {
-            /* padding-top: 16px; */
+            padding-top: 16px;
+            padding-bottom: 16px;
         }
         .page_productList {
             display: flex;
@@ -135,6 +146,48 @@
             pointer-events: none;
             background-color: #fff;
             border-color: #dee2e6;
+        }
+        .badge-warning {
+            color: black;
+            background: orange;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-warning:hover {
+            color: black;
+            background: darkorange;
+        }
+        .out-of-stock {
+            margin-left: 10px;
+        }
+        .badge-info {
+            color: black;
+            background: deepskyblue;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-info:hover {
+            color: black;
+            background: dodgerblue;
+        }
+        .few-items-left {
+            margin-left: 10px;
+        }
+        .badge-success {
+            color: black;
+            background: lime;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-success:hover {
+            color: black;
+            background: limegreen;
+        }
+        .in-stock {
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -190,11 +243,26 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="nav-filter" role="tabpanel" aria-labelledby="nav-filter-tab">
-                                    <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
+                                    <div class="category-filter">
+                                        <div class="category-filter-label">By Categories</div>
+                                        <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
+                                            <div class="list-group-item checkbox">
+                                                <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"> <?php echo $category['categoryName']; ?></label>
+                                            </div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="stock-filter">
+                                        <div class="stock-filter-label">By Stocks</div>
                                         <div class="list-group-item checkbox">
-                                            <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"> <?php echo $category['categoryName']; ?></label>
+                                            <label><input type="checkbox" class="stock_checkbox" onchange="Click()" value="(`product`.`stock` > 10)"> In-Stock</label>
                                         </div>
-                                    <?php } ?>
+                                        <div class="list-group-item checkbox">
+                                            <label><input type="checkbox" class="stock_checkbox" onchange="Click()" value="(`product`.`stock` <= 10 && `product`.`stock` != 0)"> Few Items Left</label>
+                                        </div>
+                                        <div class="list-group-item checkbox">
+                                            <label><input type="checkbox" class="stock_checkbox" onchange="Click()" value="(`product`.`stock` = 0)"> Out-of-Stock</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -222,6 +290,7 @@
                 $('.filter_data').html('<div id="loading" style="" ></div>');
                 var action = 'fetch_data_vendor';
                 var category_filter = get_filter('category_checkbox');
+                var stock_filter = get_filter('stock_checkbox');
                 var sorting = get_sorting('sorting_radio');
                 var page = get_page();
                 var AscDesc = get_AscDesc();
@@ -229,7 +298,7 @@
                 $.ajax({
                     url:"./php_file/fetch_data_vendor.php",
                     method:"POST",
-                    data:{action:action, category_filter:category_filter, sorting:sorting, page:page, AscDesc:AscDesc, searchText:searchText},
+                    data:{action:action, category_filter:category_filter, stock_filter:stock_filter, sorting:sorting, page:page, AscDesc:AscDesc, searchText:searchText},
                     success:function(data){
                         $('#filter_string').html(data);
                     }

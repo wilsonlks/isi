@@ -41,12 +41,12 @@
         .name_productList, .category_productList, .rating_productList, .price_productList {
             padding: 10px;
         }
-        .name_productList, .category_productList, .rating_productList {
+        .name_productList, .category_productList, .rating_productList, .stock_productList {
             display: inline;
         }
-        .rating_productList {
+        /* .rating_productList {
             font-weight: bold;
-        }
+        } */
         .low_rating_productList {
             color: red;
         }
@@ -83,8 +83,16 @@
             width: 100%;
             padding: 1px 5px 1px;
         }
+        .category-filter {
+            padding-bottom: 10px;
+            border-bottom: 1px solid black;
+        }
+        .category-filter-label {
+            padding-bottom: 5px;
+        }
         .no_product {
-            /* padding-top: 16px; */
+            padding-top: 16px;
+            padding-bottom: 16px;
         }
         .page_productList {
             display: flex;
@@ -137,6 +145,48 @@
             background-color: #fff;
             border-color: #dee2e6;
         }
+        .badge-warning {
+            color: black;
+            background: orange;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-warning:hover {
+            color: black;
+            background: darkorange;
+        }
+        .out-of-stock {
+            margin-left: 10px;
+        }
+        .badge-info {
+            color: black;
+            background: deepskyblue;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-info:hover {
+            color: black;
+            background: dodgerblue;
+        }
+        .few-items-left {
+            margin-left: 10px;
+        }
+        .badge-success {
+            color: black;
+            background: lime;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-success:hover {
+            color: black;
+            background: limegreen;
+        }
+        .in-stock {
+            margin-left: 10px;
+        }
     </style>
 </head>
 
@@ -188,11 +238,14 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="nav-filter" role="tabpanel" aria-labelledby="nav-filter-tab">
-                                    <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
-                                        <div class="list-group-item checkbox">
-                                            <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"> <?php echo $category['categoryName']; ?></label>
-                                        </div>
-                                    <?php } ?>
+                                    <div class="category-filter">
+                                        <div class="category-filter-label">By Categories</div>
+                                        <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
+                                            <div class="list-group-item checkbox">
+                                                <label><input type="checkbox" class="category_checkbox" onchange="Click()" value="'<?php echo $category['categoryID']; ?>'"> <?php echo $category['categoryName']; ?></label>
+                                            </div>
+                                        <?php } ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>

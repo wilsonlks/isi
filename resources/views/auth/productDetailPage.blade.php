@@ -66,8 +66,7 @@
         } else {
 
             $total_review = 0;
-            $rating_message = 'No ratings';
-            $review_message = 'No reviews';
+            $rating_review_message = 'No ratings and reviews';
 
         }
 
@@ -209,6 +208,10 @@
         .current-review {
             border-top: 1px dashed black;
         }
+        #rate-review-no {
+            padding-top: 16px;
+            padding-bottom: 16px;
+        }
         .badge-warning {
             color: black;
             background: orange;
@@ -311,27 +314,27 @@
                                     @if (Auth::user()->role=='vendor')
                                         @if ($detail['stock'] == 0)
                                             <span class="out-of-stock"><a href="/products/<?php echo $detail['productID'] ?>/edit" class="badge badge-warning">Out-of-stock</a></span>
-                                        @elseif (($detail['stock'] <= 5))
+                                        @elseif (($detail['stock'] <= 10))
                                             <span class="few-items-left"><a href="/products/<?php echo $detail['productID'] ?>/edit" class="badge badge-info">Few items left</a></span>
                                         @else
                                             <span class="in-stock"><a href="/products/<?php echo $detail['productID'] ?>/edit" class="badge badge-success">In-stock</a></span>
                                         @endif
                                     @else
                                         @if ($detail['stock'] == 0)
-                                            <span class="out-of-stock badge badge-warning">Out-of-stock</span>
-                                        @elseif ($detail['stock'] <= 5)
-                                            <span class="few-items-left badge badge-info">Few items left</span>
+                                            <span class="out-of-stock badge badge-warning" style="visibility:hidden">Out-of-stock</span>
+                                        @elseif ($detail['stock'] <= 10)
+                                            <span class="few-items-left badge badge-info" style="visibility:hidden">Few items left</span>
                                         @else
-                                            <span class="in-stock badge badge-success">In-stock</span>
+                                            <span class="in-stock badge badge-success" style="visibility:hidden">In-stock</span>
                                         @endif
                                     @endif
                                 @else
                                     @if ($detail['stock'] == 0)
-                                        <span class="out-of-stock badge badge-warning">Out-of-stock</span>
-                                    @elseif ($detail['stock'] <= 5)
-                                        <span class="few-items-left badge badge-info">Few items left</span>
+                                        <span class="out-of-stock badge badge-warning" style="visibility:hidden">Out-of-stock</span>
+                                    @elseif ($detail['stock'] <= 10)
+                                        <span class="few-items-left badge badge-info" style="visibility:hidden">Few items left</span>
                                     @else
-                                        <span class="in-stock badge badge-success">In-stock</span>
+                                        <span class="in-stock badge badge-success" style="visibility:hidden">In-stock</span>
                                     @endif
                                 @endauth
                                 <h4 class="mb-2 text-muted price_detail">$ <?php echo $detail['price'] ?></h4>
@@ -360,18 +363,7 @@
                         <div class="card-header">{{ __('Ratings and Reviews') }}</div>
                             <div class="card-body">
                                 @if ($total_review==0)
-                                    <div class="form-group row">
-                                        <label for="rate-no" class="col-sm-3 col-form-label">Average Ratings</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control-plaintext" id="rate-no" name="rate-no" value="<?php echo $rating_message ?>" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="review-no" class="col-sm-3 col-form-label">Reviews</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control-plaintext" id="review-no" name="review-no" value="<?php echo $review_message ?>" disabled>
-                                        </div>
-                                    </div>
+                                    <input type="text" readonly class="form-control-plaintext" id="rate-review-no" name="rate-review-no" value="<?php echo $rating_review_message ?>" disabled>
                                 @else
                                     <div class="form-group row ratings">
                                         <label for="rate-avg" class="col-sm-3 col-form-label">Average Ratings</label>
