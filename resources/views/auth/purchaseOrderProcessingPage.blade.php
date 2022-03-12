@@ -167,6 +167,7 @@
             background: orange;
             text-decoration: none;
             font-weight: bold;
+            text-transform: uppercase;
         }
         .badge-warning:hover {
             color: black;
@@ -180,6 +181,7 @@
             background: deepskyblue;
             text-decoration: none;
             font-weight: bold;
+            text-transform: uppercase;
         }
         .badge-info:hover {
             color: black;

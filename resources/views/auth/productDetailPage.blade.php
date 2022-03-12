@@ -214,39 +214,42 @@
             background: orange;
             text-decoration: none;
             font-weight: bold;
+            text-transform: uppercase;
         }
         .badge-warning:hover {
             color: black;
             background: darkorange;
         }
         .out-of-stock {
-            margin: 0px;
+            margin-left: 10px;
         }
         .badge-info {
             color: black;
             background: deepskyblue;
             text-decoration: none;
             font-weight: bold;
+            text-transform: uppercase;
         }
         .badge-info:hover {
             color: black;
             background: dodgerblue;
         }
         .few-items-left {
-            margin: 0px;
+            margin-left: 10px;
         }
         .badge-success {
             color: black;
-            background: springgreen;
+            background: lime;
             text-decoration: none;
             font-weight: bold;
+            text-transform: uppercase;
         }
         .badge-success:hover {
             color: black;
             background: limegreen;
         }
         .in-stock {
-            margin: 0px;
+            margin-left: 10px;
         }
     </style>
 
