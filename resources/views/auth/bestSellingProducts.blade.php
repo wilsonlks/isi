@@ -135,17 +135,10 @@
                 </div>
             </div>
             <!-- print data -->
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card best-products-detail mt-2">
 
-                            <p id="fetch_data"></p>
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+            <p id="fetch_data"></p>
+
 
     <script>
         $(document).ready(function(){
