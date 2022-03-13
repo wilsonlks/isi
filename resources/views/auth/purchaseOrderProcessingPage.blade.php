@@ -73,7 +73,7 @@
                         $update_stock_set->close();
 
                     }
-                                    
+
                 } elseif ($update_status == 'cancelled') {
 
                     $update_status_query = "UPDATE `purchaseorder`
@@ -155,8 +155,15 @@
             font-size: 1rem;
             text-align: right;
         }
+        .sub-total-order {
+            border-top: 1px solid black;
+        }
+        .order-product-box {
+            padding-top: 7px;
+            padding-bottom: 7px;
+        }
         .sm-detail {
-            width: 170px;
+            width: 110px;
         }
         .link-to-product-details:link, .link-to-product-details:hover, .link-to-product-details:active, .link-to-product-details:visited {
             text-decoration: none;
@@ -217,31 +224,31 @@
                             <div class="card-body">
                                 <form method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="date_order" class="col-sm-3 col-form-label">Purchase Date</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="date_order" name="date_order" value="<?php echo $detail['purchase_date'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="customer_order" class="col-sm-3 col-form-label">Customer Name</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="customer_order" name="customer_order" value="<?php echo $detail['name'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="addr_order" class="col-sm-3 col-form-label">Shipping Address</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="addr_order" name="addr_order" value="<?php echo $detail['shipping_addr'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-1">
                                         <label for="total_order" class="col-sm-3 col-form-label">Total Order Amounts</label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control-plaintext" id="total_order" name="total_order" value="$ <?php echo $detail['total_order_amount'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="input-group">
+                                    <div class="input-group row mb-1">
                                         <label for="status_order" class="col-md-3 col-form-label">Status</label>
                                         <div class="col-md-7 status-select">
                                         <select class="form-select @if (isset($error)) is-invalid @endif" id="status" name="status_order">
@@ -263,7 +270,7 @@
                                         </select>
                                         <?php
                                             if (isset($error)) {
-                                                ?> 
+                                                ?>
                                                 <span class="invalid-feedback" role="alert" style="display:block"><strong> <?php
                                                 echo $error;
                                                 ?> </strong></span> <?php
@@ -275,20 +282,20 @@
                                         </div>
                                     </div>
                                     @if ($detail['status'] == 'shipped')
-                                        <div class="form-group row">
+                                        <div class="form-group row mb-1 shipped-box">
                                             <label for="shipment_order" class="col-sm-3 col-form-label">Shipment Date</label>
                                             <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control-plaintext" id="shipment_order" name="shipment_order" value="<?php echo $detail['shipment_date'] ?>" disabled>
+                                                <input type="text" readonly class="form-control-plaintext shipment_order" id="shipment" name="shipment_order" value="<?php echo $detail['shipment_date'] ?>" disabled>
                                             </div>
                                         </div>
                                     @elseif ($detail['status'] == 'cancelled')
-                                        <div class="form-group row">
+                                        <div class="form-group row mb-1">
                                             <label for="cancel_order" class="col-sm-3 col-form-label">Cancel Date</label>
                                             <div class="col-sm-9">
                                                 <input type="text" readonly class="form-control-plaintext" id="cancel_order" name="cancel_order" value="<?php echo $detail['cancel_date'] ?>" disabled>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
+                                        <div class="form-group row mb-1">
                                             <label for="cancel_by_order" class="col-sm-3 col-form-label">Cancel By</label>
                                             <div class="col-sm-9">
                                                 <input type="text" readonly class="form-control-plaintext" id="cancel_by_order" name="cancel_by_order" value="<?php echo $detail['cancel_by'] ?>" disabled>
@@ -335,15 +342,15 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>
-                                                    </td>
+                                                    <td></td>
                                                     <td class="quantity-order order sm-detail">
                                                         &times;<?php echo $detail['quantity'] ?>
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td colspan="2" class="sub-total-order order">
-                                                            Sub order amount: $ <?php echo $detail['sub_order_amount'] ?>
+                                                    <td></td>
+                                                    <td class="sub-total-order order">
+                                                            = $ <?php echo $detail['sub_order_amount'] ?>
                                                     </td>
                                                 </tr>
                                             </table>

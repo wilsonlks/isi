@@ -51,17 +51,17 @@
         if (isset($_POST['cancel'])) {
 
             $message = 'Do you really want to cancel this order?';
-    
+
         }
 
         if (isset($_POST['keep-confirm'])) {
 
             $message = '';
-    
+
         }
-    
+
         if (isset($_POST['cancel-confirm'])) {
-    
+
             $date = now();
 
             $update_status_query = "UPDATE `purchaseorder`
@@ -75,7 +75,7 @@
             header("location:http://localhost:8000/orders/".$orderID); exit;
 
         }
-    
+
     ?>
 
     <style type="text/css">
@@ -127,18 +127,19 @@
             color: green;
             text-align: right;
         }
-        .price-order, .quantity-order, .sub-total-order {
+        .price-order, .quantity-order, .sub-total-order, .rate-review-order {
             font-size: 1rem;
             text-align: right;
         }
-        .sm-detail {
-            width: 77px;
+        .sub-total-order {
+            border-top: 1px solid black;
         }
-        .rate-review-link {
-            font-size: 1rem;
-            float: right;
-            color: darkgreen;
-            text-decoration: none;
+        .order-product-box {
+            padding-top: 7px;
+            padding-bottom: 7px;
+        }
+        .sm-detail {
+            width: 100px;
         }
         .link-to-product-details:link, .link-to-product-details:hover, .link-to-product-details:active, .link-to-product-details:visited {
             text-decoration: none;
@@ -159,6 +160,17 @@
         }
         .keep-order:hover {
             color: grey;
+        }
+        .badge-success {
+            color: black;
+            background: lime;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-success:hover {
+            color: black;
+            background: limegreen;
         }
     </style>
 
@@ -290,14 +302,15 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td colspan="2" class="sub-total-order order">
-                                                            Sub order amount: $ <?php echo $detail['sub_order_amount'] ?>
+                                                    <td></td>
+                                                    <td class="sub-total-order order">
+                                                            = $ <?php echo $detail['sub_order_amount'] ?>
                                                     </td>
                                                 </tr>
                                                 @if ($detail['status'] == 'shipped')
                                                     <tr>
-                                                        <td colspan="2" class="rate-review-link-box order">
-                                                            <a href="<?php echo $detail['poID'] ?>/products/<?php echo $detail['productID'] ?>/reviews" class="rate-review-link">Rate and Review</a>
+                                                        <td colspan="2" class="rate-review-order order">
+                                                            <span class="rate-review"><a href="<?php echo $detail['poID'] ?>/products/<?php echo $detail['productID'] ?>/reviews" class="badge badge-success">Rate and Review</a></span>
                                                         </td>
                                                     </tr>
                                                 @endif

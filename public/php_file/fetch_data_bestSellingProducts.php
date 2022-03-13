@@ -38,10 +38,19 @@
 
     //count how many best selling products
     //set query_quantity
-    $query_quantity_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
+    $query_quantity_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                LEFT JOIN (SELECT `productID`,
+                    AVG(CASE WHEN `review_date_new` <> 'NULL'
+                                THEN `rating_new`
+                            WHEN `review_date` <> 'NULL'
+                                THEN `rating`
+                        END) AS `avg_rating`
+                    FROM `productreview`
+                    GROUP BY `productID`) AS `rating_table`
+                ON `product`.`productID`=`rating_table`.`productID`
                 WHERE `purchaseorder`.`status` = 'shipped'
                 AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date.' AND '.$to_date.$and1.$filter."
                 GROUP BY `productID`
@@ -70,10 +79,19 @@
 
 
 
-    $query_quantity = "SELECT `product`.`productID`, `image_url`, `productName`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
+    $query_quantity = "SELECT `product`.`productID`, `image_url`, `productName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                LEFT JOIN (SELECT `productID`,
+                    AVG(CASE WHEN `review_date_new` <> 'NULL'
+                                THEN `rating_new`
+                            WHEN `review_date` <> 'NULL'
+                                THEN `rating`
+                        END) AS `avg_rating`
+                    FROM `productreview`
+                    GROUP BY `productID`) AS `rating_table`
+                ON `product`.`productID`=`rating_table`.`productID`
                 WHERE `purchaseorder`.`status` = 'shipped'
                 AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date.' AND '.$to_date.$and1.$filter."
                 GROUP BY `productID`
@@ -96,21 +114,79 @@
     echo '<div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card best-products-detail mt-2">
-                    <div class="card-header">'.$title_quantity.'-Quantity</div>
+                    <div class="card-header">'.$title_quantity.' - Quantity</div>
                         <div class="card-body">';
 
     while ($row= mysqli_fetch_array($resultSet2_quantity)){
         $data_count_quantity .= 1;
+
+        if ($row['avg_rating'] != NULL) {
+
+            $avg_rating = round($row['avg_rating'], 1);
+
+            if ($avg_rating <= 1) {
+                $avg_rating .= ' star';
+            } else {
+                $avg_rating .= ' stars';
+            }
+
+            if ($avg_rating < 2) {
+                $rating = ' low_rating_productList';
+            } elseif ($avg_rating < 4) {
+                $rating = ' mid_rating_productList';
+            } else {
+                $rating = ' high_rating_productList';
+            }
+
+        } else {
+
+            $avg_rating = 'No ratings';
+            $rating = '';
+
+        }
+
+        if ($row['stock'] == 0) {
+
+            $stock_status = 'out-of-stock';
+            $badge = 'warning';
+            $stock_label = 'Out-of-stock';
+
+        } elseif ($row['stock'] <= 10) {
+
+            $stock_status = 'few-items-left';
+            $badge = 'info';
+            $stock_label = 'Few items left';
+
+        } else {
+
+            $stock_status = 'in-stock';
+            $badge = 'success';
+            $stock_label = 'In-stock';
+
+        }
+
         $output_quantity .='
                     <div class="best-products-box">
                         <a href="../products/'.$row['productID'].'" class="link-to-product-details">
                             <table class="best-products">
                                 <tr>
-                                    <td rowspan="4" class="image_container">
+                                    <td rowspan="5" class="image_container">
                                         <img class="image-best" src="../'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200px">
                                     </td>
                                     <td colspan="2" class="name-best best">
                                         '.$row['productName'].'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="stock-best best sm-detail '.$stock_status.'">
+                                        <span class="'.$stock_status.'"><a href="products/'.$row['productID'].'/edit" class="badge badge-'.$badge.'">'.$stock_label.'</a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="rating-best best sm-detail'.$rating.'">
+                                        '.$avg_rating.'
                                     </td>
                                 </tr>
                                 <tr>
@@ -121,11 +197,8 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2" class="total-amount-best best">
-                                        Total sales amount: $ '.$row['totalAmount'].'
+                                        Total Sales Amount: $ '.$row['totalAmount'].'
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td</td><td</td>
                                 </tr>
                             </table>
                         </a>
@@ -151,10 +224,19 @@
 
     //count how many best selling products
     //set query_quantity
-    $query_amount_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
+    $query_amount_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                LEFT JOIN (SELECT `productID`,
+                    AVG(CASE WHEN `review_date_new` <> 'NULL'
+                                THEN `rating_new`
+                            WHEN `review_date` <> 'NULL'
+                                THEN `rating`
+                        END) AS `avg_rating`
+                    FROM `productreview`
+                    GROUP BY `productID`) AS `rating_table`
+                ON `product`.`productID`=`rating_table`.`productID`
                 WHERE `purchaseorder`.`status` = 'shipped'
                 AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date.' AND '.$to_date.$and1.$filter."
                 GROUP BY `productID`
@@ -183,10 +265,19 @@
     // echo $bestSellingAmount.' and '.$n_of_BSQ_amount;
 
 
-    $query_amount = "SELECT `product`.`productID`, `image_url`, `productName`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
+    $query_amount = "SELECT `product`.`productID`, `image_url`, `productName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                LEFT JOIN (SELECT `productID`,
+                    AVG(CASE WHEN `review_date_new` <> 'NULL'
+                                THEN `rating_new`
+                            WHEN `review_date` <> 'NULL'
+                                THEN `rating`
+                        END) AS `avg_rating`
+                    FROM `productreview`
+                    GROUP BY `productID`) AS `rating_table`
+                ON `product`.`productID`=`rating_table`.`productID`
                 WHERE `purchaseorder`.`status` = 'shipped'
                 AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date.' AND '.$to_date.$and1.$filter."
                 GROUP BY `productID`
@@ -209,21 +300,79 @@
     echo '<div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card best-products-detail mt-2">
-                    <div class="card-header">'.$title_amount.'-Amount</div>
+                    <div class="card-header">'.$title_amount.' - Amount</div>
                         <div class="card-body">';
 
     while ($row= mysqli_fetch_array($resultSet2_amount)){
         $data_count_amount .= 1;
+
+        if ($row['avg_rating'] != NULL) {
+
+            $avg_rating = round($row['avg_rating'], 1);
+
+            if ($avg_rating <= 1) {
+                $avg_rating .= ' star';
+            } else {
+                $avg_rating .= ' stars';
+            }
+
+            if ($avg_rating < 2) {
+                $rating = ' low_rating_productList';
+            } elseif ($avg_rating < 4) {
+                $rating = ' mid_rating_productList';
+            } else {
+                $rating = ' high_rating_productList';
+            }
+
+        } else {
+
+            $avg_rating = 'No ratings';
+            $rating = '';
+
+        }
+
+        if ($row['stock'] == 0) {
+
+            $stock_status = 'out-of-stock';
+            $badge = 'warning';
+            $stock_label = 'Out-of-stock';
+
+        } elseif ($row['stock'] <= 10) {
+
+            $stock_status = 'few-items-left';
+            $badge = 'info';
+            $stock_label = 'Few items left';
+
+        } else {
+
+            $stock_status = 'in-stock';
+            $badge = 'success';
+            $stock_label = 'In-stock';
+
+        }
+
         $output_amount .='
                     <div class="best-products-box">
                         <a href="../products/'.$row['productID'].'" class="link-to-product-details">
                             <table class="best-products">
                                 <tr>
-                                    <td rowspan="4" class="image_container">
+                                    <td rowspan="5" class="image_container">
                                         <img class="image-best" src="../'.$row['image_url'].'" alt="'.$row['productName'].'" width="auto" height="200px">
                                     </td>
                                     <td colspan="2" class="name-best best">
                                         '.$row['productName'].'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="stock-best best sm-detail '.$stock_status.'">
+                                        <span class="'.$stock_status.'"><a href="products/'.$row['productID'].'/edit" class="badge badge-'.$badge.'">'.$stock_label.'</a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="rating-best best sm-detail'.$rating.'">
+                                        '.$avg_rating.'
                                     </td>
                                 </tr>
                                 <tr>
@@ -234,11 +383,8 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2" class="total-amount-best best">
-                                        Total sales amount: $ '.$row['totalAmount'].'
+                                        Total Sales Amount: $ '.$row['totalAmount'].'
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td</td><td</td>
                                 </tr>
                             </table>
                         </a>

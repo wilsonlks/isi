@@ -52,6 +52,10 @@
         .best-products-box:not(:last-child) {
             border-bottom: 2px solid darkgreen;
         }
+        .best-products-box {
+            padding-top: 7px;
+            padding-bottom: 7px;
+        }
         .name-best {
             text-transform: uppercase;
             font-weight: bold;
@@ -59,7 +63,7 @@
             color: green;
             text-align: right;
         }
-        .total-quantity-best, .total-amount-best {
+        .total-quantity-best, .total-amount-best, .stock-best, .rating-best {
             font-size: 1rem;
             text-align: right;
         }
@@ -84,6 +88,57 @@
         }
         #fetch_data {
             margin: 0px;
+        }
+        .badge-warning {
+            color: black;
+            background: orange;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-warning:hover {
+            color: black;
+            background: darkorange;
+        }
+        .out-of-stock {
+            margin-left: 10px;
+        }
+        .badge-info {
+            color: black;
+            background: deepskyblue;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-info:hover {
+            color: black;
+            background: dodgerblue;
+        }
+        .few-items-left {
+            margin-left: 10px;
+        }
+        .badge-success {
+            color: black;
+            background: lime;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-success:hover {
+            color: black;
+            background: limegreen;
+        }
+        .in-stock {
+            margin-left: 10px;
+        }
+        .low_rating_productList {
+            color: red;
+        }
+        .mid_rating_productList {
+            color: orange;
+        }
+        .high_rating_productList {
+            color: limegreen;
         }
     </style>
 

@@ -74,22 +74,22 @@
         // add to cart
 
         $cart_saved = FALSE;
-        
+
         if (isset($_POST['submit'])) {
 
-            
+
             $cartDetail = mysqli_fetch_array($PSetResult3);
 
             $customer = Auth::id();
 
             $product = $cartDetail['productID'];
-                            
+
             $quantity = 1;
 
             /*
             * Validate posted values.
             */
-            
+
             $product_unique_query = "SELECT productID FROM shoppingcart
                                         WHERE (customerID = '$customer') AND (productID = '$productID')";
             $statement = $dbConnection->prepare($product_unique_query);
@@ -223,9 +223,6 @@
             color: black;
             background: darkorange;
         }
-        .out-of-stock {
-            margin-left: 10px;
-        }
         .badge-info {
             color: black;
             background: deepskyblue;
@@ -236,9 +233,6 @@
         .badge-info:hover {
             color: black;
             background: dodgerblue;
-        }
-        .few-items-left {
-            margin-left: 10px;
         }
         .badge-success {
             color: black;
@@ -251,8 +245,8 @@
             color: black;
             background: limegreen;
         }
-        .in-stock {
-            margin-left: 10px;
+        .out-of-stock, .few-items-left, .in-stock {
+            margin-left: 20px;
         }
     </style>
 
@@ -262,12 +256,12 @@
 
         <?php
             $detail= mysqli_fetch_array($PSetResult1);
-        ?>              
+        ?>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header product-header">    
+                        <div class="card-header product-header">
                             <div class="card-image">
                                 <img class="image_detail" src="../<?php echo $detail['image_url'] ?>" alt="Card image cap">
                             </div>
@@ -345,7 +339,7 @@
                                 <?php }
                             ?></div>
                         </div>
-                    </div>                                    
+                    </div>
                     @if (isset($message))
                         <div class="alert @if($cart_saved==TRUE) alert-success @else alert-warning @endif alert-dismissible fade show" role="alert">
                             <strong class="alert_detail text"><a href="../../cart">{{ $message }}</a></strong>
@@ -371,7 +365,7 @@
                                             <input type="text" readonly class="form-control-plaintext" id="rate-avg" name="rate-avg" value="<?php echo $avg_rating ?> / 5" disabled>
                                         </div>
                                     </div>
-                                    <?php 
+                                    <?php
                                         while ($rate_review_detail=mysqli_fetch_array($get_review_result2)) { ?>
                                             <div class="reviews">
                                                 <div class="form-group row">

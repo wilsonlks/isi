@@ -46,10 +46,10 @@
     // check out all items
 
     $purchase_saved = FALSE;
-    
+
     if (isset($_POST['submit'])) {
 
-        
+
         $purchase_detail1 = mysqli_fetch_array($purchase_result1);
         $total_detail = mysqli_fetch_array($total_result2);
 
@@ -103,7 +103,7 @@
             $statement->execute();
             $statement->close();
 
-        }                            
+        }
 
 
         $purchase_saved = TRUE;
@@ -115,7 +115,7 @@
 
         $delete_cart_query = "DELETE FROM `shoppingcart`
                                 WHERE `customerID`=".Auth::id();
-        
+
         $statement = $dbConnection->prepare($delete_cart_query);
         $statement->execute();
         $statement->close();
@@ -154,7 +154,7 @@
         $product = $_POST['delete_cart'];
 
         $delete_query = "DELETE FROM `shoppingcart`
-                        WHERE (`customerID`=".Auth::id().") 
+                        WHERE (`customerID`=".Auth::id().")
                         AND (`productID`=$product)";
         $delete_set = $dbConnection->prepare($delete_query);
         $delete_set->execute();
@@ -180,8 +180,12 @@
         clear: both; */
         padding: 15px 0px 15px;
     }
-    .cart:not(:last-child) {
+    .cart-box:not(:last-child) {
         border-bottom: 2px solid darkgreen;
+    }
+    .cart-box {
+        padding-top: 7px;
+        padding-bottom: 7px;
     }
     .image_cart {
         width: 150px;
@@ -200,11 +204,14 @@
         font-size: 1.5rem;
         color: green;
     }
-    .price_cart {
+    .price_cart, .sub_total_cart, .delete_cart {
         font-size: 1rem;
     }
-    .name_cart, .price_cart, .total_cart, .close {
+    .name_cart, .price_cart, .sub_total_cart, .change-quantity, .delete_cart, .total_cart, .close {
         text-align: right;
+    }
+    .quantity_cart, .change-quantity, .delete-button, .delete_cart {
+        float: right;
     }
     .close {
         border: none;
@@ -228,14 +235,14 @@
     form, .button_cart, .total_cart {
         display: inline-block;
     }
-    .delete-button {
+    /* .delete-button {
         float: right;
-    }
+    } */
     /* .input-group {
         font-size: 0.7875rem;
     } */
     .sm-detail {
-        width: 77px;
+        width: 60px;
     }
     #basic-addon {
         border-top-left-radius: 0.2rem;
@@ -253,6 +260,23 @@
         font-size: 0.7875rem;
         padding: 0.2rem 0.5rem;
     }
+    input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
+    }
+    .badge-warning {
+        color: black;
+        background: orange;
+        text-decoration: none;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .badge-warning:hover {
+        color: black;
+        background: darkorange;
+    }
 </style>
 
 <div class="container">
@@ -265,58 +289,65 @@
                     $data_count = 0;
                     while ($detail = mysqli_fetch_array($cart_result)) { ?>
                         <?php $data_count++; ?>
-                        <table class="cart cart-<?php echo $detail['productID'] ?>">
-                            <tr>
-                                <td rowspan="4" class="image_container">
-                                    <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                        <img class="image_cart" src="<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
-                                    </a>
-                                </td>
-                                <td colspan="2" class="name_cart detail">
-                                    <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
-                                        <?php echo $detail['productName'] ?>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="price_cart detail">
-                                        $ <?php echo $detail['price'] ?>
-                                </td>
-                            </tr>
-                            <form method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <tr>
-                                    <td></td>
-                                    <td class="quantity_cart input-group detail sm-detail">
-                                        <input type="hidden" class="change-quantity-item[<?php echo $detail['productID'] ?>]" name="change-quantity-item" value="<?php echo $detail['productID'] ?>">
-                                        <input type="hidden" class="change-quantity-old[<?php echo $detail['productID'] ?>]" name="change-quantity-old" value="<?php echo $detail['quantity'] ?>">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon">&times;</span>
-                                        </div>
-                                        <input type="number" class="change-quantity-<?php echo $detail['productID'] ?> form-control" id="basic-addonn" name="change-quantity" placeholder="<?php echo $detail['quantity'] ?>" aria-label="Quantity" aria-describedby="basic-addon" min="1" max="99">
-                                    </td>
-                                </tr>
-                            </form>
-                            <form method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <tr>
-                                    <td></td>
-                                    <td class="detail sm-detail">
-                                        <button type="submit" name="delete" class="close delete-button cart-<?php echo $detail['productID'] ?>">
-                                            <input type="hidden" class="delete_cart" name="delete_cart" value="<?php echo $detail['productID'] ?>">
-                                            <span>&times;</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </form>
-                        </table>
+                            <div class="cart-box">
+                                <table class="cart cart-<?php echo $detail['productID'] ?>">
+                                    <tr>
+                                        <td rowspan="5" class="image_container">
+                                            <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
+                                                <img class="image_cart" src="<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
+                                            </a>
+                                        </td>
+                                        <td colspan="2" class="name_cart detail">
+                                            <a href="products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
+                                                <?php echo $detail['productName'] ?>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="price_cart detail">
+                                                $ <?php echo $detail['price'] ?>
+                                        </td>
+                                    </tr>
+                                    <form method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <tr>
+                                            <td></td>
+                                            <td class="quantity_cart input-group detail sm-detail">
+                                                <input type="hidden" class="change-quantity-item[<?php echo $detail['productID'] ?>]" name="change-quantity-item" value="<?php echo $detail['productID'] ?>">
+                                                <input type="hidden" class="change-quantity-old[<?php echo $detail['productID'] ?>]" name="change-quantity-old" value="<?php echo $detail['quantity'] ?>">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="basic-addon">&times;</span>
+                                                </div>
+                                                <input type="number" class="change-quantity change-quantity-<?php echo $detail['productID'] ?> form-control" id="basic-addonn" name="change-quantity" placeholder="<?php echo $detail['quantity'] ?>" aria-label="Quantity" aria-describedby="basic-addon" min="1" max="99">
+                                            </td>
+                                        </tr>
+                                    </form>
+                                    <tr>
+                                        <td colspan="2" class="sub_total_cart detail">
+                                                = $ <?php echo $detail['price']*$detail['quantity'] ?>
+                                        </td>
+                                    </tr>
+                                    <form method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <tr>
+                                            <td></td>
+                                            <td class="detail sm-detail">
+                                                <button type="submit" name="delete" class="close delete-button cart-<?php echo $detail['productID'] ?> badge badge-warning">
+                                                    <input type="hidden" class="delete_cart" name="delete_cart" value="<?php echo $detail['productID'] ?>">
+                                                    <span>DELETE</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </form>
+                                </table>
+                            </div>
                         <?php };
                         if ($data_count == 0) { ?>
                             <div class="no_product">No product</div>
                         <?php };
                     ?>
                     <!-- <ul class="list-unstyled">
-                        <?php 
+                        <?php
                             $data_count = 0;
                             while ($detail = mysqli_fetch_array($cart_result2)) { ?>
                                 <?php $data_count++; ?>
@@ -332,7 +363,7 @@
                         ?>
                     </ul> -->
                 </div>
-                <?php 
+                <?php
                     if ($data_count != 0) { ?>
                         <div class="card-footer">
                             <form method="POST" enctype="multipart/form-data">
@@ -352,5 +383,5 @@
         </div>
     </div>
 </div>
-    
+
 @endsection

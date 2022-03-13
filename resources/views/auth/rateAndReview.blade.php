@@ -65,9 +65,9 @@
             // return redirect('orders')->with('alert', 'Sorry, You Are Not Allowed to Access This Page.');
             header("location:http://localhost:8000/orders"); exit;
         }
-    
+
         if (isset($_POST['cancel-confirm'])) {
-    
+
             $date = now();
 
             $update_status_query = "UPDATE `purchaseorder`
@@ -81,8 +81,8 @@
             header("location:http://localhost:8000/orders/".$orderID); exit;
 
         }
-    
-    
+
+
         if (isset($_POST['review'])) {
 
             $rate = isset($_POST['rate-product']) ? $_POST['rate-product'] : '';
@@ -123,7 +123,7 @@
                 header("location:http://localhost:8000/orders/".$orderID."/products/".$productID."/reviews"); exit;
 
             }
-            
+
         }
     ?>
 
@@ -147,7 +147,7 @@
             display: inline-block;
         }
         .product-detail .card-body {
-            padding: 0px 16px 0px;
+            padding: 7px 16px 7px;
         }
         .status_order {
             text-transform: uppercase;
@@ -171,12 +171,26 @@
             color: green;
             text-align: right;
         }
-        .price-review, .quantity-review, .sub-total-review {
+        .price-review, .quantity-review, .sub-total-review, .buy-again-review {
             font-size: 1rem;
             text-align: right;
         }
         .sm-detail {
-            width: 77px;
+            width: 100px;
+        }
+        .sub-total-review {
+            border-top: 1px solid black;
+        }
+        .badge-info {
+            color: black;
+            background: deepskyblue;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-info:hover {
+            color: black;
+            background: dodgerblue;
         }
     </style>
 
@@ -243,7 +257,7 @@
                             <a href="../../../../products/<?php echo $detail['productID'] ?>" class="link-to-product-details">
                                 <table class="product">
                                     <tr>
-                                        <td rowspan="4" class="image_container">
+                                        <td rowspan="5" class="image_container">
                                             <img class="image-review" src="../../../../<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['productName'] ?>" width="auto" height="200px">
                                         </td>
                                         <td colspan="2" class="name-review review">
@@ -262,8 +276,14 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" class="sub-total-review review">
-                                                Sub order amount: $ <?php echo $detail['sub_order_amount'] ?>
+                                        <td></td>
+                                        <td class="sub-total-review review">
+                                                = $ <?php echo $detail['sub_order_amount'] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="buy-again-review review">
+                                            <span class="buy-again"><a href="../../../../products/<?php echo $detail['productID'] ?>" class="badge badge-info">Buy Again</a></span>
                                         </td>
                                     </tr>
                                 </table>
@@ -330,7 +350,7 @@
                                                             echo $error_rate;
                                                         ?> </strong></span> <?php
                                                     }
-                                                ?>                                   
+                                                ?>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-2">
@@ -343,7 +363,7 @@
                                                             echo $error_review;
                                                         ?> </strong></span> <?php
                                                     }
-                                                ?>                                   
+                                                ?>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-1 justify-content-end">
@@ -366,7 +386,7 @@
                                                             echo $error_rate;
                                                         ?> </strong></span> <?php
                                                     }
-                                                ?>                                   
+                                                ?>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-2">
@@ -379,7 +399,7 @@
                                                             echo $error_review;
                                                         ?> </strong></span> <?php
                                                     }
-                                                ?>                                   
+                                                ?>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-1 justify-content-end">
