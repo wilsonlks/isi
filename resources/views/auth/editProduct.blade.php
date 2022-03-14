@@ -13,6 +13,14 @@
         $split_url=preg_split("#/#", $url);
         $productID=$split_url[count($split_url)-2];
 
+        // $previous_url=url()->previous();
+        // $split_previous_url=preg_split("#/#", $previous_url);
+        // $is_order=$split_previous_url[count($split_previous_url)-2];
+        // $order=$split_previous_url[count($split_previous_url)-1];
+
+        // echo $is_order;
+        // echo $order;
+
         $productQ = "SELECT * FROM
             (`product` INNER JOIN `productimage`
             ON product.productID=productimage.productID
@@ -127,7 +135,13 @@
 
                 $productName = $category = $price = $stock = $descriptions[] = $descriptions[0] = $descriptions[1] = NULL;
 
+                // if ($is_order == "orders") {
+                //     header("location:http://localhost:8000/".$is_order."/".$order); exit;
+                // } else {
+                //     echo $is_order;
+                //     echo $order;
                 header("location:http://localhost:8000/products/".$productID); exit;
+                // }
 
             }
 

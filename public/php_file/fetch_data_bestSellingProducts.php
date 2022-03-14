@@ -38,10 +38,11 @@
 
     //count how many best selling products
     //set query_quantity
-    $query_quantity_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
+    $query_quantity_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID` 
                 LEFT JOIN (SELECT `productID`,
                     AVG(CASE WHEN `review_date_new` <> 'NULL'
                                 THEN `rating_new`
@@ -79,10 +80,11 @@
 
 
 
-    $query_quantity = "SELECT `product`.`productID`, `image_url`, `productName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
+    $query_quantity = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID` 
                 LEFT JOIN (SELECT `productID`,
                     AVG(CASE WHEN `review_date_new` <> 'NULL'
                                 THEN `rating_new`
@@ -178,15 +180,16 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td></td>
-                                    <td class="stock-best best sm-detail '.$stock_status.'">
-                                        <span class="'.$stock_status.'"><a href="products/'.$row['productID'].'/edit" class="badge badge-'.$badge.'">'.$stock_label.'</a></span>
+                                    <td colspan="2" class="detail-best best">
+                                        <span class="product-id-best">No.'.$row['productID'].'</span> |
+                                        <span class="category-best">'.$row['categoryName'].'</span> |
+                                        <span class="rating-best '.$rating.'">'.$avg_rating.'</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td class="rating-best best sm-detail'.$rating.'">
-                                        '.$avg_rating.'
+                                    <td class="stock-best best sm-detail '.$stock_status.'">
+                                        <span class="'.$stock_status.'"><a href="products/'.$row['productID'].'/edit" class="badge badge-'.$badge.'">'.$stock_label.'</a></span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -224,10 +227,11 @@
 
     //count how many best selling products
     //set query_quantity
-    $query_amount_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
+    $query_amount_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID` 
                 LEFT JOIN (SELECT `productID`,
                     AVG(CASE WHEN `review_date_new` <> 'NULL'
                                 THEN `rating_new`
@@ -265,10 +269,11 @@
     // echo $bestSellingAmount.' and '.$n_of_BSQ_amount;
 
 
-    $query_amount = "SELECT `product`.`productID`, `image_url`, `productName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
+    $query_amount = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID` 
                 LEFT JOIN (SELECT `productID`,
                     AVG(CASE WHEN `review_date_new` <> 'NULL'
                                 THEN `rating_new`
@@ -364,15 +369,16 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td></td>
-                                    <td class="stock-best best sm-detail '.$stock_status.'">
-                                        <span class="'.$stock_status.'"><a href="products/'.$row['productID'].'/edit" class="badge badge-'.$badge.'">'.$stock_label.'</a></span>
+                                    <td colspan="2" class="detail-best best">
+                                        <span class="product-id-best">No.'.$row['productID'].'</span> |
+                                        <span class="category-best">'.$row['categoryName'].'</span> |
+                                        <span class="rating-best '.$rating.'">'.$avg_rating.'</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td class="rating-best best sm-detail'.$rating.'">
-                                        '.$avg_rating.'
+                                    <td class="stock-best best sm-detail '.$stock_status.'">
+                                        <span class="'.$stock_status.'"><a href="products/'.$row['productID'].'/edit" class="badge badge-'.$badge.'">'.$stock_label.'</a></span>
                                     </td>
                                 </tr>
                                 <tr>

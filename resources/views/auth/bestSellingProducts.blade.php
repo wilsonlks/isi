@@ -63,9 +63,15 @@
             color: green;
             text-align: right;
         }
-        .total-quantity-best, .total-amount-best, .stock-best, .rating-best {
+        .total-quantity-best, .total-amount-best, .stock-best, .detail-best {
             font-size: 1rem;
             text-align: right;
+        }
+        .product-id-best, .category-best, .rating-best {
+            padding-left: 10px;
+        }
+        .product-id-best, .category-best {
+            padding-right: 10px;
         }
         .image-best {
             width: 150px;
@@ -76,7 +82,7 @@
             clear: both;
         }
         .sm-detail {
-            width: 77px;
+            width: 177px;
         }
         a:link, a:hover, a:active, a:visited {
             text-decoration: none;
@@ -139,6 +145,10 @@
         }
         .high_rating_productList {
             color: limegreen;
+        }
+        .no_product {
+            padding-top: 16px;
+            padding-bottom: 16px;
         }
     </style>
 
