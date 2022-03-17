@@ -64,8 +64,10 @@
             border: 0px;
         }
         .sorting, .sorting_button, .checkbox {
-            padding: 0px 25px 0px 0px;
             display: inline;
+        }
+        .sorting_button, .checkbox {
+            padding: 0px 25px 0px 0px;
         }
         .inputtext {
             padding: 0px;

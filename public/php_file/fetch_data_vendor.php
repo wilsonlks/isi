@@ -90,7 +90,7 @@
 
     if (strlen($searchQ)>0 OR strlen($s_category_filter)>0 OR strlen($s_stock_filter)>0) {
 
-        $where = " WHERE ";
+        $where = " AND ";
         
         if (strlen($searchQ)>0 AND (strlen($s_category_filter)>0 OR strlen($s_stock_filter)>0)) {
             $and = " AND ";
@@ -134,7 +134,8 @@
                         END) AS `avg_rating`
                     FROM `productreview`
                     GROUP BY `productID`) AS `rating_table`
-                    ON `product`.`productID`=`rating_table`.`productID` ".$where.$searchQ.$and.$filter.$sorting.$limitQ.";";
+                    ON `product`.`productID`=`rating_table`.`productID`
+                    WHERE `productimage`.`image_number`=1 ".$where.$searchQ.$and.$filter.$sorting.$limitQ.";";
 
     //print Query
     //echo $query."<br>";
@@ -248,7 +249,8 @@
                             END) AS `avg_rating`
                         FROM `productreview`
                         GROUP BY `productID`) AS `rating_table`
-                        ON `product`.`productID`=`rating_table`.`productID` ".$where.$searchQ.$and.$filter.$sorting.";";
+                        ON `product`.`productID`=`rating_table`.`productID`
+                        WHERE `productimage`.`image_number`=1 ".$where.$searchQ.$and.$filter.$sorting.";";
     //echo $NP_query;
     $NP_result = mysqli_query($dbConnection, $NP_query);
     $NP_row = mysqli_fetch_row($NP_result);

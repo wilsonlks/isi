@@ -21,7 +21,8 @@
                         ON purchaseorder.customerID=users.id
                         INNER JOIN `productimage`
                         ON product.productID=productimage.productID)
-                        WHERE `purchaseorder`.`poID`=$orderID";
+                        WHERE `purchaseorder`.`poID`=$orderID
+                        AND `productimage`.`image_number`=1";
         $order_set = $dbConnection->prepare($order_query);
         $order_set->execute();
         $order_result1 = $order_set->get_result();
@@ -248,9 +249,9 @@
                                             <input type="text" readonly class="form-control-plaintext" id="total_order" name="total_order" value="$ <?php echo $detail['total_order_amount'] ?>" disabled>
                                         </div>
                                     </div>
-                                    <div class="input-group row mb-1">
-                                        <label for="status_order" class="col-md-3 col-form-label">Status</label>
-                                        <div class="col-md-7 status-select">
+                                    <div class="form-group row mb-1">
+                                        <label for="status_order" class="col-sm-3 col-form-label">Status</label>
+                                        <div class="col-sm-7 status-select">
                                         <select class="form-select @if (isset($error)) is-invalid @endif" id="status" name="status_order">
                                             <option value="" disabled>Status change</option>
                                             @if ($detail['status'] == 'pending')

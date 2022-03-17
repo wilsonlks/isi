@@ -16,7 +16,8 @@
                     ON shoppingcart.productID=product.productID
                     INNER JOIN `productimage`
                     ON shoppingcart.productID=productimage.productID)
-                    WHERE `shoppingcart`.`customerID`=".Auth::id();
+                    WHERE `shoppingcart`.`customerID`=".Auth::id()." 
+                    AND `productimage`.`image_number`=1";
     $cart_set = $dbConnection->prepare($cart_query);
     $cart_set->execute();
     $cart_result = $cart_set->get_result();
@@ -35,7 +36,8 @@
                     ON shoppingcart.productID=product.productID
                     INNER JOIN `productimage`
                     ON shoppingcart.productID=productimage.productID)
-                    WHERE `shoppingcart`.`customerID`=".Auth::id();
+                    WHERE `shoppingcart`.`customerID`=".Auth::id()." 
+                    AND `productimage`.`image_number`=1";
     $total_set = $dbConnection->prepare($total_query);
     $total_set->execute();
     $total_result1 = $total_set->get_result();

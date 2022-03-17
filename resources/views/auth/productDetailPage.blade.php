@@ -13,21 +13,41 @@
         $split_url=preg_split("#/#", $url);
         $productID=$split_url[count($split_url)-1];
 
-        $productQ = "SELECT * FROM
+        // product image
+
+        $product_image_query = "SELECT * FROM
             (`product` INNER JOIN `productimage`
             ON product.productID=productimage.productID
             INNER JOIN `productproperty`
             ON product.productID=productproperty.productID)
             LEFT JOIN `category`
             ON `product`.`category`=`category`.`categoryID`
-            WHERE `product`.`productID`=$productID";
-        $PSet = $dbConnection->prepare($productQ);
-        $PSet->execute();
-        $PSetResult1 = $PSet->get_result();
-        $PSet->execute();
-        $PSetResult2 = $PSet->get_result();
-        $PSet->execute();
-        $PSetResult3 = $PSet->get_result();
+            WHERE `product`.`productID`=$productID
+            GROUP BY `productimage`.`image_number`
+            ORDER BY `productimage`.`image_number`";
+        $product_image_set = $dbConnection->prepare($product_image_query);
+        $product_image_set->execute();
+        $product_image_result1 = $product_image_set->get_result();
+        $product_image_set->execute();
+        $product_image_result2 = $product_image_set->get_result();
+        $product_image_set->execute();
+        $product_detail_result = $product_image_set->get_result();
+
+        // product property
+
+        $product_property_query = "SELECT * FROM
+            (`product` INNER JOIN `productimage`
+            ON product.productID=productimage.productID
+            INNER JOIN `productproperty`
+            ON product.productID=productproperty.productID)
+            LEFT JOIN `category`
+            ON `product`.`category`=`category`.`categoryID`
+            WHERE `product`.`productID`=$productID
+            GROUP BY `productproperty`.`property_number`
+            ORDER BY `productproperty`.`property_number`";
+        $product_property_set = $dbConnection->prepare($product_property_query);
+        $product_property_set->execute();
+        $product_property_result = $product_property_set->get_result();
 
         // get rate and review
 
@@ -77,13 +97,7 @@
 
         if (isset($_POST['submit'])) {
 
-
-            $cartDetail = mysqli_fetch_array($PSetResult3);
-
             $customer = Auth::id();
-
-            $product = $cartDetail['productID'];
-
             $quantity = 1;
 
             /*
@@ -109,25 +123,16 @@
                                         ?, ?, ?
                                     )";
                 $statement = $dbConnection->prepare($add_cart_query);
-                $statement->bind_param('isi', $customer, $product, $quantity);
+                $statement->bind_param('isi', $customer, $productID, $quantity);
                 $statement->execute();
                 $statement->close();
 
                 $message = 'This product has been added to your cart successfully.';
                 $cart_saved = TRUE;
-                $cartDetail = $customer = $product = $quantity = $product_unique_query = $product_unique_result = NULL;
+                $customer = $quantity = $product_unique_query = $product_unique_result = NULL;
             }
 
         }
-
-        // // edit product
-
-        // if (isset($_POST['edit'])) {
-
-        //     $productID = $_POST['edit'];
-        //     header("location:http://localhost:8000/products/".$productID."/edit"); exit;
-
-        // }
 
     ?>
 
@@ -138,12 +143,13 @@
         }
         .card-image {
             margin: auto;
-            width: 50%;
+            /* width: 50%; */
+            height: 400px;
         }
         .image_detail {
             display: block;
-            width: 100%;
-            height: 100%;
+            width: auto;
+            height: 400px;
             object-fit: cover;
             margin-left: auto;
             margin-right: auto;
@@ -248,25 +254,164 @@
         .out-of-stock, .few-items-left, .in-stock {
             margin-left: 20px;
         }
+        .carousel{
+            position:relative
+        }
+        .carousel-inner{
+            position:relative;
+            width:100%;
+            overflow:hidden
+        }
+        .carousel-item{
+            position:relative;
+            display:none;
+            -webkit-box-align:center;
+            -ms-flex-align:center;
+            align-items:center;
+            width:100%;
+            transition:-webkit-transform .6s ease;
+            transition:transform .6s ease;
+            transition:transform .6s ease,-webkit-transform .6s ease;
+            -webkit-backface-visibility:hidden;
+            backface-visibility:hidden;
+            -webkit-perspective:1000px;
+            perspective:1000px
+        }
+        .carousel-control-next,.carousel-control-prev{
+            position:absolute;
+            top:0;
+            bottom:0;
+            display:-webkit-box;
+            display:-ms-flexbox;
+            display:flex;
+            -webkit-box-align:center;
+            -ms-flex-align:center;
+            align-items:center;
+            -webkit-box-pack:center;
+            -ms-flex-pack:center;
+            justify-content:center;
+            width:15%;
+            color:#fff;
+            text-align:center;
+            opacity:.5
+        }
+        .carousel-control-next:focus,.carousel-control-next:hover,.carousel-control-prev:focus,.carousel-control-prev:hover{
+            color:#fff;
+            text-decoration:none;
+            outline:0;
+            opacity:.9
+        }
+        .carousel-control-prev{
+            left:0
+        }
+        .carousel-control-next{
+            right:0
+        }
+        .carousel-control-next-icon,.carousel-control-prev-icon{
+            display:inline-block;
+            width:20px;
+            height:20px;
+            background:transparent no-repeat center center;
+            background-size:100% 100%
+        }
+        .carousel-control-prev-icon{
+            background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E")
+        }
+        .carousel-control-next-icon{
+            background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E")
+        }
+        .carousel-indicators{
+            position:absolute;
+            right:0;
+            bottom:10px;
+            left:0;
+            z-index:15;
+            display:-webkit-box;
+            display:-ms-flexbox;
+            display:flex;
+            -webkit-box-pack:center;
+            -ms-flex-pack:center;
+            justify-content:center;
+            padding-left:0;
+            margin-right:15%;
+            margin-left:15%;
+            list-style:none
+        }
+        .carousel-indicators li{
+            position:relative;
+            -webkit-box-flex:0;
+            -ms-flex:0 1 auto;
+            flex:0 1 auto;
+            width:30px;
+            height:3px;
+            margin-right:3px;
+            margin-left:3px;
+            text-indent:-999px;
+            background-color:rgba(255,255,255,.5)
+        }
+        .carousel-indicators li::before{
+            position:absolute;
+            top:-10px;
+            left:0;
+            display:inline-block;
+            width:100%;
+            height:10px;
+            content:""
+        }
+        .carousel-indicators li::after{
+            position:absolute;
+            bottom:-10px;
+            left:0;
+            display:inline-block;
+            width:100%;
+            height:10px;
+            content:""
+        }
+        .carousel-indicators .active{
+            background-color:#fff
+        }
     </style>
 
     <div class="content">
 
         <!-- print data -->
 
-        <?php
-            $detail= mysqli_fetch_array($PSetResult1);
-        ?>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header product-header">
                             <div class="card-image">
-                                <img class="image_detail" src="../<?php echo $detail['image_url'] ?>" alt="Card image cap">
+                                <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
+                                    <ol class="carousel-indicators">
+                                        <?php 
+                                            while ($detail= mysqli_fetch_array($product_image_result1)) { ?>
+                                                <li data-target="#carouselIndicators" data-slide-to="<?php echo $detail['image_number']-1 ?>" class="{{ $detail['image_number']==1 ? 'active' : '' }}"></li>
+                                            <?php }
+                                        ?>
+                                    </ol>
+                                    <div class="carousel-inner">
+                                        <?php 
+                                            while ($detail= mysqli_fetch_array($product_image_result2)) { ?>
+                                                <div class="carousel-item {{ $detail['image_number']==1 ? 'active' : '' }}">
+                                                <img class="image_detail" src="../<?php echo $detail['image_url'] ?>" alt="<?php echo $detail['image_number'] ?> slide">
+                                                </div>
+                                            <?php }
+                                        ?>
+                                    </div>
+                                    <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <!-- <span class="sr-only">Previous</span> -->
+                                    </a>
+                                    <a class="carousel-control-next" href="#carouselIndicators" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <!-- <span class="sr-only">Next</span> -->
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
+                            <?php $detail= mysqli_fetch_array($product_detail_result); ?>
                             <div class="card-title">
                                 <div class="card-column"><h1 class="name_detail"><?php echo $detail['productName'] ?></h1></div>
                                 @auth
@@ -333,11 +478,12 @@
                                 @endauth
                                 <h4 class="mb-2 text-muted price_detail">$ <?php echo $detail['price'] ?></h4>
                             </div>
-                            <div class="card-text"><?php
-                                while ($detail= mysqli_fetch_array($PSetResult2)){ ?>
-                                    <div class="description_detail"><?php echo $detail['detail_description'] ?></div>
-                                <?php }
-                            ?></div>
+                            <div class="card-text">
+                                <?php $detail= mysqli_fetch_array($product_property_result); ?>
+                                <div class="description_detail"><?php echo $detail['detail_description'] ?></div>
+                                <?php $detail= mysqli_fetch_array($product_property_result); ?>
+                                <div class="description_detail"><?php echo $detail['detail_description'] ?></div>
+                            </div>
                         </div>
                     </div>
                     @if (isset($message))

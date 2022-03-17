@@ -34,7 +34,8 @@
                             ON purchaseorder.customerID=users.id
                             INNER JOIN `productimage`
                             ON product.productID=productimage.productID)
-                            WHERE `purchaseorder`.`poID`=$orderID";
+                            WHERE `purchaseorder`.`poID`=$orderID
+                            AND `productimage`.`image_number`=1";
             $order_set = $dbConnection->prepare($order_query);
             $order_set->execute();
             $order_result1 = $order_set->get_result();
@@ -127,7 +128,7 @@
             color: green;
             text-align: right;
         }
-        .price-order, .quantity-order, .sub-total-order, .rate-review-order {
+        .price-order, .quantity-order, .sub-total-order, .rate-review-order, .buy-again-order {
             font-size: 1rem;
             text-align: right;
         }
@@ -171,6 +172,17 @@
         .badge-success:hover {
             color: black;
             background: limegreen;
+        }
+        .badge-info {
+            color: black;
+            background: deepskyblue;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-info:hover {
+            color: black;
+            background: dodgerblue;
         }
     </style>
 
@@ -307,13 +319,17 @@
                                                             = $ <?php echo $detail['sub_order_amount'] ?>
                                                     </td>
                                                 </tr>
-                                                @if ($detail['status'] == 'shipped')
-                                                    <tr>
+                                                <tr>
+                                                    @if ($detail['status'] == 'shipped')
                                                         <td colspan="2" class="rate-review-order order">
                                                             <span class="rate-review"><a href="<?php echo $detail['poID'] ?>/products/<?php echo $detail['productID'] ?>/reviews" class="badge badge-success">Rate and Review</a></span>
                                                         </td>
-                                                    </tr>
-                                                @endif
+                                                    @else
+                                                        <td colspan="2" class="buy-again-order order">
+                                                            <span class="buy-again badge badge-info">Buy Again</span>
+                                                        </td>
+                                                    @endif
+                                                </tr>
                                             </table>
                                         </a>
                                     </div>

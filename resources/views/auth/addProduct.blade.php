@@ -85,38 +85,182 @@
             * Upload files.
             */
             if (!empty($_FILES)) {
-                if (isset($_FILES['file']['error'])) {
-                    foreach ($_FILES['file']['error'] as $uploadedFileKey => $uploadedFileError) {
+
+                // Thumbnail image file.
+
+                if (isset($_FILES['file1']['error'])) {
+                    foreach ($_FILES['file1']['error'] as $uploadedFileKey => $uploadedFileError) {
                         if ($uploadedFileError === UPLOAD_ERR_NO_FILE) {
-                            $error_file[] = 'Please upload the thumbnail image file.';
+                            $error_file1[] = 'Please upload the thumbnail image file.';
                             $error_detail[] = 'Please upload the thumbnail image file.';
                         } elseif ($uploadedFileError === UPLOAD_ERR_OK) {
-                            $uploadedFileName = basename($_FILES['file']['name'][$uploadedFileKey]);
+                            $uploadedFileName = basename($_FILES['file1']['name'][$uploadedFileKey]);
 
-                            if ($_FILES['file']['size'][$uploadedFileKey] <= UPLOAD_MAX_FILE_SIZE) {
-                                $uploadedFileType = $_FILES['file']['type'][$uploadedFileKey];
-                                $uploadedFileTempName = $_FILES['file']['tmp_name'][$uploadedFileKey];
+                            if ($_FILES['file1']['size'][$uploadedFileKey] <= UPLOAD_MAX_FILE_SIZE) {
+                                $uploadedFileType = $_FILES['file1']['type'][$uploadedFileKey];
+                                $uploadedFileTempName = $_FILES['file1']['tmp_name'][$uploadedFileKey];
 
                                 $uploadedFilePath = rtrim(UPLOAD_DIR, '/') . '/' . $uploadedFileName;
 
                                 if (in_array($uploadedFileType, $allowedMimeTypes)) {
                                     if (!move_uploaded_file($uploadedFileTempName, $uploadedFilePath)) {
-                                        $error_file[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
+                                        $error_file1[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
                                         $error_detail[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
                                     } else {
                                         $filenamesToSave[] = $uploadedFilePath;
                                     }
                                 } else {
-                                    $error_file[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
+                                    $error_file1[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
                                     $error_detail[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
                                 }
                             } else {
-                                $error_file[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
+                                $error_file1[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
                                 $error_detail[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
                             }
                         }
                     }
                 }
+
+                // Detail image file 1.
+
+                if (isset($_FILES['file2']['error'])) {
+                    foreach ($_FILES['file2']['error'] as $uploadedFileKey => $uploadedFileError) {
+                        if ($uploadedFileError === UPLOAD_ERR_NO_FILE) {
+                            // $error_file2[] = 'Please upload the image file.';
+                            // $error_detail[] = 'Please upload the image file.';
+                        } elseif ($uploadedFileError === UPLOAD_ERR_OK) {
+                            $uploadedFileName = basename($_FILES['file2']['name'][$uploadedFileKey]);
+
+                            if ($_FILES['file2']['size'][$uploadedFileKey] <= UPLOAD_MAX_FILE_SIZE) {
+                                $uploadedFileType = $_FILES['file2']['type'][$uploadedFileKey];
+                                $uploadedFileTempName = $_FILES['file2']['tmp_name'][$uploadedFileKey];
+
+                                $uploadedFilePath = rtrim(UPLOAD_DIR, '/') . '/' . $uploadedFileName;
+
+                                if (in_array($uploadedFileType, $allowedMimeTypes)) {
+                                    if (!move_uploaded_file($uploadedFileTempName, $uploadedFilePath)) {
+                                        $error_file2[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
+                                        $error_detail[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
+                                    } else {
+                                        $filenamesToSave[] = $uploadedFilePath;
+                                    }
+                                } else {
+                                    $error_file2[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
+                                    $error_detail[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
+                                }
+                            } else {
+                                $error_file2[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
+                                $error_detail[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
+                            }
+                        }
+                    }
+                }
+
+                // Detail image file 2.
+
+                if (isset($_FILES['file3']['error'])) {
+                    foreach ($_FILES['file3']['error'] as $uploadedFileKey => $uploadedFileError) {
+                        if ($uploadedFileError === UPLOAD_ERR_NO_FILE) {
+                            // $error_file3[] = 'Please upload the image file.';
+                            // $error_detail[] = 'Please upload the image file.';
+                        } elseif ($uploadedFileError === UPLOAD_ERR_OK) {
+                            $uploadedFileName = basename($_FILES['file3']['name'][$uploadedFileKey]);
+
+                            if ($_FILES['file3']['size'][$uploadedFileKey] <= UPLOAD_MAX_FILE_SIZE) {
+                                $uploadedFileType = $_FILES['file3']['type'][$uploadedFileKey];
+                                $uploadedFileTempName = $_FILES['file3']['tmp_name'][$uploadedFileKey];
+
+                                $uploadedFilePath = rtrim(UPLOAD_DIR, '/') . '/' . $uploadedFileName;
+
+                                if (in_array($uploadedFileType, $allowedMimeTypes)) {
+                                    if (!move_uploaded_file($uploadedFileTempName, $uploadedFilePath)) {
+                                        $error_file3[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
+                                        $error_detail[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
+                                    } else {
+                                        $filenamesToSave[] = $uploadedFilePath;
+                                    }
+                                } else {
+                                    $error_file3[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
+                                    $error_detail[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
+                                }
+                            } else {
+                                $error_file3[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
+                                $error_detail[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
+                            }
+                        }
+                    }
+                }
+
+                // Detail image file 3.
+
+                if (isset($_FILES['file4']['error'])) {
+                    foreach ($_FILES['file4']['error'] as $uploadedFileKey => $uploadedFileError) {
+                        if ($uploadedFileError === UPLOAD_ERR_NO_FILE) {
+                            // $error_file4[] = 'Please upload the image file.';
+                            // $error_detail[] = 'Please upload the image file.';
+                        } elseif ($uploadedFileError === UPLOAD_ERR_OK) {
+                            $uploadedFileName = basename($_FILES['file4']['name'][$uploadedFileKey]);
+
+                            if ($_FILES['file4']['size'][$uploadedFileKey] <= UPLOAD_MAX_FILE_SIZE) {
+                                $uploadedFileType = $_FILES['file4']['type'][$uploadedFileKey];
+                                $uploadedFileTempName = $_FILES['file4']['tmp_name'][$uploadedFileKey];
+
+                                $uploadedFilePath = rtrim(UPLOAD_DIR, '/') . '/' . $uploadedFileName;
+
+                                if (in_array($uploadedFileType, $allowedMimeTypes)) {
+                                    if (!move_uploaded_file($uploadedFileTempName, $uploadedFilePath)) {
+                                        $error_file4[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
+                                        $error_detail[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
+                                    } else {
+                                        $filenamesToSave[] = $uploadedFilePath;
+                                    }
+                                } else {
+                                    $error_file4[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
+                                    $error_detail[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
+                                }
+                            } else {
+                                $error_file4[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
+                                $error_detail[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
+                            }
+                        }
+                    }
+                }
+
+                // Detail image file 4.
+
+                if (isset($_FILES['file5']['error'])) {
+                    foreach ($_FILES['file5']['error'] as $uploadedFileKey => $uploadedFileError) {
+                        if ($uploadedFileError === UPLOAD_ERR_NO_FILE) {
+                            // $error_file5[] = 'Please upload the image file.';
+                            // $error_detail[] = 'Please upload the image file.';
+                        } elseif ($uploadedFileError === UPLOAD_ERR_OK) {
+                            $uploadedFileName = basename($_FILES['file5']['name'][$uploadedFileKey]);
+
+                            if ($_FILES['file5']['size'][$uploadedFileKey] <= UPLOAD_MAX_FILE_SIZE) {
+                                $uploadedFileType = $_FILES['file5']['type'][$uploadedFileKey];
+                                $uploadedFileTempName = $_FILES['file5']['tmp_name'][$uploadedFileKey];
+
+                                $uploadedFilePath = rtrim(UPLOAD_DIR, '/') . '/' . $uploadedFileName;
+
+                                if (in_array($uploadedFileType, $allowedMimeTypes)) {
+                                    if (!move_uploaded_file($uploadedFileTempName, $uploadedFilePath)) {
+                                        $error_file5[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
+                                        $error_detail[] = 'The file "' . $uploadedFileName . '" could not be uploaded.';
+                                    } else {
+                                        $filenamesToSave[] = $uploadedFilePath;
+                                    }
+                                } else {
+                                    $error_file5[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
+                                    $error_detail[] = 'The extension of the file "' . $uploadedFileName . '" is not valid. Allowed extensions: JPG, JPEG, PNG, or GIF.';
+                                }
+                            } else {
+                                $error_file5[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
+                                $error_detail[] = 'The size of the file "' . $uploadedFileName . '" must be of max. ' . (UPLOAD_MAX_FILE_SIZE / 1024) . ' KB';
+                            }
+                        }
+                    }
+                }
+
             }
 
             /*
@@ -210,7 +354,8 @@
 
                     $statement->close();
 
-                    //$image_number++;
+                    $image_number++;
+
                 }
 
                 /*
@@ -370,11 +515,67 @@
                             <div class="row mb-3">
                                 <label for="file" class="col-md-4 col-form-label text-md-end">{{ __('Thumbnail Image') }}</label>
                                 <div class="col-md-6">
-                                    <input id="file" type="file" class="form-control @if (isset($error_file)) is-invalid @endif" name="file[]">
+                                    <input id="file" type="file" class="form-control @if (isset($error_file1)) is-invalid @endif" name="file1[]">
                                     <?php
-                                        if (isset($error_file)) {
+                                        if (isset($error_file1)) {
                                             ?> <span class="invalid-feedback" role="alert" style="display:block"><strong> <?php
-                                            echo implode('<br/>', $error_file);
+                                            echo implode('<br/>', $error_file1);
+                                            ?> </strong></span> <?php
+                                        }
+                                    ?>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="file" class="col-md-4 col-form-label text-md-end">{{ __('Detail Image 1') }}</label>
+                                <div class="col-md-6">
+                                    <input id="file" type="file" class="form-control @if (isset($error_file2)) is-invalid @endif" name="file2[]">
+                                    <?php
+                                        if (isset($error_file2)) {
+                                            ?> <span class="invalid-feedback" role="alert" style="display:block"><strong> <?php
+                                            echo implode('<br/>', $error_file2);
+                                            ?> </strong></span> <?php
+                                        }
+                                    ?>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="file" class="col-md-4 col-form-label text-md-end">{{ __('Detail Image 2') }}</label>
+                                <div class="col-md-6">
+                                    <input id="file" type="file" class="form-control @if (isset($error_file2)) is-invalid @endif" name="file3[]">
+                                    <?php
+                                        if (isset($error_file3)) {
+                                            ?> <span class="invalid-feedback" role="alert" style="display:block"><strong> <?php
+                                            echo implode('<br/>', $error_file3);
+                                            ?> </strong></span> <?php
+                                        }
+                                    ?>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="file" class="col-md-4 col-form-label text-md-end">{{ __('Detail Image 3') }}</label>
+                                <div class="col-md-6">
+                                    <input id="file" type="file" class="form-control @if (isset($error_file2)) is-invalid @endif" name="file4[]">
+                                    <?php
+                                        if (isset($error_file4)) {
+                                            ?> <span class="invalid-feedback" role="alert" style="display:block"><strong> <?php
+                                            echo implode('<br/>', $error_file4);
+                                            ?> </strong></span> <?php
+                                        }
+                                    ?>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="file" class="col-md-4 col-form-label text-md-end">{{ __('Detail Image 4') }}</label>
+                                <div class="col-md-6">
+                                    <input id="file" type="file" class="form-control @if (isset($error_file2)) is-invalid @endif" name="file5[]">
+                                    <?php
+                                        if (isset($error_file5)) {
+                                            ?> <span class="invalid-feedback" role="alert" style="display:block"><strong> <?php
+                                            echo implode('<br/>', $error_file5);
                                             ?> </strong></span> <?php
                                         }
                                     ?>
