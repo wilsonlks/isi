@@ -90,7 +90,7 @@
 
 
     //NP = Number_of_Products
-    $NP_limit = 2; //limit products for each page
+    $NP_limit = 5; //limit products for each page
 
     // update the active page number
 
@@ -107,11 +107,11 @@
             (`product` INNER JOIN `productimage`
             ON product.productID=productimage.productID)
             LEFT JOIN `category`
-            ON `product`.`category`=`category`.`categoryID`     
+            ON `product`.`category`=`category`.`categoryID`
             LEFT JOIN (
-                SELECT `productID`, 
+                SELECT `productID`,
                     AVG(
-                        CASE 
+                        CASE
                             WHEN `review_date_new` <> 'NULL'
                                 THEN `rating_new`
                             WHEN `review_date` <> 'NULL'
@@ -214,11 +214,11 @@
                 (`product` INNER JOIN `productimage`
                 ON product.productID=productimage.productID)
                 LEFT JOIN `category`
-                ON `product`.`category`=`category`.`categoryID`     
+                ON `product`.`category`=`category`.`categoryID`
                 LEFT JOIN (
-                    SELECT `productID`, 
+                    SELECT `productID`,
                         AVG(
-                            CASE 
+                            CASE
                                 WHEN `review_date_new` <> 'NULL'
                                     THEN `rating_new`
                                 WHEN `review_date` <> 'NULL'

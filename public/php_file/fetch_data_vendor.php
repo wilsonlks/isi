@@ -91,7 +91,7 @@
     if (strlen($searchQ)>0 OR strlen($s_category_filter)>0 OR strlen($s_stock_filter)>0) {
 
         $where = " AND ";
-        
+
         if (strlen($searchQ)>0 AND (strlen($s_category_filter)>0 OR strlen($s_stock_filter)>0)) {
             $and = " AND ";
         }
@@ -105,7 +105,7 @@
 
 
     //NP = Number_of_Products
-    $NP_limit = 2; //limit products for each page
+    $NP_limit = 5; //limit products for each page
 
     // update the active page number
 
@@ -122,11 +122,11 @@
     (`product` INNER JOIN `productimage`
     ON product.productID=productimage.productID)
     LEFT JOIN `category`
-    ON `product`.`category`=`category`.`categoryID`     
+    ON `product`.`category`=`category`.`categoryID`
             LEFT JOIN (
-                SELECT `productID`, 
+                SELECT `productID`,
                     AVG(
-                        CASE 
+                        CASE
                             WHEN `review_date_new` <> 'NULL'
                                 THEN `rating_new`
                             WHEN `review_date` <> 'NULL'
@@ -237,11 +237,11 @@
     (`product` INNER JOIN `productimage`
     ON product.productID=productimage.productID)
     LEFT JOIN `category`
-                ON `product`.`category`=`category`.`categoryID`     
+                ON `product`.`category`=`category`.`categoryID`
                 LEFT JOIN (
-                    SELECT `productID`, 
+                    SELECT `productID`,
                         AVG(
-                            CASE 
+                            CASE
                                 WHEN `review_date_new` <> 'NULL'
                                     THEN `rating_new`
                                 WHEN `review_date` <> 'NULL'
