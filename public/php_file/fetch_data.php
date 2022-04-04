@@ -90,7 +90,7 @@
 
 
     //NP = Number_of_Products
-    $NP_limit = 5; //limit products for each page
+    $NP_limit = 2; //limit products for each page
 
     // update the active page number
 
