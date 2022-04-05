@@ -42,7 +42,7 @@
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
-                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID` 
+                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
                 LEFT JOIN (SELECT `productID`,
                     AVG(CASE WHEN `review_date_new` <> 'NULL'
                                 THEN `rating_new`
@@ -65,6 +65,8 @@
     // echo $query_quantity_for_count;
 
     //print data
+
+
     $n_of_BSQ_quantity = 0;
     $row_for_count= mysqli_fetch_array($resultSet1_quantity);
     if ($row_for_count){
@@ -73,6 +75,9 @@
         while ($row_for_count= mysqli_fetch_array($resultSet1_quantity)){
             if ($row_for_count['totalQuantity'] == $bestSellingQuantity){
                 $n_of_BSQ_quantity = $n_of_BSQ_quantity +1;
+            }
+            else {
+                break;
             }
         }
     }
@@ -84,7 +89,7 @@
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
-                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID` 
+                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
                 LEFT JOIN (SELECT `productID`,
                     AVG(CASE WHEN `review_date_new` <> 'NULL'
                                 THEN `rating_new`
@@ -217,7 +222,7 @@
     //echo '</div>';
     echo '';
     if($data_count_quantity == 0){
-        $output_quantity .= '<div class="no_product">No best products</div>';
+        $output_quantity .= '<div class="no_product">No product is sold</div>';
     }
 
     echo $output_quantity;
@@ -231,7 +236,7 @@
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
-                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID` 
+                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
                 LEFT JOIN (SELECT `productID`,
                     AVG(CASE WHEN `review_date_new` <> 'NULL'
                                 THEN `rating_new`
@@ -273,7 +278,7 @@
                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
-                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID` 
+                LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
                 LEFT JOIN (SELECT `productID`,
                     AVG(CASE WHEN `review_date_new` <> 'NULL'
                                 THEN `rating_new`
@@ -406,7 +411,7 @@
     //echo '</div>';
     echo '';
     if($data_count_amount == 0){
-        $output_amount .= '<div class="no_product">No best products</div>';
+        $output_amount .= '<div class="no_product">No product is sold</div>';
     }
 
     echo $output_amount;
