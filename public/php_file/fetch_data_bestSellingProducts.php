@@ -40,7 +40,7 @@
     //count how many best selling products
     //set query_quantity
     $query_quantity_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
-                                FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
+                                FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID` AND `purchaseorder`.`status` = 'shipped')
                                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                                 INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
                                 LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
@@ -53,8 +53,7 @@
                                     FROM `productreview`
                                     GROUP BY `productID`) AS `rating_table`
                                 ON `product`.`productID`=`rating_table`.`productID`
-                                WHERE `purchaseorder`.`status` = 'shipped'
-                                AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
+                                WHERE `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
                                 GROUP BY `productID`
                                 ORDER BY `totalQuantity` DESC";
 
@@ -88,7 +87,7 @@
 
 
     $query_quantity = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
-                    FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
+                    FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID` AND `purchaseorder`.`status` = 'shipped')
                     INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                     INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
                     LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
@@ -101,12 +100,11 @@
                         FROM `productreview`
                         GROUP BY `productID`) AS `rating_table`
                     ON `product`.`productID`=`rating_table`.`productID`
-                    WHERE `purchaseorder`.`status` = 'shipped'
-                    AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
+                    WHERE `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
                     GROUP BY `productID`
                     ORDER BY `totalQuantity` DESC";
 
-    // echo $query_quantity;
+    //echo $query_quantity;
 
     $statement = $dbConnection->prepare($query_quantity);
     $statement->execute();
@@ -235,7 +233,7 @@
     //count how many best selling products
     //set query_quantity
     $query_amount_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
-                            FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
+                            FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID` AND `purchaseorder`.`status` = 'shipped')
                             INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                             INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
                             LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
@@ -248,8 +246,7 @@
                                 FROM `productreview`
                                 GROUP BY `productID`) AS `rating_table`
                             ON `product`.`productID`=`rating_table`.`productID`
-                            WHERE `purchaseorder`.`status` = 'shipped'
-                            AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
+                            WHERE `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
                             GROUP BY `productID`
                             ORDER BY `totalQuantity` DESC";
 
@@ -277,7 +274,7 @@
 
 
     $query_amount = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
-                    FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID`)
+                    FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID` AND `purchaseorder`.`status` = 'shipped')
                     INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
                     INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
                     LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
@@ -290,11 +287,10 @@
                         FROM `productreview`
                         GROUP BY `productID`) AS `rating_table`
                     ON `product`.`productID`=`rating_table`.`productID`
-                    WHERE `purchaseorder`.`status` = 'shipped'
-                    AND  `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
+                    WHERE `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
                     GROUP BY `productID`
                     ORDER BY `totalAmount` DESC";
-
+    //print($query_amount);
     // echo $query_quantity;
 
     $statement = $dbConnection->prepare($query_amount);
