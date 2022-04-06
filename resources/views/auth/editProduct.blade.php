@@ -121,10 +121,6 @@
                 $price = $old_detail['price'];
             }
 
-            // if (empty($stock)) {
-            //     $stock = $old_detail['stock'];
-            // }
-
             if ($stock==0) {
                 // $error_stock = 'The stock quantity cannot be zero.';
                 // $error_detail[] = $error_stock;
