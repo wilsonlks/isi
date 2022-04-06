@@ -8,6 +8,9 @@
 
     $filter = "";
     $page_number = 1;
+    $s_status_filter ='';
+    $where = '';
+    $and = '';
     //get data from productList.blade.php
     if(isset($_POST["action"])){
 

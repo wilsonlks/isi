@@ -7,6 +7,8 @@
 
     $filter = "";
     $page_number = 1;
+    $s_category_filter ='';
+    $and1 ='';
     //get data from productList.blade.php
     if(isset($_POST["action"])){
 
