@@ -44,7 +44,7 @@
     $query_quantity_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                                 FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID` AND `purchaseorder`.`status` = 'shipped')
                                 INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
-                                INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                                INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID` AND `productimage`.`image_number` = 1)
                                 LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
                                 LEFT JOIN (SELECT `productID`,
                                     AVG(CASE WHEN `review_date_new` <> 'NULL'
@@ -91,7 +91,7 @@
     $query_quantity = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                     FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID` AND `purchaseorder`.`status` = 'shipped')
                     INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
-                    INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                    INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`  AND `productimage`.`image_number` = 1)
                     LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
                     LEFT JOIN (SELECT `productID`,
                         AVG(CASE WHEN `review_date_new` <> 'NULL'
@@ -237,7 +237,7 @@
     $query_amount_for_count = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                             FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID` AND `purchaseorder`.`status` = 'shipped')
                             INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
-                            INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                            INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`  AND `productimage`.`image_number` = 1)
                             LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
                             LEFT JOIN (SELECT `productID`,
                                 AVG(CASE WHEN `review_date_new` <> 'NULL'
@@ -278,7 +278,7 @@
     $query_amount = "SELECT `product`.`productID`, `image_url`, `productName`, `categoryName`, `stock`, `avg_rating`, sum(`quantity`) AS `totalQuantity`, sum(`sub_order_amount`) AS `totalAmount`
                     FROM (((`purchaseorderdetail` INNER JOIN `purchaseorder` ON `purchaseorder`.`poID`= `purchaseorderdetail`.`poID` AND `purchaseorder`.`status` = 'shipped')
                     INNER JOIN `product` ON `product`.`productID`=`purchaseorderdetail`.`productID` )
-                    INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`)
+                    INNER JOIN `productimage` ON `productimage`.`productID`=`purchaseorderdetail`.`productID`  AND `productimage`.`image_number` = 1)
                     LEFT JOIN `category` ON `product`.`category`=`category`.`categoryID`
                     LEFT JOIN (SELECT `productID`,
                         AVG(CASE WHEN `review_date_new` <> 'NULL'

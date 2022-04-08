@@ -15,28 +15,20 @@
     $and = ''; 
     //get data from productList.blade.php
     if (isset($_POST["action"])) {
-
-        //get category filter from productList.blade.php
+        //get category filter value
         if (isset($_POST["category_filter"])) {
-
             $_category_filter = implode(",", $_POST["category_filter"]);//get data
-            $s_category_filter = strval($_category_filter); //like toString()
+            $s_category_filter = strval($_category_filter);
 
-            $filter .= "
-            product.category IN (".$s_category_filter.")
-            ";
-
+            $filter .= "product.category IN (".$s_category_filter.")";
         }
 
         //get and set sorting value
         if (isset($_POST["sorting"])) {
-
             $s_sorting_value = strval($_POST["sorting"]);
-
         }
 
         if (isset($_POST["AscDesc"])) {
-
             $AscDesc  = intval($_POST["AscDesc"]);
             if ($AscDesc == 1) {
                 if ($s_sorting_value=="-avg_rating") {
@@ -50,30 +42,26 @@
                 }
                 $AscDesc = "DESC";
             }
-
         }
-
+        //get searching keywords
         if (isset($_POST["searchText"])) {
             $searchText = strval($_POST["searchText"]);
-
             if (strlen($searchText) > 0) {
                 $searchQ = "(product.productName LIKE '%".$searchText."%') ";
             } else {
                 $searchQ = "";
             }
         }
-
+        //get current page number
         if (isset($_POST["page"])) {
-
             $page_number  = intval($_POST["page"]);
-
         } else {
-
           $page_number=1;
-
         }
-
     }
+
+
+
 
     if (strlen($searchQ)>0 OR strlen($s_category_filter)>0) {
 
@@ -105,6 +93,8 @@
     $limitQ = " LIMIT ".$initial_page.", ".$NP_limit;
 
     //set query
+
+
     $query = "SELECT *, `product`.`productID` AS pID FROM
             (`product` INNER JOIN `productimage`
             ON product.productID=productimage.productID)
