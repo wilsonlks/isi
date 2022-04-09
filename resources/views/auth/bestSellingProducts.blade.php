@@ -176,6 +176,8 @@
                         </div>
                         <div class="card-body">
                             <div class="tab-content" id="nav-tabContent">
+
+
                                 <div class="tab-pane show active" id="nav-date" role="tabpanel" aria-labelledby="nav-date-tab">
                                     <div class="row">
                                         <div class="list-group-item inputdate col-md-6">
@@ -186,6 +188,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+
                                 <div class="tab-pane" id="nav-filter" role="tabpanel" aria-labelledby="nav-filter-tab">
                                     <?php while ($category = mysqli_fetch_assoc($CSetResult)){ ?>
                                         <div class="list-group-item checkbox">
@@ -216,8 +220,10 @@
 
 
                 // send checkbox value by using ajax
-                function send_data(){
 
+
+
+                function send_data(){
                     $('.filter_data').html('<div id="loading" style="" ></div>');
                     var action = 'fetch_data';
                     var dateText = get_dateText();
@@ -233,7 +239,6 @@
                             $('#fetch_data').html(data);
                         }
                     });
-                    console.log("fetched");
                 }
 
                 function get_dateText(){

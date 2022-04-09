@@ -234,11 +234,13 @@
                                     <button onclick = "changeSorting('1')" class="AscDesc" id="asc" value="Asc" style="display:block">ASC&#9650;</button>
                                     <button onclick = "changeSorting('-1')" class="AscDesc" id="desc" value="Desc" style="display:none">DESC&#9660;</button>
                                 </div>
+
                                 <div class="tab-pane" id="nav-search" role="tabpanel" aria-labelledby="nav-search-tab">
                                     <div class="list-group-item inputtext">
                                         <input type="text" id="search_box" placeholder="Search by product name" onchange="Click()">
                                     </div>
                                 </div>
+
                                 <div class="tab-pane" id="nav-filter" role="tabpanel" aria-labelledby="nav-filter-tab">
                                     <div class="category-filter">
                                         <div class="category-filter-label">By Categories</div>
@@ -347,8 +349,6 @@
                 function Click(){
                     set_page(1);
                     send_data();
-                    console.log("click");
-
                 };
 
         </script>
