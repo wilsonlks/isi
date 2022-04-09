@@ -74,18 +74,3 @@ class RegisterController extends Controller
         ]);
     }
 }
-
-
-
-
-
-
-
-$password = Hash::make('yourPassword');
-$data = User::find($id);
-if( ! Hash::check( $data->password , Input::get('currPassword') ) )
-{
-    return Redirect::to('/login')
-        ->with('message', 'Current Password Error !')
-        ->withInput();
-}

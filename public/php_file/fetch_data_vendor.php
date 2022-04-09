@@ -10,10 +10,11 @@
                 <div class='col-md-8'>";
     $filter = "";
     $page_number = 1;
-    $s_category_filter ='';
-    $s_stock_filter = '';
-    $where = '';
-    $and= '';
+    $s_category_filter = "";
+    $s_stock_filter = "";
+    $where = "";
+    $and= "";
+    
     //get data from productList.blade.php
     if (isset($_POST["action"])) {
 

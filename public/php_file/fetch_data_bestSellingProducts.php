@@ -7,8 +7,9 @@
 
     $filter = "";
     $page_number = 1;
-    $s_category_filter ='';
-    $and1 ='';
+    $s_category_filter = "";
+    $and1 = " ";
+    
     //get data from productList.blade.php
     if(isset($_POST["action"])){
 
@@ -55,7 +56,7 @@
                                     FROM `productreview`
                                     GROUP BY `productID`) AS `rating_table`
                                 ON `product`.`productID`=`rating_table`.`productID`
-                                WHERE `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
+                                WHERE (`purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.")".$and1.$filter."
                                 GROUP BY `productID`
                                 ORDER BY `totalQuantity` DESC";
 
@@ -102,7 +103,7 @@
                         FROM `productreview`
                         GROUP BY `productID`) AS `rating_table`
                     ON `product`.`productID`=`rating_table`.`productID`
-                    WHERE `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
+                    WHERE (`purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.")".$and1.$filter."
                     GROUP BY `productID`
                     ORDER BY `totalQuantity` DESC";
 
@@ -248,7 +249,7 @@
                                 FROM `productreview`
                                 GROUP BY `productID`) AS `rating_table`
                             ON `product`.`productID`=`rating_table`.`productID`
-                            WHERE `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
+                            WHERE (`purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.")".$and1.$filter."
                             GROUP BY `productID`
                             ORDER BY `totalQuantity` DESC";
 
@@ -289,7 +290,7 @@
                         FROM `productreview`
                         GROUP BY `productID`) AS `rating_table`
                     ON `product`.`productID`=`rating_table`.`productID`
-                    WHERE `purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.$and1.$filter."
+                    WHERE (`purchaseorder`.`purchase_date` BETWEEN ".$from_date." AND ".$to_date." OR  `purchaseorder`.`purchase_date` LIKE ".$to_date_2.")".$and1.$filter."
                     GROUP BY `productID`
                     ORDER BY `totalAmount` DESC";
     //print($query_amount);
